@@ -45,6 +45,7 @@ options:
     state:
         description:
             - Whether the given object should exist in GCP
+        required: true
         choices: ['present', 'absent']
         default: 'present'
     name:
@@ -65,7 +66,7 @@ options:
             push_endpoint:
                 description:
                     - A URL locating the endpoint to which messages should be pushed.
-                    - For example, a Webhook endpoint might use "U(https://example.com/push".)
+                    - For example, a Webhook endpoint might use "https://example.com/push".
                 required: false
     ack_deadline_seconds:
         description:
@@ -135,7 +136,7 @@ RETURN = '''
             push_endpoint:
                 description:
                     - A URL locating the endpoint to which messages should be pushed.
-                    - For example, a Webhook endpoint might use "U(https://example.com/push".)
+                    - For example, a Webhook endpoint might use "https://example.com/push".
                 returned: success
                 type: str
     ack_deadline_seconds:

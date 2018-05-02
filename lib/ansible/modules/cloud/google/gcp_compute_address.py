@@ -33,15 +33,15 @@ DOCUMENTATION = '''
 module: gcp_compute_address
 description:
     - Represents an Address resource.
-    - Each virtual machine instance has an ephemeral internal IP address and,
-      optionally, an external IP address. To communicate between instances on
-      the same network, you can use an instance's internal IP address. To
-      communicate with the Internet and instances outside of the same network,
-      you must specify the instance's external IP address.
-    - Internal IP addresses are ephemeral and only belong to an instance for the
-      lifetime of the instance; if the instance is deleted and recreated, the
-      instance is assigned a new internal IP address, either by Compute Engine
-      or by you. External IP addresses can be either ephemeral or static.
+    - Each virtual machine instance has an ephemeral internal IP address and, optionally,
+      an external IP address. To communicate between instances on the same network, you
+      can use an instance's internal IP address. To communicate with the Internet and
+      instances outside of the same network, you must specify the instance's external
+      IP address.
+    - Internal IP addresses are ephemeral and only belong to an instance for the lifetime
+      of the instance; if the instance is deleted and recreated, the instance is assigned
+      a new internal IP address, either by Compute Engine or by you. External IP addresses
+      can be either ephemeral or static.
 short_description: Creates a GCP Address
 version_added: 2.6
 author: Google Inc. (@googlecloudplatform)
@@ -58,8 +58,7 @@ options:
         default: 'present'
     address:
         description:
-            - The static external IP address represented by this resource. Only
-              IPv4 is supported.
+            - The static external IP address represented by this resource. Only IPv4 is supported.
         required: false
     description:
         description:
@@ -67,13 +66,11 @@ options:
         required: false
     name:
         description:
-            - Name of the resource. The name must be 1-63 characters long, and
-              comply with RFC1035. Specifically, the name must be 1-63
-              characters long and match the regular expression
-              [a-z]([-a-z0-9]*[a-z0-9])? which means the first character must be
-              a lowercase letter, and all following characters must be a dash,
-              lowercase letter, or digit, except the last character, which
-              cannot be a dash.
+            - Name of the resource. The name must be 1-63 characters long, and comply with RFC1035.
+              Specifically, the name must be 1-63 characters long and match the regular expression
+              [a-z]([-a-z0-9]*[a-z0-9])? which means the first character must be a lowercase letter,
+              and all following characters must be a dash, lowercase letter, or digit, except
+              the last character, which cannot be a dash.
         required: false
     region:
         description:
@@ -98,8 +95,7 @@ EXAMPLES = '''
 RETURN = '''
     address:
         description:
-            - The static external IP address represented by this resource. Only
-              IPv4 is supported.
+            - The static external IP address represented by this resource. Only IPv4 is supported.
         returned: success
         type: str
     creation_timestamp:
@@ -119,13 +115,11 @@ RETURN = '''
         type: int
     name:
         description:
-            - Name of the resource. The name must be 1-63 characters long, and
-              comply with RFC1035. Specifically, the name must be 1-63
-              characters long and match the regular expression
-              [a-z]([-a-z0-9]*[a-z0-9])? which means the first character must be
-              a lowercase letter, and all following characters must be a dash,
-              lowercase letter, or digit, except the last character, which
-              cannot be a dash.
+            - Name of the resource. The name must be 1-63 characters long, and comply with RFC1035.
+              Specifically, the name must be 1-63 characters long and match the regular expression
+              [a-z]([-a-z0-9]*[a-z0-9])? which means the first character must be a lowercase letter,
+              and all following characters must be a dash, lowercase letter, or digit, except
+              the last character, which cannot be a dash.
         returned: success
         type: str
     users:
@@ -211,7 +205,6 @@ def delete(module, link, kind, fetch):
 def resource_to_request(module):
     request = {
         u'kind': 'compute#address',
-        u'region': module.params.get('region'),
         u'address': module.params.get('address'),
         u'description': module.params.get('description'),
         u'name': module.params.get('name')

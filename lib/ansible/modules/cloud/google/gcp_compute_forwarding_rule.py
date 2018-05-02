@@ -46,6 +46,7 @@ options:
     state:
         description:
             - Whether the given object should exist in GCP
+        required: true
         choices: ['present', 'absent']
         default: 'present'
     description:
@@ -69,7 +70,7 @@ options:
               from the IP range of the subnet or network configured for this forwarding rule.
             - 'An address can be specified either by a literal IP address or a URL reference to
               an existing Address resource. The following examples are all valid:  * 100.1.2.3
-              * U(https://www.googleapis.com/compute/v1/projects/project/regions/region/addresses/address)
+              * https://www.googleapis.com/compute/v1/projects/project     /regions/region/addresses/address
               * projects/project/regions/region/addresses/address * regions/region/addresses/address
               * global/addresses/address * address .'
         required: false
@@ -221,7 +222,7 @@ RETURN = '''
               from the IP range of the subnet or network configured for this forwarding rule.
             - 'An address can be specified either by a literal IP address or a URL reference to
               an existing Address resource. The following examples are all valid:  * 100.1.2.3
-              * U(https://www.googleapis.com/compute/v1/projects/project/regions/region/addresses/address)
+              * https://www.googleapis.com/compute/v1/projects/project     /regions/region/addresses/address
               * projects/project/regions/region/addresses/address * regions/region/addresses/address
               * global/addresses/address * address .'
         returned: success

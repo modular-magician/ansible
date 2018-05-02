@@ -54,6 +54,7 @@ options:
     state:
         description:
             - Whether the given object should exist in GCP
+        required: true
         choices: ['present', 'absent']
         default: 'present'
     description:
@@ -143,7 +144,7 @@ options:
             - 'The source snapshot used to create this disk. You can provide
               this as a partial or full URL to the resource. For example, the
               following are valid values: *
-              U(https://www.googleapis.com/compute/v1/projects/project/global/)
+              https://www.googleapis.com/compute/v1/projects/project/global/
               snapshots/snapshot * projects/project/global/snapshots/snapshot *
               global/snapshots/snapshot .'
         required: false
@@ -323,7 +324,7 @@ RETURN = '''
             - 'The source snapshot used to create this disk. You can provide
               this as a partial or full URL to the resource. For example, the
               following are valid values: *
-              U(https://www.googleapis.com/compute/v1/projects/project/global/)
+              https://www.googleapis.com/compute/v1/projects/project/global/
               snapshots/snapshot * projects/project/global/snapshots/snapshot *
               global/snapshots/snapshot .'
         returned: success

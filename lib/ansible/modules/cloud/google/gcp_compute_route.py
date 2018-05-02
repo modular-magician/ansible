@@ -59,6 +59,7 @@ options:
     state:
         description:
             - Whether the given object should exist in GCP
+        required: true
         choices: ['present', 'absent']
         default: 'present'
     dest_range:
@@ -95,7 +96,7 @@ options:
         description:
             - URL to a gateway that should handle matching packets.
             - 'Currently, you can only specify the internet gateway, using a full or partial valid
-              URL:  * U(https://www.googleapis.com/compute/v1/projects/project/global/gateways/default-internet-gateway)
+              URL:  * https://www.googleapis.com/compute/v1/projects/project/     global/gateways/default-internet-gateway
               * projects/project/global/gateways/default-internet-gateway * global/gateways/default-internet-gateway
               .'
         required: false
@@ -103,7 +104,7 @@ options:
         description:
             - URL to an instance that should handle matching packets.
             - 'You can specify this as a full or partial URL. For example: *
-              U(https://www.googleapis.com/compute/v1/projects/project/zones/zone/)
+              https://www.googleapis.com/compute/v1/projects/project/zones/zone/
               instances/instance *
               projects/project/zones/zone/instances/instance *
               zones/zone/instances/instance .'
@@ -187,7 +188,7 @@ RETURN = '''
         description:
             - URL to a gateway that should handle matching packets.
             - 'Currently, you can only specify the internet gateway, using a full or partial valid
-              URL:  * U(https://www.googleapis.com/compute/v1/projects/project/global/gateways/default-internet-gateway)
+              URL:  * https://www.googleapis.com/compute/v1/projects/project/     global/gateways/default-internet-gateway
               * projects/project/global/gateways/default-internet-gateway * global/gateways/default-internet-gateway
               .'
         returned: success
@@ -196,7 +197,7 @@ RETURN = '''
         description:
             - URL to an instance that should handle matching packets.
             - 'You can specify this as a full or partial URL. For example: *
-              U(https://www.googleapis.com/compute/v1/projects/project/zones/zone/)
+              https://www.googleapis.com/compute/v1/projects/project/zones/zone/
               instances/instance *
               projects/project/zones/zone/instances/instance *
               zones/zone/instances/instance .'

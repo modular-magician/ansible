@@ -44,6 +44,7 @@ options:
     state:
         description:
             - Whether the given object should exist in GCP
+        required: true
         choices: ['present', 'absent']
         default: 'present'
     can_ip_forward:
@@ -319,6 +320,7 @@ options:
                 description:
                     - Email address of the service account.
                 required: false
+                type: bool
             scopes:
                 description:
                     - The list of scopes to be made available for this service account.
@@ -861,7 +863,7 @@ def main():
                 preemptible=dict(type='bool')
             )),
             service_accounts=dict(type='list', elements='dict', options=dict(
-                email=dict(type='str'),
+                email=dict(type='bool'),
                 scopes=dict(type='list', elements='str')
             )),
             tags=dict(type='dict', options=dict(
@@ -1107,10 +1109,7 @@ def metadata_encoder(metadata):
     metadata_new = []
     for key in metadata:
         value = metadata[key]
-        metadata_new.append({
-            "key": key,
-            "value": value
-        })
+        metadata_new.append({key: value})
     return {
         'items': metadata_new
     }
@@ -1122,7 +1121,7 @@ def metadata_decoder(metadata):
     if 'items' in metadata:
         metadata_items = metadata['items']
         for item in metadata_items:
-            items[item['key']] = item['value']
+            items[item.keys()[0]] = item[item.keys()[0]]
     return items
 
 

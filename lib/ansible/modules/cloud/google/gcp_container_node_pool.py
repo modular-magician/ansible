@@ -48,6 +48,7 @@ options:
     state:
         description:
             - Whether the given object should exist in GCP
+        required: true
         choices: ['present', 'absent']
         default: 'present'
     name:
@@ -74,9 +75,9 @@ options:
                     - The set of Google API scopes to be made available on all of the node VMs under the
                       "default" service account.
                     - 'The following scopes are recommended, but not required, and by default are not
-                      included:  U(https://www.googleapis.com/auth/compute) is required for mounting persistent
+                      included:  https://www.googleapis.com/auth/compute is required for mounting persistent
                       storage on your nodes.'
-                    - U(https://www.googleapis.com/auth/devstorage.read_only) is required for communicating
+                    - https://www.googleapis.com/auth/devstorage.read_only is required for communicating
                       with gcr.io (the Google Container Registry).
                     - If unspecified, no scopes are added, unless Cloud Logging or Cloud Monitoring are
                       enabled, in which case their required scopes will be added.
@@ -114,7 +115,7 @@ options:
                       depending on the Kubernetes version -- it''s best to assume
                       the behavior is undefined and conflicts should be avoided. For
                       more information, including usage and the valid values, see:
-                      U(http://kubernetes.io/v1.1/docs/user-guide/labels.html) An
+                      http://kubernetes.io/v1.1/docs/user-guide/labels.html An
                       object containing a list of "key": value pairs.'
                     - 'Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.'
                 required: false
@@ -122,7 +123,7 @@ options:
                 description:
                     - The number of local SSD disks to be attached to the node.
                     - 'The limit for this value is dependant upon the maximum number of disks available
-                      on a machine per zone. See:  U(https://cloud.google.com/compute/docs/disks/local-ssd#local_ssd_limits)  for
+                      on a machine per zone. See:  https://cloud.google.com/compute/docs/disks/   local-ssd#local_ssd_limits  for
                       more information.'
                 required: false
             tags:
@@ -133,7 +134,7 @@ options:
                 required: false
             preemptible:
                 description:
-                    - 'Whether the nodes are created as preemptible VM instances. See: U(https://cloud.google.com/compute/docs/instances/preemptible)
+                    - 'Whether the nodes are created as preemptible VM instances. See: https://cloud.google.com/compute/docs/instances/preemptible
                       for more inforamtion about preemptible VM instances.'
                 required: false
                 type: bool
@@ -264,9 +265,9 @@ RETURN = '''
                     - The set of Google API scopes to be made available on all of the node VMs under the
                       "default" service account.
                     - 'The following scopes are recommended, but not required, and by default are not
-                      included:  U(https://www.googleapis.com/auth/compute) is required for mounting persistent
+                      included:  https://www.googleapis.com/auth/compute is required for mounting persistent
                       storage on your nodes.'
-                    - U(https://www.googleapis.com/auth/devstorage.read_only) is required for communicating
+                    - https://www.googleapis.com/auth/devstorage.read_only is required for communicating
                       with gcr.io (the Google Container Registry).
                     - If unspecified, no scopes are added, unless Cloud Logging or Cloud Monitoring are
                       enabled, in which case their required scopes will be added.
@@ -308,7 +309,7 @@ RETURN = '''
                       depending on the Kubernetes version -- it''s best to assume
                       the behavior is undefined and conflicts should be avoided. For
                       more information, including usage and the valid values, see:
-                      U(http://kubernetes.io/v1.1/docs/user-guide/labels.html) An
+                      http://kubernetes.io/v1.1/docs/user-guide/labels.html An
                       object containing a list of "key": value pairs.'
                     - 'Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.'
                 returned: success
@@ -317,7 +318,7 @@ RETURN = '''
                 description:
                     - The number of local SSD disks to be attached to the node.
                     - 'The limit for this value is dependant upon the maximum number of disks available
-                      on a machine per zone. See:  U(https://cloud.google.com/compute/docs/disks/local-ssd#local_ssd_limits)  for
+                      on a machine per zone. See:  https://cloud.google.com/compute/docs/disks/   local-ssd#local_ssd_limits  for
                       more information.'
                 returned: success
                 type: int
@@ -330,7 +331,7 @@ RETURN = '''
                 type: list
             preemptible:
                 description:
-                    - 'Whether the nodes are created as preemptible VM instances. See: U(https://cloud.google.com/compute/docs/instances/preemptible)
+                    - 'Whether the nodes are created as preemptible VM instances. See: https://cloud.google.com/compute/docs/instances/preemptible
                       for more inforamtion about preemptible VM instances.'
                 returned: success
                 type: bool
