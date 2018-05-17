@@ -98,7 +98,7 @@ options:
         required: false
     zone:
         description:
-            - A reference to Zone resource.
+            - A reference to the zone where the disk resides.
         required: true
     disk_encryption_key:
         description:
@@ -262,7 +262,7 @@ RETURN = '''
         type: list
     zone:
         description:
-            - A reference to Zone resource.
+            - A reference to the zone where the disk resides.
         returned: success
         type: str
     disk_encryption_key:
