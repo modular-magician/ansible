@@ -65,6 +65,11 @@ options:
         description:
             - The destination range of outgoing packets that this route applies to.
             - Only IPv4 is supported.
+        required: true
+    description:
+        description:
+            - An optional description of this resource. Provide this property when you create
+              the resource.
         required: false
     name:
         description:
@@ -74,11 +79,11 @@ options:
               which means the first character must be a lowercase letter, and all following characters
               must be a dash, lowercase letter, or digit, except the last character, which cannot
               be a dash.
-        required: false
+        required: true
     network:
         description:
             - The network that this route applies to.
-        required: false
+        required: true
     priority:
         description:
             - The priority of this route. Priority is used to break ties in cases where there
@@ -152,6 +157,12 @@ RETURN = '''
         description:
             - The destination range of outgoing packets that this route applies to.
             - Only IPv4 is supported.
+        returned: success
+        type: str
+    description:
+        description:
+            - An optional description of this resource. Provide this property when you create
+              the resource.
         returned: success
         type: str
     name:
@@ -233,9 +244,10 @@ def main():
     module = GcpModule(
         argument_spec=dict(
             state=dict(default='present', choices=['present', 'absent'], type='str'),
-            dest_range=dict(type='str'),
-            name=dict(type='str'),
-            network=dict(type='dict'),
+            dest_range=dict(required=True, type='str'),
+            description=dict(type='str'),
+            name=dict(required=True, type='str'),
+            network=dict(required=True, type='dict'),
             priority=dict(type='int'),
             tags=dict(type='list', elements='str'),
             next_hop_gateway=dict(type='str'),
@@ -291,6 +303,7 @@ def resource_to_request(module):
     request = {
         u'kind': 'compute#route',
         u'destRange': module.params.get('dest_range'),
+        u'description': module.params.get('description'),
         u'name': module.params.get('name'),
         u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
         u'priority': module.params.get('priority'),
@@ -367,6 +380,7 @@ def is_different(module, response):
 def response_to_hash(module, response):
     return {
         u'destRange': response.get(u'destRange'),
+        u'description': response.get(u'description'),
         u'name': response.get(u'name'),
         u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
         u'priority': module.params.get('priority'),
