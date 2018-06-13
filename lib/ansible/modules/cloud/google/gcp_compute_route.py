@@ -46,8 +46,8 @@ description:
       to another virtual machine destination, a virtual machine gateway or a Compute Engine-operated
       gateway. Packets that do not match any route in the sending virtual machine's routing
       table will be dropped.
-    - A Routes resources must have exactly one specification of either nextHopGateway,
-      nextHopInstance, nextHopIp, or nextHopVpnTunnel.
+    - A Route resource must have exactly one specification of either nextHopGateway, nextHopInstance,
+      nextHopIp, or nextHopVpnTunnel.
 short_description: Creates a GCP Route
 version_added: 2.6
 author: Google Inc. (@googlecloudplatform)
@@ -65,6 +65,11 @@ options:
         description:
             - The destination range of outgoing packets that this route applies to.
             - Only IPv4 is supported.
+        required: true
+    description:
+        description:
+            - An optional description of this resource. Provide this property when you create
+              the resource.
         required: false
     name:
         description:
@@ -74,11 +79,11 @@ options:
               which means the first character must be a lowercase letter, and all following characters
               must be a dash, lowercase letter, or digit, except the last character, which cannot
               be a dash.
-        required: false
+        required: true
     network:
         description:
             - The network that this route applies to.
-        required: false
+        required: true
     priority:
         description:
             - The priority of this route. Priority is used to break ties in cases where there
@@ -102,11 +107,9 @@ options:
     next_hop_instance:
         description:
             - URL to an instance that should handle matching packets.
-            - 'You can specify this as a full or partial URL. For example: *
-              U(https://www.googleapis.com/compute/v1/projects/project/zones/zone/)
-              instances/instance *
-              projects/project/zones/zone/instances/instance *
-              zones/zone/instances/instance .'
+            - 'You can specify this as a full or partial URL. For example:  * U(https://www.googleapis.com/compute/v1/projects/project/zones/zone/)
+              instances/instance * projects/project/zones/zone/instances/instance * zones/zone/instances/instance
+              .'
         required: false
     next_hop_ip:
         description:
@@ -115,6 +118,10 @@ options:
     next_hop_vpn_tunnel:
         description:
             - URL to a VpnTunnel that should handle matching packets.
+        required: false
+    next_hop_network:
+        description:
+            - URL to a Network that should handle matching packets.
         required: false
 extends_documentation_fragment: gcp
 '''
@@ -152,6 +159,12 @@ RETURN = '''
         description:
             - The destination range of outgoing packets that this route applies to.
             - Only IPv4 is supported.
+        returned: success
+        type: str
+    description:
+        description:
+            - An optional description of this resource. Provide this property when you create
+              the resource.
         returned: success
         type: str
     name:
@@ -195,11 +208,9 @@ RETURN = '''
     next_hop_instance:
         description:
             - URL to an instance that should handle matching packets.
-            - 'You can specify this as a full or partial URL. For example: *
-              U(https://www.googleapis.com/compute/v1/projects/project/zones/zone/)
-              instances/instance *
-              projects/project/zones/zone/instances/instance *
-              zones/zone/instances/instance .'
+            - 'You can specify this as a full or partial URL. For example:  * U(https://www.googleapis.com/compute/v1/projects/project/zones/zone/)
+              instances/instance * projects/project/zones/zone/instances/instance * zones/zone/instances/instance
+              .'
         returned: success
         type: str
     next_hop_ip:
@@ -212,6 +223,11 @@ RETURN = '''
             - URL to a VpnTunnel that should handle matching packets.
         returned: success
         type: str
+    next_hop_network:
+        description:
+            - URL to a Network that should handle matching packets.
+        returned: success
+        type: dict
 '''
 
 ################################################################################
@@ -233,15 +249,17 @@ def main():
     module = GcpModule(
         argument_spec=dict(
             state=dict(default='present', choices=['present', 'absent'], type='str'),
-            dest_range=dict(type='str'),
-            name=dict(type='str'),
-            network=dict(type='dict'),
+            dest_range=dict(required=True, type='str'),
+            description=dict(type='str'),
+            name=dict(required=True, type='str'),
+            network=dict(required=True, type='dict'),
             priority=dict(type='int'),
             tags=dict(type='list', elements='str'),
             next_hop_gateway=dict(type='str'),
             next_hop_instance=dict(type='str'),
             next_hop_ip=dict(type='str'),
-            next_hop_vpn_tunnel=dict(type='str')
+            next_hop_vpn_tunnel=dict(type='str'),
+            next_hop_network=dict(type='dict')
         )
     )
 
@@ -254,10 +272,10 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
-                fetch = update(module, self_link(module), kind)
+                fetch = update(module, self_link(module), kind, fetch)
                 changed = True
         else:
-            delete(module, self_link(module), kind)
+            delete(module, self_link(module), kind, fetch)
             fetch = {}
             changed = True
     else:
@@ -277,12 +295,12 @@ def create(module, link, kind):
     return wait_for_operation(module, auth.post(link, resource_to_request(module)))
 
 
-def update(module, link, kind):
+def update(module, link, kind, fetch):
     auth = GcpSession(module, 'compute')
     return wait_for_operation(module, auth.put(link, resource_to_request(module)))
 
 
-def delete(module, link, kind):
+def delete(module, link, kind, fetch):
     auth = GcpSession(module, 'compute')
     return wait_for_operation(module, auth.delete(link))
 
@@ -291,6 +309,7 @@ def resource_to_request(module):
     request = {
         u'kind': 'compute#route',
         u'destRange': module.params.get('dest_range'),
+        u'description': module.params.get('description'),
         u'name': module.params.get('name'),
         u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
         u'priority': module.params.get('priority'),
@@ -298,7 +317,8 @@ def resource_to_request(module):
         u'nextHopGateway': module.params.get('next_hop_gateway'),
         u'nextHopInstance': module.params.get('next_hop_instance'),
         u'nextHopIp': module.params.get('next_hop_ip'),
-        u'nextHopVpnTunnel': module.params.get('next_hop_vpn_tunnel')
+        u'nextHopVpnTunnel': module.params.get('next_hop_vpn_tunnel'),
+        u'nextHopNetwork': replace_resource_dict(module.params.get(u'next_hop_network', {}), 'selfLink')
     }
     return_vals = {}
     for k, v in request.items():
@@ -367,6 +387,7 @@ def is_different(module, response):
 def response_to_hash(module, response):
     return {
         u'destRange': response.get(u'destRange'),
+        u'description': response.get(u'description'),
         u'name': response.get(u'name'),
         u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
         u'priority': module.params.get('priority'),
@@ -374,7 +395,8 @@ def response_to_hash(module, response):
         u'nextHopGateway': module.params.get('next_hop_gateway'),
         u'nextHopInstance': module.params.get('next_hop_instance'),
         u'nextHopIp': module.params.get('next_hop_ip'),
-        u'nextHopVpnTunnel': module.params.get('next_hop_vpn_tunnel')
+        u'nextHopVpnTunnel': module.params.get('next_hop_vpn_tunnel'),
+        u'nextHopNetwork': replace_resource_dict(module.params.get(u'next_hop_network', {}), 'selfLink')
     }
 
 
