@@ -160,7 +160,6 @@ RETURN = '''
 
 from ansible.module_utils.gcp_utils import navigate_hash, GcpSession, GcpModule, GcpRequest, replace_resource_dict
 import json
-import re
 import time
 
 ################################################################################
@@ -307,15 +306,6 @@ def response_to_hash(module, response):
         u'tunnels': response.get(u'tunnels'),
         u'forwardingRules': response.get(u'forwardingRules')
     }
-
-
-def region_selflink(name, params):
-    if name is None:
-        return
-    url = r"https://www.googleapis.com/compute/v1/projects/.*/regions/[a-z1-9\-]*"
-    if not re.match(url, name):
-        name = "https://www.googleapis.com/compute/v1/projects/{project}/regions/%s".format(**params) % name
-    return name
 
 
 def async_op_url(module, extra_data=None):
