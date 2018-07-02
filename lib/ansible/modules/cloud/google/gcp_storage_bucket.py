@@ -56,10 +56,6 @@ options:
             - Access controls on the bucket.
         required: false
         suboptions:
-            bucket:
-                description:
-                    - The name of the bucket.
-                required: true
             domain:
                 description:
                     - The domain associated with the entity.
@@ -170,10 +166,6 @@ options:
             id:
                 description:
                     - The ID of the access-control entry.
-                required: false
-            object:
-                description:
-                    - The name of the object, if applied to an object.
                 required: false
             project_team:
                 description:
@@ -373,11 +365,6 @@ RETURN = '''
         returned: success
         type: complex
         contains:
-            bucket:
-                description:
-                    - The name of the bucket.
-                returned: success
-                type: dict
             domain:
                 description:
                     - The domain associated with the entity.
@@ -507,11 +494,6 @@ RETURN = '''
             id:
                 description:
                     - The ID of the access-control entry.
-                returned: success
-                type: str
-            object:
-                description:
-                    - The name of the object, if applied to an object.
                 returned: success
                 type: str
             project_team:
@@ -756,7 +738,6 @@ def main():
         argument_spec=dict(
             state=dict(default='present', choices=['present', 'absent'], type='str'),
             acl=dict(type='list', elements='dict', options=dict(
-                bucket=dict(required=True, type='dict'),
                 domain=dict(type='str'),
                 email=dict(type='str'),
                 entity=dict(required=True, type='str'),
@@ -782,7 +763,6 @@ def main():
                 entity_id=dict(type='str'),
                 generation=dict(type='int'),
                 id=dict(type='str'),
-                object=dict(type='str'),
                 project_team=dict(type='dict', options=dict(
                     project_number=dict(type='str'),
                     team=dict(type='str', choices=['editors', 'owners', 'viewers'])
@@ -1003,7 +983,6 @@ class BucketAclArray(object):
 
     def _request_for_item(self, item):
         return remove_nones_from_dict({
-            u'bucket': replace_resource_dict(item.get(u'bucket', {}), 'name'),
             u'domain': item.get('domain'),
             u'email': item.get('email'),
             u'entity': item.get('entity'),
@@ -1015,7 +994,6 @@ class BucketAclArray(object):
 
     def _response_from_item(self, item):
         return remove_nones_from_dict({
-            u'bucket': item.get(u'bucket'),
             u'domain': item.get(u'domain'),
             u'email': item.get(u'email'),
             u'entity': item.get(u'entity'),
@@ -1113,7 +1091,6 @@ class BuckeDefauObjecAclArray(object):
             u'entityId': item.get('entity_id'),
             u'generation': item.get('generation'),
             u'id': item.get('id'),
-            u'object': item.get('object'),
             u'projectTeam': BucketProjectTeam(item.get('project_team', {}), self.module).to_request(),
             u'role': item.get('role')
         })
@@ -1127,7 +1104,6 @@ class BuckeDefauObjecAclArray(object):
             u'entityId': item.get(u'entityId'),
             u'generation': item.get(u'generation'),
             u'id': item.get(u'id'),
-            u'object': item.get(u'object'),
             u'projectTeam': BucketProjectTeam(item.get(u'projectTeam', {}), self.module).from_response(),
             u'role': item.get(u'role')
         })

@@ -96,7 +96,8 @@ options:
         type: bool
     region:
         description:
-            - URL of the GCP region for this subnetwork.
+            - URL of the region where the regional address resides.
+            - This field is not applicable to global addresses.
         required: true
 extends_documentation_fragment: gcp
 '''
@@ -182,7 +183,8 @@ RETURN = '''
         type: bool
     region:
         description:
-            - URL of the GCP region for this subnetwork.
+            - URL of the region where the regional address resides.
+            - This field is not applicable to global addresses.
         returned: success
         type: str
 '''
@@ -263,12 +265,12 @@ def delete(module, link, kind):
 def resource_to_request(module):
     request = {
         u'kind': 'compute#subnetwork',
+        u'region': module.params.get('region'),
         u'description': module.params.get('description'),
         u'ipCidrRange': module.params.get('ip_cidr_range'),
         u'name': module.params.get('name'),
         u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
-        u'privateIpGoogleAccess': module.params.get('private_ip_google_access'),
-        u'region': module.params.get('region')
+        u'privateIpGoogleAccess': module.params.get('private_ip_google_access')
     }
     return_vals = {}
     for k, v in request.items():
@@ -343,8 +345,7 @@ def response_to_hash(module, response):
         u'ipCidrRange': response.get(u'ipCidrRange'),
         u'name': response.get(u'name'),
         u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
-        u'privateIpGoogleAccess': response.get(u'privateIpGoogleAccess'),
-        u'region': module.params.get('region')
+        u'privateIpGoogleAccess': response.get(u'privateIpGoogleAccess')
     }
 
 
