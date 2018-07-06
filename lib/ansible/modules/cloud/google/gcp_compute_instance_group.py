@@ -260,7 +260,8 @@ def create(module, link, kind):
 
 
 def update(module, link, kind):
-    module.fail_json(msg="InstanceGroup cannot be edited")
+    auth = GcpSession(module, 'compute')
+    return wait_for_operation(module, auth.put(link, resource_to_request(module)))
 
 
 def delete(module, link, kind):

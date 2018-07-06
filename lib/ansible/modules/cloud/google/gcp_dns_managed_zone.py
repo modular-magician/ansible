@@ -189,7 +189,8 @@ def create(module, link, kind):
 
 
 def update(module, link, kind):
-    module.fail_json(msg="ManagedZone cannot be edited")
+    auth = GcpSession(module, 'dns')
+    return return_if_object(module, auth.put(link, resource_to_request(module)), kind)
 
 
 def delete(module, link, kind):

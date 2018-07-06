@@ -220,7 +220,8 @@ def create(module, link):
 
 
 def update(module, link):
-    module.fail_json(msg="Subscription cannot be edited")
+    auth = GcpSession(module, 'pubsub')
+    return return_if_object(module, auth.put(link, resource_to_request(module)))
 
 
 def delete(module, link):
