@@ -55,10 +55,6 @@ options:
             - Whether the given object should exist in GCP
         choices: ['present', 'absent']
         default: 'present'
-    bucket:
-        description:
-            - The name of the bucket.
-        required: true
     entity:
         description:
             - 'The entity holding the permission, in one of the following
@@ -93,6 +89,10 @@ options:
             - The access permission for the entity.
         required: false
         choices: ['OWNER', 'READER', 'WRITER']
+    bucket:
+        description:
+            - The name of the bucket.
+        required: true
 extends_documentation_fragment: gcp
 '''
 
@@ -121,11 +121,6 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-    bucket:
-        description:
-            - The name of the bucket.
-        returned: success
-        type: dict
     domain:
         description:
             - The domain associated with the entity.
@@ -179,6 +174,11 @@ RETURN = '''
             - The access permission for the entity.
         returned: success
         type: str
+    bucket:
+        description:
+            - The name of the bucket.
+        returned: success
+        type: dict
 '''
 
 ################################################################################
@@ -199,14 +199,14 @@ def main():
     module = GcpModule(
         argument_spec=dict(
             state=dict(default='present', choices=['present', 'absent'], type='str'),
-            bucket=dict(required=True, type='dict'),
             entity=dict(required=True, type='str'),
             entity_id=dict(type='str'),
             project_team=dict(type='dict', options=dict(
                 project_number=dict(type='str'),
                 team=dict(type='str', choices=['editors', 'owners', 'viewers'])
             )),
-            role=dict(type='str', choices=['OWNER', 'READER', 'WRITER'])
+            role=dict(type='str', choices=['OWNER', 'READER', 'WRITER']),
+            bucket=dict(required=True, type='dict')
         )
     )
 
@@ -258,7 +258,6 @@ def delete(module, link, kind):
 def resource_to_request(module):
     request = {
         u'kind': 'storage#bucketAccessControl',
-        u'bucket': replace_resource_dict(module.params.get(u'bucket', {}), 'name'),
         u'entity': module.params.get('entity'),
         u'entityId': module.params.get('entity_id'),
         u'projectTeam': BuckAcceContProjTeam(module.params.get('project_team', {}), module).to_request(),
@@ -278,11 +277,18 @@ def fetch_resource(module, link, kind):
 
 
 def self_link(module):
-    return "https://www.googleapis.com/storage/v1/b/{bucket}/acl/{entity}".format(**module.params)
+    res = {
+        'bucket': replace_resource_dict(module.params['bucket'], 'name'),
+        'entity': module.params['entity']
+    }
+    return "https://www.googleapis.com/storage/v1/b/{bucket}/acl/{entity}".format(**res)
 
 
 def collection(module):
-    return "https://www.googleapis.com/storage/v1/b/{bucket}/acl".format(**module.params)
+    res = {
+        'bucket': replace_resource_dict(module.params['bucket'], 'name')
+    }
+    return "https://www.googleapis.com/storage/v1/b/{bucket}/acl".format(**res)
 
 
 def return_if_object(module, response, kind):
@@ -330,7 +336,6 @@ def is_different(module, response):
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
     return {
-        u'bucket': response.get(u'bucket'),
         u'domain': response.get(u'domain'),
         u'email': response.get(u'email'),
         u'entity': response.get(u'entity'),
