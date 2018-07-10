@@ -119,7 +119,7 @@ options:
             - If you do not provide an encryption key when creating the disk, then the disk will
               be encrypted using an automatically generated key and you do not need to provide
               a key to use the disk later.
-        required: false
+        required: true
         suboptions:
             raw_key:
                 description:
@@ -135,7 +135,7 @@ options:
         description:
             - The customer-supplied encryption key of the source image. Required if the source
               image is protected by a customer-supplied encryption key.
-        required: false
+        required: true
         suboptions:
             raw_key:
                 description:
@@ -155,12 +155,12 @@ options:
               U(https://www.googleapis.com/compute/v1/projects/project/global/)
               snapshots/snapshot * projects/project/global/snapshots/snapshot *
               global/snapshots/snapshot .'
-        required: false
+        required: true
     source_snapshot_encryption_key:
         description:
             - The customer-supplied encryption key of the source snapshot. Required if the source
               snapshot is protected by a customer-supplied encryption key.
-        required: false
+        required: true
         suboptions:
             raw_key:
                 description:
@@ -400,16 +400,16 @@ def main():
             source_image=dict(type='str'),
             type=dict(type='str'),
             zone=dict(required=True, type='str'),
-            disk_encryption_key=dict(type='dict', options=dict(
+            disk_encryption_key=dict(required=True, type='dict', options=dict(
                 raw_key=dict(type='str'),
                 sha256=dict(type='str')
             )),
-            source_image_encryption_key=dict(type='dict', options=dict(
+            source_image_encryption_key=dict(required=True, type='dict', options=dict(
                 raw_key=dict(type='str'),
                 sha256=dict(type='str')
             )),
-            source_snapshot=dict(type='str'),
-            source_snapshot_encryption_key=dict(type='dict', options=dict(
+            source_snapshot=dict(required=True, type='str'),
+            source_snapshot_encryption_key=dict(required=True, type='dict', options=dict(
                 raw_key=dict(type='str'),
                 sha256=dict(type='str')
             ))

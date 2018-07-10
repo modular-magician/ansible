@@ -63,7 +63,7 @@ options:
     password:
         description:
             - The password for the user.
-        required: false
+        required: true
 extends_documentation_fragment: gcp
 '''
 
@@ -147,7 +147,7 @@ def main():
             host=dict(required=True, type='str'),
             name=dict(required=True, type='str'),
             instance=dict(required=True, type='dict'),
-            password=dict(type='str')
+            password=dict(required=True, type='str')
         )
     )
 

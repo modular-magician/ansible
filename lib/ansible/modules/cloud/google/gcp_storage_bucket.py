@@ -335,7 +335,7 @@ options:
     project:
         description:
             - A valid API project identifier.
-        required: false
+        required: true
     predefined_default_object_acl:
         description:
             - Apply a predefined set of default object access controls to this bucket.
@@ -349,7 +349,7 @@ options:
             - '- "projectPrivate": Object owner gets OWNER access, and project team     members
               get access according to their roles.'
             - '- "publicRead": Object owner gets OWNER access, and allUsers get     READER access.'
-        required: false
+        required: true
         choices: ['authenticatedRead', 'bucketOwnerFullControl', 'bucketOwnerRead', 'private', 'projectPrivate', 'publicRead']
 extends_documentation_fragment: gcp
 '''
@@ -823,8 +823,8 @@ def main():
                 main_page_suffix=dict(type='str'),
                 not_found_page=dict(type='str')
             )),
-            project=dict(type='str'),
-            predefined_default_object_acl=dict(type='str', choices=['authenticatedRead',
+            project=dict(required=True, type='str'),
+            predefined_default_object_acl=dict(required=True, type='str', choices=['authenticatedRead',
                                                                     'bucketOwnerFullControl',
                                                                     'bucketOwnerRead',
                                                                     'private',
