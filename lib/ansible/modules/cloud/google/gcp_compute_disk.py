@@ -472,7 +472,7 @@ def resource_to_request(module):
         u'name': module.params.get('name'),
         u'sizeGb': module.params.get('size_gb'),
         u'sourceImage': module.params.get('source_image'),
-        u'type': disk_type_selflink(module.params.get('type'), module.params)
+        u'type': type_selflink(module.params.get('type'), module.params)
     }
     return_vals = {}
     for k, v in request.items():
