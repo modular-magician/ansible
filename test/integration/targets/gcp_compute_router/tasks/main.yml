@@ -13,36 +13,28 @@
 #
 # ----------------------------------------------------------------------------
 # Pre-test setup
-- name: create a address
-  gcp_compute_address:
-      name: "address-forwardingrule"
-      region: us-west1
+- name: create a network
+  gcp_compute_network:
+      name: 'network-router'
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
       scopes:
         - https://www.googleapis.com/auth/compute
       state: present
-  register: address
-- name: create a target pool
-  gcp_compute_target_pool:
-      name: "targetpool-forwardingrule"
-      region: us-west1
-      project: "{{ gcp_project }}"
-      auth_kind: "{{ gcp_cred_kind }}"
-      service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
-      state: present
-  register: targetpool
-- name: delete a forwarding rule
-  gcp_compute_forwarding_rule:
+  register: network
+- name: delete a router
+  gcp_compute_router:
       name: "{{ resource_name }}"
-      region: us-west1
-      target: "{{ targetpool }}"
-      ip_protocol: TCP
-      port_range: 80-80
-      ip_address: "{{ address.address }}"
+      network: "{{ network }}"
+      bgp:
+        asn: 64514
+        advertise_mode: 'CUSTOM'
+        advertised_groups:
+          - 'ALL_SUBNETS'
+        advertised_ip_ranges:
+          - range: '1.2.3.4'
+          - range: '6.7.0.0/16'
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
@@ -50,14 +42,18 @@
         - https://www.googleapis.com/auth/compute
       state: absent
 #----------------------------------------------------------
-- name: create a forwarding rule
-  gcp_compute_forwarding_rule:
+- name: create a router
+  gcp_compute_router:
       name: "{{ resource_name }}"
-      region: us-west1
-      target: "{{ targetpool }}"
-      ip_protocol: TCP
-      port_range: 80-80
-      ip_address: "{{ address.address }}"
+      network: "{{ network }}"
+      bgp:
+        asn: 64514
+        advertise_mode: 'CUSTOM'
+        advertised_groups:
+          - 'ALL_SUBNETS'
+        advertised_ip_ranges:
+          - range: '1.2.3.4'
+          - range: '6.7.0.0/16'
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
@@ -69,24 +65,28 @@
   assert:
     that:
       - result.changed == true
-      - "result.kind == 'compute#forwardingRule'"
-- name: verify that forwarding_rule was created
+      - "result.kind == 'compute#router'"
+- name: verify that router was created
   shell: |
-    gcloud compute forwarding-rules describe  --project="{{ gcp_project }}"  --region=us-west1  "{{ resource_name }}"
+    gcloud compute routers describe  --project="{{ gcp_project}}"  --region=us-west1  "{{ resource_name }}"
   register: results
 - name: verify that command succeeded
   assert:
     that:
       - results.rc == 0
 # ----------------------------------------------------------------------------
-- name: create a forwarding rule that already exists
-  gcp_compute_forwarding_rule:
+- name: create a router that already exists
+  gcp_compute_router:
       name: "{{ resource_name }}"
-      region: us-west1
-      target: "{{ targetpool }}"
-      ip_protocol: TCP
-      port_range: 80-80
-      ip_address: "{{ address.address }}"
+      network: "{{ network }}"
+      bgp:
+        asn: 64514
+        advertise_mode: 'CUSTOM'
+        advertised_groups:
+          - 'ALL_SUBNETS'
+        advertised_ip_ranges:
+          - range: '1.2.3.4'
+          - range: '6.7.0.0/16'
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
@@ -98,16 +98,20 @@
   assert:
     that:
       - result.changed == false
-      - "result.kind == 'compute#forwardingRule'"
+      - "result.kind == 'compute#router'"
 #----------------------------------------------------------
-- name: delete a forwarding rule
-  gcp_compute_forwarding_rule:
+- name: delete a router
+  gcp_compute_router:
       name: "{{ resource_name }}"
-      region: us-west1
-      target: "{{ targetpool }}"
-      ip_protocol: TCP
-      port_range: 80-80
-      ip_address: "{{ address.address }}"
+      network: "{{ network }}"
+      bgp:
+        asn: 64514
+        advertise_mode: 'CUSTOM'
+        advertised_groups:
+          - 'ALL_SUBNETS'
+        advertised_ip_ranges:
+          - range: '1.2.3.4'
+          - range: '6.7.0.0/16'
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
@@ -120,25 +124,29 @@
     that:
       - result.changed == true
       - result.has_key('kind') == False
-- name: verify that forwarding_rule was deleted
+- name: verify that router was deleted
   shell: |
-    gcloud compute forwarding-rules describe  --project="{{ gcp_project }}"  --region=us-west1  "{{ resource_name }}"
+    gcloud compute routers describe  --project="{{ gcp_project}}"  --region=us-west1  "{{ resource_name }}"
   register: results
   failed_when: results.rc == 0
 - name: verify that command succeeded
   assert:
     that:
       - results.rc == 1
-      - "\"'projects/{{ gcp_project }}/regions/us-west1/forwardingRules/{{ resource_name }}' was not found\" in results.stderr"
+      - "\"'projects/{{ gcp_project }}/regions/us-west1/routes/{{ resource_name }}' was not found\" in results.stderr"
 # ----------------------------------------------------------------------------
-- name: delete a forwarding rule that does not exist
-  gcp_compute_forwarding_rule:
+- name: delete a router that does not exist
+  gcp_compute_router:
       name: "{{ resource_name }}"
-      region: us-west1
-      target: "{{ targetpool }}"
-      ip_protocol: TCP
-      port_range: 80-80
-      ip_address: "{{ address.address }}"
+      network: "{{ network }}"
+      bgp:
+        asn: 64514
+        advertise_mode: 'CUSTOM'
+        advertised_groups:
+          - 'ALL_SUBNETS'
+        advertised_ip_ranges:
+          - range: '1.2.3.4'
+          - range: '6.7.0.0/16'
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
@@ -153,25 +161,13 @@
       - result.has_key('kind') == False
 #---------------------------------------------------------
 # Post-test teardown
-- name: delete a target pool
-  gcp_compute_target_pool:
-      name: "targetpool-forwardingrule"
-      region: us-west1
+- name: delete a network
+  gcp_compute_network:
+      name: 'network-router'
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
       scopes:
         - https://www.googleapis.com/auth/compute
       state: absent
-  register: targetpool
-- name: delete a address
-  gcp_compute_address:
-      name: "address-forwardingrule"
-      region: us-west1
-      project: "{{ gcp_project }}"
-      auth_kind: "{{ gcp_cred_kind }}"
-      service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
-      state: absent
-  register: address
+  register: network
