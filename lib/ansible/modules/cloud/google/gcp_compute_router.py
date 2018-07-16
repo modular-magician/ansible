@@ -301,7 +301,7 @@ def create(module, link, kind):
 
 def update(module, link, kind):
     auth = GcpSession(module, 'compute')
-    return wait_for_operation(module, auth.put(link, resource_to_request(module)))
+    return wait_for_operation(module, auth.patch(link, resource_to_request(module)))
 
 
 def delete(module, link, kind):
