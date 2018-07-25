@@ -35,7 +35,7 @@ description:
     - Represents a VPN gateway running in GCP. This virtual device is managed by Google,
       but used only by you.
 short_description: Creates a GCP TargetVpnGateway
-version_added: 2.6
+version_added: 2.7
 author: Google Inc. (@googlecloudplatform)
 requirements:
     - python >= 2.6
@@ -76,35 +76,29 @@ notes:
 EXAMPLES = '''
 - name: create a address
   gcp_compute_address:
-      name: 'address-vpngateway'
-      region: 'us-west1'
+      name: "address-vpngateway"
+      region: us-west1
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: address
 - name: create a network
   gcp_compute_network:
-      name: 'network-vpngateway'
+      name: "network-vpngateway"
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: network
 - name: create a target vpn gateway
   gcp_compute_target_vpn_gateway:
-      name: testObject
+      name: "test_object"
       region: us-west1
       network: "{{ network }}"
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/compute
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
@@ -332,7 +326,7 @@ def async_op_url(module, extra_data=None):
 def wait_for_operation(module, response):
     op_result = return_if_object(module, response, 'compute#operation')
     if op_result is None:
-        return None
+        return {}
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#targetVpnGateway')

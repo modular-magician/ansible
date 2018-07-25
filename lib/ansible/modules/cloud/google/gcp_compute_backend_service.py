@@ -244,18 +244,16 @@ extends_documentation_fragment: gcp
 EXAMPLES = '''
 - name: create a instance group
   gcp_compute_instance_group:
-      name: 'instancegroup-backendservice'
-      zone: 'us-central1-a'
+      name: "instancegroup-backendservice"
+      zone: us-central1-a
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: instancegroup
 - name: create a http health check
   gcp_compute_http_health_check:
-      name: 'httphealthcheck-backendservice'
+      name: "httphealthcheck-backendservice"
       healthy_threshold: 10
       port: 8080
       timeout_sec: 2
@@ -263,23 +261,19 @@ EXAMPLES = '''
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: healthcheck
 - name: create a backend service
   gcp_compute_backend_service:
-      name: testObject
+      name: "test_object"
       backends:
-        - group: "{{ instancegroup }}"
+      - group: "{{ instancegroup }}"
       health_checks:
-        - "{{ healthcheck.selfLink }}"
+      - "{{ healthcheck.selfLink }}"
       enable_cdn: true
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/compute
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
@@ -731,7 +725,7 @@ def async_op_url(module, extra_data=None):
 def wait_for_operation(module, response):
     op_result = return_if_object(module, response, 'compute#operation')
     if op_result is None:
-        return None
+        return {}
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#backendService')

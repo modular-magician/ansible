@@ -34,7 +34,7 @@ module: gcp_compute_router
 description:
     - Represents a Router resource.
 short_description: Creates a GCP Router
-version_added: 2.6
+version_added: 2.7
 author: Google Inc. (@googlecloudplatform)
 requirements:
     - python >= 2.6
@@ -117,31 +117,27 @@ notes:
 EXAMPLES = '''
 - name: create a network
   gcp_compute_network:
-      name: 'network-router'
+      name: "network-router"
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: network
 - name: create a router
   gcp_compute_router:
-      name: testObject
+      name: "test_object"
       network: "{{ network }}"
       bgp:
         asn: 64514
-        advertise_mode: 'CUSTOM'
+        advertise_mode: CUSTOM
         advertised_groups:
-          - 'ALL_SUBNETS'
+        - ALL_SUBNETS
         advertised_ip_ranges:
-          - range: '1.2.3.4'
-          - range: '6.7.0.0/16'
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/compute
+        - range: 1.2.3.4
+        - range: 6.7.0.0/16
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
@@ -405,7 +401,7 @@ def async_op_url(module, extra_data=None):
 def wait_for_operation(module, response):
     op_result = return_if_object(module, response, 'compute#operation')
     if op_result is None:
-        return None
+        return {}
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#router')

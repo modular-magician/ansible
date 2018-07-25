@@ -369,61 +369,53 @@ extends_documentation_fragment: gcp
 EXAMPLES = '''
 - name: create a disk
   gcp_compute_disk:
-      name: 'disk-instance'
+      name: "disk-instance"
       size_gb: 50
-      source_image: 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts'
+      source_image: projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts
       zone: us-central1-a
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: disk
 - name: create a network
   gcp_compute_network:
-      name: 'network-instance'
+      name: "network-instance"
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: network
 - name: create a address
   gcp_compute_address:
-      name: 'address-instance'
-      region: 'us-central1'
+      name: "address-instance"
+      region: us-central1
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: address
 - name: create a instance
   gcp_compute_instance:
-      name: testObject
+      name: "test_object"
       machine_type: n1-standard-1
       disks:
-        - auto_delete: true
-          boot: true
-          source: "{{ disk }}"
+      - auto_delete: true
+        boot: true
+        source: "{{ disk }}"
       metadata:
-        startup-script-url: 'gs:://graphite-playground/bootstrap.sh'
+        startup-script-url: gs:://graphite-playground/bootstrap.sh
         cost-center: '12345'
       network_interfaces:
-          - network: "{{ network }}"
-            access_configs:
-              - name: 'External NAT'
-                nat_ip: "{{ address }}"
-                type: 'ONE_TO_ONE_NAT'
-      zone: 'us-central1-a'
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/compute
+      - network: "{{ network }}"
+        access_configs:
+        - name: External NAT
+          nat_ip: "{{ address }}"
+          type: ONE_TO_ONE_NAT
+      zone: us-central1-a
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
@@ -1085,7 +1077,7 @@ def async_op_url(module, extra_data=None):
 def wait_for_operation(module, response):
     op_result = return_if_object(module, response, 'compute#operation')
     if op_result is None:
-        return None
+        return {}
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#instance')

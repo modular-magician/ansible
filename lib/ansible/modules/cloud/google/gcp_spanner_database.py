@@ -68,8 +68,8 @@ extends_documentation_fragment: gcp
 EXAMPLES = '''
 - name: create a instance
   gcp_spanner_instance:
-      name: 'instance-database'
-      display_name: 'My Spanner Instance'
+      name: "instance-database"
+      display_name: My Spanner Instance
       node_count: 2
       labels:
         cost_center: ti-1700004
@@ -77,19 +77,15 @@ EXAMPLES = '''
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/spanner.admin
       state: present
   register: instance
 - name: create a database
   gcp_spanner_database:
-      name: 'webstore'
+      name: webstore
       instance: "{{ instance }}"
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/spanner.admin
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
