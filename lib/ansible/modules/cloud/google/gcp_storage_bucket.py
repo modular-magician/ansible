@@ -70,11 +70,10 @@ options:
                 required: false
             entity:
                 description:
-                    - 'The entity holding the permission, in one of the following
-                      forms: user-userId user-email group-groupId group-email
-                      domain-domain project-team-projectId allUsers
-                      allAuthenticatedUsers Examples: The user liz@example.com would
-                      be user-liz@example.com.'
+                    - 'The entity holding the permission, in one of the following forms: user-userId
+                      user-email group-groupId group-email domain-domain project-team-projectId allUsers
+                      allAuthenticatedUsers Examples: The user liz@example.com would be
+                      user-liz@example.com.'
                     - The group example@googlegroups.com would be   group-example@googlegroups.com.
                     - To refer to all members of the Google Apps for Business domain   example.com, the
                       entity would be domain-example.com.
@@ -135,6 +134,7 @@ options:
         description:
             - Default access controls to apply to new objects when no ACL is provided.
         required: false
+        version_added: 2.7
         suboptions:
             bucket:
                 description:
@@ -150,11 +150,10 @@ options:
                 required: false
             entity:
                 description:
-                    - 'The entity holding the permission, in one of the following
-                      forms: user-userId user-email group-groupId group-email
-                      domain-domain project-team-projectId allUsers
-                      allAuthenticatedUsers Examples: The user liz@example.com would
-                      be user-liz@example.com.'
+                    - 'The entity holding the permission, in one of the following forms: user-userId
+                      user-email group-groupId group-email domain-domain project-team-projectId allUsers
+                      allAuthenticatedUsers Examples: The user liz@example.com would be
+                      user-liz@example.com.'
                     - The group example@googlegroups.com would be   group-example@googlegroups.com.
                     - To refer to all members of the Google Apps for Business domain   example.com, the
                       entity would be domain-example.com.
@@ -357,12 +356,10 @@ extends_documentation_fragment: gcp
 EXAMPLES = '''
 - name: create a bucket
   gcp_storage_bucket:
-      name: 'ansible-storage-module'
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/devstorage.full_control
+      name: ansible-storage-module
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
@@ -390,11 +387,10 @@ RETURN = '''
                 type: str
             entity:
                 description:
-                    - 'The entity holding the permission, in one of the following
-                      forms: user-userId user-email group-groupId group-email
-                      domain-domain project-team-projectId allUsers
-                      allAuthenticatedUsers Examples: The user liz@example.com would
-                      be user-liz@example.com.'
+                    - 'The entity holding the permission, in one of the following forms: user-userId
+                      user-email group-groupId group-email domain-domain project-team-projectId allUsers
+                      allAuthenticatedUsers Examples: The user liz@example.com would be
+                      user-liz@example.com.'
                     - The group example@googlegroups.com would be   group-example@googlegroups.com.
                     - To refer to all members of the Google Apps for Business domain   example.com, the
                       entity would be domain-example.com.
@@ -484,11 +480,10 @@ RETURN = '''
                 type: str
             entity:
                 description:
-                    - 'The entity holding the permission, in one of the following
-                      forms: user-userId user-email group-groupId group-email
-                      domain-domain project-team-projectId allUsers
-                      allAuthenticatedUsers Examples: The user liz@example.com would
-                      be user-liz@example.com.'
+                    - 'The entity holding the permission, in one of the following forms: user-userId
+                      user-email group-groupId group-email domain-domain project-team-projectId allUsers
+                      allAuthenticatedUsers Examples: The user liz@example.com would be
+                      user-liz@example.com.'
                     - The group example@googlegroups.com would be   group-example@googlegroups.com.
                     - To refer to all members of the Google Apps for Business domain   example.com, the
                       entity would be domain-example.com.

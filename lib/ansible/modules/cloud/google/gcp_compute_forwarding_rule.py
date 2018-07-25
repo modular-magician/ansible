@@ -162,39 +162,33 @@ notes:
 EXAMPLES = '''
 - name: create a address
   gcp_compute_address:
-      name: 'address-forwardingrule'
-      region: 'us-west1'
+      name: "address-forwardingrule"
+      region: us-west1
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: address
 - name: create a target pool
   gcp_compute_target_pool:
-      name: 'targetpool-forwardingrule'
-      region: 'us-west1'
+      name: "targetpool-forwardingrule"
+      region: us-west1
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: targetpool
 - name: create a forwarding rule
   gcp_compute_forwarding_rule:
-      name: testObject
-      region: 'us-west1'
+      name: "test_object"
+      region: us-west1
       target: "{{ targetpool }}"
-      ip_protocol: 'TCP'
-      port_range: '80-80'
+      ip_protocol: TCP
+      port_range: 80-80
       ip_address: "{{ address.address }}"
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/compute
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
@@ -513,7 +507,7 @@ def async_op_url(module, extra_data=None):
 def wait_for_operation(module, response):
     op_result = return_if_object(module, response, 'compute#operation')
     if op_result is None:
-        return None
+        return {}
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#forwardingRule')

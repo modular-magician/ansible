@@ -107,15 +107,13 @@ options:
                 required: false
             labels:
                 description:
-                    - 'The map of Kubernetes labels (key/value pairs) to be
-                      applied to each node. These will added in addition to any
-                      default label(s) that Kubernetes may apply to the node. In
-                      case of conflict in label keys, the applied set may differ
-                      depending on the Kubernetes version -- it''s best to assume
-                      the behavior is undefined and conflicts should be avoided. For
-                      more information, including usage and the valid values, see:
-                      U(http://kubernetes.io/v1.1/docs/user-guide/labels.html) An
-                      object containing a list of "key": value pairs.'
+                    - 'The map of Kubernetes labels (key/value pairs) to be applied to each node.
+                      These will added in addition to any default label(s) that Kubernetes may apply to
+                      the node. In case of conflict in label keys, the applied set may differ depending
+                      on the Kubernetes version -- it''s best to assume the behavior is undefined and
+                      conflicts should be avoided. For more information, including usage and the valid
+                      values, see: U(http://kubernetes.io/v1.1/docs/user-guide/labels.html) An object
+                      containing a list of "key": value pairs.'
                     - 'Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.'
                 required: false
             local_ssd_count:
@@ -211,27 +209,23 @@ extends_documentation_fragment: gcp
 EXAMPLES = '''
 - name: create a cluster
   gcp_container_cluster:
-      name: 'cluster-nodepool'
+      name: "cluster-nodepool"
       initial_node_count: 4
-      zone: 'us-central1-a'
+      zone: us-central1-a
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/cloud-platform
       state: present
   register: cluster
 - name: create a node pool
   gcp_container_node_pool:
-      name: testObject
+      name: "test_object"
       initial_node_count: 4
       cluster: "{{ cluster }}"
-      zone: 'us-central1-a'
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/cloud-platform
+      zone: us-central1-a
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
@@ -301,15 +295,13 @@ RETURN = '''
                 type: str
             labels:
                 description:
-                    - 'The map of Kubernetes labels (key/value pairs) to be
-                      applied to each node. These will added in addition to any
-                      default label(s) that Kubernetes may apply to the node. In
-                      case of conflict in label keys, the applied set may differ
-                      depending on the Kubernetes version -- it''s best to assume
-                      the behavior is undefined and conflicts should be avoided. For
-                      more information, including usage and the valid values, see:
-                      U(http://kubernetes.io/v1.1/docs/user-guide/labels.html) An
-                      object containing a list of "key": value pairs.'
+                    - 'The map of Kubernetes labels (key/value pairs) to be applied to each node.
+                      These will added in addition to any default label(s) that Kubernetes may apply to
+                      the node. In case of conflict in label keys, the applied set may differ depending
+                      on the Kubernetes version -- it''s best to assume the behavior is undefined and
+                      conflicts should be avoided. For more information, including usage and the valid
+                      values, see: U(http://kubernetes.io/v1.1/docs/user-guide/labels.html) An object
+                      containing a list of "key": value pairs.'
                     - 'Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.'
                 returned: success
                 type: dict
@@ -619,7 +611,7 @@ def async_op_url(module, extra_data=None):
 def wait_for_operation(module, response):
     op_result = return_if_object(module, response)
     if op_result is None:
-        return None
+        return {}
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']))
