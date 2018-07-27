@@ -203,6 +203,8 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
+                update_fields(module, resource_to_request(module),
+                              response_to_hash(module, fetch))
                 fetch = update(module, self_link(module), kind)
                 changed = True
         else:
@@ -229,6 +231,31 @@ def create(module, link, kind):
 def update(module, link, kind):
     auth = GcpSession(module, 'compute')
     return wait_for_operation(module, auth.put(link, resource_to_request(module)))
+
+
+def update_fields(module, request, response):
+    difference = GcpRequest(request).difference(GcpRequest(response))
+    auth = GcpSession(module, 'compute')
+    if difference.get('proxy_header'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/global/targetTcpProxies/{name}/setProxyHeader"
+            ]).format(**module.params),
+            {
+                u'proxyHeader': module.params.get('proxy_header')
+            }
+        )
+    if difference.get('service'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/global/targetTcpProxies/{name}/setBackendService"
+            ]).format(**module.params),
+            {
+                u'service': replace_resource_dict(module.params.get(u'service', {}), 'selfLink')
+            }
+        )
 
 
 def delete(module, link, kind):
