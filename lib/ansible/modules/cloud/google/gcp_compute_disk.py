@@ -425,6 +425,8 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
+                update_fields(module, resource_to_request(module),
+                              response_to_hash(module, fetch))
                 fetch = update(module, self_link(module), kind)
                 changed = True
         else:
@@ -449,7 +451,33 @@ def create(module, link, kind):
 
 
 def update(module, link, kind):
-    module.fail_json(msg="Disk cannot be edited")
+    auth = GcpSession(module, 'compute')
+    return wait_for_operation(module, auth.put(link, resource_to_request(module)))
+
+
+def update_fields(module, request, response):
+    difference = GcpRequest(request).difference(GcpRequest(response))
+    auth = GcpSession(module, 'compute')
+    if difference.get('labels'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/zones/{zone}/disks/{name}/setLabels"
+            ]).format(**module.params),
+            {
+                u'labels': module.params.get('labels')
+            }
+        )
+    if difference.get('size_gb'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/zones/{zone}/disks/{name}/resize"
+            ]).format(**module.params),
+            {
+                u'sizeGb': module.params.get('size_gb')
+            }
+        )
 
 
 def delete(module, link, kind):
