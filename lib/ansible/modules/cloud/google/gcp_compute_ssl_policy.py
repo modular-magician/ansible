@@ -35,7 +35,7 @@ description:
     - Represents a SSL policy. SSL policies give you the ability to control the features
       of SSL that your SSL proxy or HTTPS load balancer negotiates.
 short_description: Creates a GCP SslPolicy
-version_added: 2.6
+version_added: 2.7
 author: Google Inc. (@googlecloudplatform)
 requirements:
     - python >= 2.6
@@ -89,17 +89,15 @@ notes:
 EXAMPLES = '''
 - name: create a ssl policy
   gcp_compute_ssl_policy:
-      name: testObject
-      profile: "CUSTOM"
-      min_tls_version: "TLS_1_2"
+      name: "test_object"
+      profile: CUSTOM
+      min_tls_version: TLS_1_2
       custom_features:
-        - "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
-        - "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/compute
+      - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+      - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
@@ -352,7 +350,7 @@ def async_op_url(module, extra_data=None):
 def wait_for_operation(module, response):
     op_result = return_if_object(module, response, 'compute#operation')
     if op_result is None:
-        return None
+        return {}
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#sslPolicy')

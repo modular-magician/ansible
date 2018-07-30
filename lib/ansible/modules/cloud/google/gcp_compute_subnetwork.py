@@ -108,26 +108,22 @@ notes:
 EXAMPLES = '''
 - name: create a network
   gcp_compute_network:
-      name: 'network-subnetwork'
+      name: "network-subnetwork"
       auto_create_subnetworks: true
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: network
 - name: create a subnetwork
   gcp_compute_subnetwork:
-      name: 'ansiblenet'
-      region: 'us-west1'
+      name: ansiblenet
+      region: us-west1
       network: "{{ network }}"
-      ip_cidr_range: '172.16.0.0/16'
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/compute
+      ip_cidr_range: 172.16.0.0/16
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
@@ -364,7 +360,7 @@ def async_op_url(module, extra_data=None):
 def wait_for_operation(module, response):
     op_result = return_if_object(module, response, 'compute#operation')
     if op_result is None:
-        return None
+        return {}
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#subnetwork')
