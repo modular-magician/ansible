@@ -146,7 +146,8 @@ options:
                 required: false
     source_disk:
         description:
-            - A reference to Disk resource.
+            - Refers to a gcompute_disk object You must provide either this property or the rawDisk.source
+              property but not both to create an image.
         required: false
     source_disk_encryption_key:
         description:
@@ -182,24 +183,20 @@ extends_documentation_fragment: gcp
 EXAMPLES = '''
 - name: create a disk
   gcp_compute_disk:
-      name: 'disk-image'
+      name: "disk-image"
       zone: us-central1-a
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: disk
 - name: create a image
   gcp_compute_image:
-      name: testObject
+      name: "test_object"
       source_disk: "{{ disk }}"
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/compute
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
@@ -364,7 +361,8 @@ RETURN = '''
                 type: str
     source_disk:
         description:
-            - A reference to Disk resource.
+            - Refers to a gcompute_disk object You must provide either this property or the rawDisk.source
+              property but not both to create an image.
         returned: success
         type: dict
     source_disk_encryption_key:
@@ -446,6 +444,9 @@ def main():
             source_type=dict(type='str', choices=['RAW'])
         )
     )
+
+    if not module.params['scopes']:
+        module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
 
     state = module.params['state']
     kind = 'compute#image'
@@ -602,7 +603,7 @@ def async_op_url(module, extra_data=None):
 def wait_for_operation(module, response):
     op_result = return_if_object(module, response, 'compute#operation')
     if op_result is None:
-        return None
+        return {}
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#image')

@@ -17,38 +17,34 @@
   gcp_compute_firewall:
       name: "{{ resource_name }}"
       allowed:
-        - ip_protocol: 'tcp'
-          ports:
-            - "22"
+      - ip_protocol: tcp
+        ports:
+        - '22'
       target_tags:
-        - test-ssh-server
-        - staging-ssh-server
+      - test-ssh-server
+      - staging-ssh-server
       source_tags:
-        - test-ssh-clients
+      - test-ssh-clients
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: absent
 #----------------------------------------------------------
 - name: create a firewall
   gcp_compute_firewall:
       name: "{{ resource_name }}"
       allowed:
-        - ip_protocol: 'tcp'
-          ports:
-            - "22"
+      - ip_protocol: tcp
+        ports:
+        - '22'
       target_tags:
-        - test-ssh-server
-        - staging-ssh-server
+      - test-ssh-server
+      - staging-ssh-server
       source_tags:
-        - test-ssh-clients
+      - test-ssh-clients
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: result
 - name: assert changed is true
@@ -69,19 +65,17 @@
   gcp_compute_firewall:
       name: "{{ resource_name }}"
       allowed:
-        - ip_protocol: 'tcp'
-          ports:
-            - "22"
+      - ip_protocol: tcp
+        ports:
+        - '22'
       target_tags:
-        - test-ssh-server
-        - staging-ssh-server
+      - test-ssh-server
+      - staging-ssh-server
       source_tags:
-        - test-ssh-clients
+      - test-ssh-clients
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: result
 - name: assert changed is false
@@ -94,19 +88,17 @@
   gcp_compute_firewall:
       name: "{{ resource_name }}"
       allowed:
-        - ip_protocol: 'tcp'
-          ports:
-            - "22"
+      - ip_protocol: tcp
+        ports:
+        - '22'
       target_tags:
-        - test-ssh-server
-        - staging-ssh-server
+      - test-ssh-server
+      - staging-ssh-server
       source_tags:
-        - test-ssh-clients
+      - test-ssh-clients
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: absent
   register: result
 - name: assert changed is true
@@ -129,19 +121,17 @@
   gcp_compute_firewall:
       name: "{{ resource_name }}"
       allowed:
-        - ip_protocol: 'tcp'
-          ports:
-            - "22"
+      - ip_protocol: tcp
+        ports:
+        - '22'
       target_tags:
-        - test-ssh-server
-        - staging-ssh-server
+      - test-ssh-server
+      - staging-ssh-server
       source_tags:
-        - test-ssh-clients
+      - test-ssh-clients
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: absent
   register: result
 - name: assert changed is false

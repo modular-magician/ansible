@@ -122,7 +122,9 @@ options:
                         required: false
                     disk_type:
                         description:
-                            - A reference to DiskType resource.
+                            - Reference to a gcompute_disk_type resource.
+                            - Specifies the disk type to use to create the instance.
+                            - If not specified, the default is pd-standard.
                         required: false
                     source_image:
                         description:
@@ -165,7 +167,10 @@ options:
                 choices: ['READ_WRITE', 'READ_ONLY']
             source:
                 description:
-                    - A reference to Disk resource.
+                    - Reference to a gcompute_disk resource. When creating a new instance, one of initializeParams.sourceImage
+                      or disks.source is required.
+                    - If desired, you can also attach existing non-root persistent disks using this property.
+                      This field is only applicable for persistent disks.
                 required: false
             type:
                 description:
@@ -200,7 +205,7 @@ options:
         required: false
     machine_type:
         description:
-            - A reference to MachineType resource.
+            - A reference to a machine type which defines VM kind.
         required: false
     min_cpu_platform:
         description:
@@ -238,8 +243,13 @@ options:
                         required: true
                     nat_ip:
                         description:
-                            - A reference to Address resource.
-                        required: true
+                            - Specifies the title of a gcompute_address.
+                            - An external IP address associated with this instance.
+                            - Specify an unused static external IP address available to the project or leave this
+                              field undefined to use an IP from a shared ephemeral IP address pool. If you specify
+                              a static external IP address, it must live in the same region as the zone of the
+                              instance.
+                        required: false
                     type:
                         description:
                             - The type of configuration. The default and only option is ONE_TO_ONE_NAT.
@@ -272,7 +282,10 @@ options:
                 required: false
             network:
                 description:
-                    - A reference to Network resource.
+                    - Specifies the title of an existing gcompute_network.  When creating an instance,
+                      if neither the network nor the subnetwork is specified, the default network global/networks/default
+                      is used; if the network is not specified but the subnetwork is specified, the network
+                      is inferred.
                 required: false
             network_ip:
                 description:
@@ -281,7 +294,10 @@ options:
                 required: false
             subnetwork:
                 description:
-                    - A reference to Subnetwork resource.
+                    - Reference to a gcompute_subnetwork resource.
+                    - If the network resource is in legacy mode, do not provide this property.  If the
+                      network is in auto subnet mode, providing the subnetwork is optional. If the network
+                      is in custom subnet mode, then this field should be specified.
                 required: false
     scheduling:
         description:
@@ -345,7 +361,7 @@ options:
                 required: false
     zone:
         description:
-            - A reference to Zone resource.
+            - A reference to the zone where the machine resides.
         required: true
 extends_documentation_fragment: gcp
 '''
@@ -353,61 +369,53 @@ extends_documentation_fragment: gcp
 EXAMPLES = '''
 - name: create a disk
   gcp_compute_disk:
-      name: 'disk-instance'
+      name: "disk-instance"
       size_gb: 50
-      source_image: 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts'
+      source_image: projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts
       zone: us-central1-a
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: disk
 - name: create a network
   gcp_compute_network:
-      name: 'network-instance'
+      name: "network-instance"
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: network
 - name: create a address
   gcp_compute_address:
-      name: 'address-instance'
-      region: 'us-central1'
+      name: "address-instance"
+      region: us-central1
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/compute
       state: present
   register: address
 - name: create a instance
   gcp_compute_instance:
-      name: testObject
+      name: "test_object"
       machine_type: n1-standard-1
       disks:
-        - auto_delete: true
-          boot: true
-          source: "{{ disk }}"
+      - auto_delete: true
+        boot: true
+        source: "{{ disk }}"
       metadata:
-        startup-script-url: 'gs:://graphite-playground/bootstrap.sh'
+        startup-script-url: gs:://graphite-playground/bootstrap.sh
         cost-center: '12345'
       network_interfaces:
-          - network: "{{ network }}"
-            access_configs:
-              - name: 'External NAT'
-                nat_ip: "{{ address }}"
-                type: 'ONE_TO_ONE_NAT'
-      zone: 'us-central1-a'
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/compute
+      - network: "{{ network }}"
+        access_configs:
+        - name: External NAT
+          nat_ip: "{{ address }}"
+          type: ONE_TO_ONE_NAT
+      zone: us-central1-a
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
@@ -508,7 +516,9 @@ RETURN = '''
                         type: int
                     disk_type:
                         description:
-                            - A reference to DiskType resource.
+                            - Reference to a gcompute_disk_type resource.
+                            - Specifies the disk type to use to create the instance.
+                            - If not specified, the default is pd-standard.
                         returned: success
                         type: str
                     source_image:
@@ -556,7 +566,10 @@ RETURN = '''
                 type: str
             source:
                 description:
-                    - A reference to Disk resource.
+                    - Reference to a gcompute_disk resource. When creating a new instance, one of initializeParams.sourceImage
+                      or disks.source is required.
+                    - If desired, you can also attach existing non-root persistent disks using this property.
+                      This field is only applicable for persistent disks.
                 returned: success
                 type: dict
             type:
@@ -602,7 +615,7 @@ RETURN = '''
         type: dict
     machine_type:
         description:
-            - A reference to MachineType resource.
+            - A reference to a machine type which defines VM kind.
         returned: success
         type: str
     min_cpu_platform:
@@ -646,7 +659,12 @@ RETURN = '''
                         type: str
                     nat_ip:
                         description:
-                            - A reference to Address resource.
+                            - Specifies the title of a gcompute_address.
+                            - An external IP address associated with this instance.
+                            - Specify an unused static external IP address available to the project or leave this
+                              field undefined to use an IP from a shared ephemeral IP address pool. If you specify
+                              a static external IP address, it must live in the same region as the zone of the
+                              instance.
                         returned: success
                         type: dict
                     type:
@@ -685,7 +703,10 @@ RETURN = '''
                 type: str
             network:
                 description:
-                    - A reference to Network resource.
+                    - Specifies the title of an existing gcompute_network.  When creating an instance,
+                      if neither the network nor the subnetwork is specified, the default network global/networks/default
+                      is used; if the network is not specified but the subnetwork is specified, the network
+                      is inferred.
                 returned: success
                 type: dict
             network_ip:
@@ -696,7 +717,10 @@ RETURN = '''
                 type: str
             subnetwork:
                 description:
-                    - A reference to Subnetwork resource.
+                    - Reference to a gcompute_subnetwork resource.
+                    - If the network resource is in legacy mode, do not provide this property.  If the
+                      network is in auto subnet mode, providing the subnetwork is optional. If the network
+                      is in custom subnet mode, then this field should be specified.
                 returned: success
                 type: dict
     scheduling:
@@ -738,7 +762,7 @@ RETURN = '''
                 description:
                     - Email address of the service account.
                 returned: success
-                type: bool
+                type: str
             scopes:
                 description:
                     - The list of scopes to be made available for this service account.
@@ -780,7 +804,7 @@ RETURN = '''
                 type: list
     zone:
         description:
-            - A reference to Zone resource.
+            - A reference to the zone where the machine resides.
         returned: success
         type: str
 '''
@@ -843,7 +867,7 @@ def main():
             network_interfaces=dict(type='list', elements='dict', options=dict(
                 access_configs=dict(type='list', elements='dict', options=dict(
                     name=dict(required=True, type='str'),
-                    nat_ip=dict(required=True, type='dict'),
+                    nat_ip=dict(type='dict'),
                     type=dict(required=True, type='str', choices=['ONE_TO_ONE_NAT'])
                 )),
                 alias_ip_ranges=dict(type='list', elements='dict', options=dict(
@@ -872,6 +896,9 @@ def main():
         )
     )
 
+    if not module.params['scopes']:
+        module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
+
     state = module.params['state']
     kind = 'compute#instance'
 
@@ -881,10 +908,10 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
-                fetch = update(module, self_link(module), kind, fetch)
+                fetch = update(module, self_link(module), kind)
                 changed = True
         else:
-            delete(module, self_link(module), kind, fetch)
+            delete(module, self_link(module), kind)
             fetch = {}
             changed = True
     else:
@@ -904,12 +931,12 @@ def create(module, link, kind):
     return wait_for_operation(module, auth.post(link, resource_to_request(module)))
 
 
-def update(module, link, kind, fetch):
+def update(module, link, kind):
     auth = GcpSession(module, 'compute')
     return wait_for_operation(module, auth.put(link, resource_to_request(module)))
 
 
-def delete(module, link, kind, fetch):
+def delete(module, link, kind):
     auth = GcpSession(module, 'compute')
     return wait_for_operation(module, auth.delete(link))
 
@@ -1050,7 +1077,7 @@ def async_op_url(module, extra_data=None):
 def wait_for_operation(module, response):
     op_result = return_if_object(module, response, 'compute#operation')
     if op_result is None:
-        return None
+        return {}
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#instance')
