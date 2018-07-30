@@ -34,7 +34,7 @@ module: gcp_sql_database
 description:
     - Represents a SQL database inside the Cloud SQL instance, hosted in Google's cloud.
 short_description: Creates a GCP Database
-version_added: 2.6
+version_added: 2.7
 author: Google Inc. (@googlecloudplatform)
 requirements:
     - python >= 2.6
@@ -69,31 +69,27 @@ extends_documentation_fragment: gcp
 EXAMPLES = '''
 - name: create a instance
   gcp_sql_instance:
-      name: 'instance-database'
+      name: "instance-database"
       settings:
         ip_configuration:
           authorized_networks:
-            - name: 'google dns server'
-              value: '8.8.8.8/32'
+          - name: google dns server
+            value: 8.8.8.8/32
         tier: db-n1-standard-1
       region: us-central1
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/sqlservice.admin
       state: present
   register: instance
 - name: create a database
   gcp_sql_database:
-      name: testObject
-      charset: 'utf8'
+      name: "test_object"
+      charset: utf8
       instance: "{{ instance }}"
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/sqlservice.admin
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
@@ -295,7 +291,7 @@ def async_op_url(module, extra_data=None):
 def wait_for_operation(module, response):
     op_result = return_if_object(module, response, 'sql#operation')
     if op_result is None:
-        return None
+        return {}
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'sql#database')

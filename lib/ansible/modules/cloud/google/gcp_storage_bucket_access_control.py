@@ -61,9 +61,8 @@ options:
         required: true
     entity:
         description:
-            - 'The entity holding the permission, in one of the following
-              forms: user-userId user-email group-groupId group-email
-              domain-domain project-team-projectId allUsers
+            - 'The entity holding the permission, in one of the following forms: user-userId
+              user-email group-groupId group-email domain-domain project-team-projectId allUsers
               allAuthenticatedUsers Examples: The user liz@example.com would be
               user-liz@example.com.'
             - The group example@googlegroups.com would be   group-example@googlegroups.com.
@@ -99,24 +98,20 @@ extends_documentation_fragment: gcp
 EXAMPLES = '''
 - name: create a bucket
   gcp_storage_bucket:
-      name: 'bucket-bac'
+      name: "bucket-bac"
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/devstorage.full_control
       state: present
   register: bucket
 - name: create a bucket access control
   gcp_storage_bucket_access_control:
       bucket: "{{ bucket }}"
-      entity: 'user-alexstephen@google.com'
-      role: 'WRITER'
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/devstorage.full_control
+      entity: user-alexstephen@google.com
+      role: WRITER
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
@@ -138,9 +133,8 @@ RETURN = '''
         type: str
     entity:
         description:
-            - 'The entity holding the permission, in one of the following
-              forms: user-userId user-email group-groupId group-email
-              domain-domain project-team-projectId allUsers
+            - 'The entity holding the permission, in one of the following forms: user-userId
+              user-email group-groupId group-email domain-domain project-team-projectId allUsers
               allAuthenticatedUsers Examples: The user liz@example.com would be
               user-liz@example.com.'
             - The group example@googlegroups.com would be   group-example@googlegroups.com.

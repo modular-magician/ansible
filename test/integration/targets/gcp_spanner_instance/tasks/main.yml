@@ -16,7 +16,7 @@
 - name: delete a instance
   gcp_spanner_instance:
       name: "{{ resource_name }}"
-      display_name: 'My Spanner Instance'
+      display_name: My Spanner Instance
       node_count: 2
       labels:
         cost_center: ti-1700004
@@ -24,14 +24,12 @@
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/spanner.admin
       state: absent
 #----------------------------------------------------------
 - name: create a instance
   gcp_spanner_instance:
       name: "{{ resource_name }}"
-      display_name: 'My Spanner Instance'
+      display_name: My Spanner Instance
       node_count: 2
       labels:
         cost_center: ti-1700004
@@ -39,8 +37,6 @@
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/spanner.admin
       state: present
   register: result
 - name: assert changed is true
@@ -59,7 +55,7 @@
 - name: create a instance that already exists
   gcp_spanner_instance:
       name: "{{ resource_name }}"
-      display_name: 'My Spanner Instance'
+      display_name: My Spanner Instance
       node_count: 2
       labels:
         cost_center: ti-1700004
@@ -67,8 +63,6 @@
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/spanner.admin
       state: present
   register: result
 - name: assert changed is false
@@ -79,7 +73,7 @@
 - name: delete a instance
   gcp_spanner_instance:
       name: "{{ resource_name }}"
-      display_name: 'My Spanner Instance'
+      display_name: My Spanner Instance
       node_count: 2
       labels:
         cost_center: ti-1700004
@@ -87,8 +81,6 @@
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/spanner.admin
       state: absent
   register: result
 - name: assert changed is true
@@ -109,7 +101,7 @@
 - name: delete a instance that does not exist
   gcp_spanner_instance:
       name: "{{ resource_name }}"
-      display_name: 'My Spanner Instance'
+      display_name: My Spanner Instance
       node_count: 2
       labels:
         cost_center: ti-1700004
@@ -117,8 +109,6 @@
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
-      scopes:
-        - https://www.googleapis.com/auth/spanner.admin
       state: absent
   register: result
 - name: assert changed is false

@@ -67,6 +67,7 @@ options:
             - If unspecified, defaults to EXTERNAL.
         required: false
         default: EXTERNAL
+        version_added: 2.7
         choices: ['INTERNAL', 'EXTERNAL']
     description:
         description:
@@ -86,6 +87,7 @@ options:
               it must be within the subnetwork's IP range.
             - This field can only be used with INTERNAL type with GCE_ENDPOINT/DNS_RESOLVER purposes.
         required: false
+        version_added: 2.7
     region:
         description:
             - URL of the region where the regional address resides.
@@ -101,13 +103,11 @@ notes:
 EXAMPLES = '''
 - name: create a address
   gcp_compute_address:
-      name: 'test-address1'
-      region: 'us-west1'
-      project: testProject
-      auth_kind: service_account
-      service_account_file: /tmp/auth.pem
-      scopes:
-        - https://www.googleapis.com/auth/compute
+      name: test-address1
+      region: us-west1
+      project: "test_project"
+      auth_kind: "service_account"
+      service_account_file: "/tmp/auth.pem"
       state: present
 '''
 
@@ -340,7 +340,7 @@ def async_op_url(module, extra_data=None):
 def wait_for_operation(module, response):
     op_result = return_if_object(module, response, 'compute#operation')
     if op_result is None:
-        return None
+        return {}
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#address')
