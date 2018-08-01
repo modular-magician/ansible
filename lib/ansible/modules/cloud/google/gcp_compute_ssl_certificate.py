@@ -96,12 +96,9 @@ EXAMPLES = '''
         M3jcqgA4fSW/oKw6UJxp+M6a+nGMX+UJR3YgAiEAvvl39QRVAiv84hdoCuyON0lJ
         zqGNhIPGq2ULqXKK8BY=
         --END CERTIFICATE--
-      private_key: |
-        --BEGIN EC PRIVATE KEY--
-        MHcCAQEEIObtRo8tkUqoMjeHhsOh2ouPpXCgBcP+EDxZCB/tws15oAoGCCqGSM49
-        AwEHoUQDQgAEHGzpcRJ4XzfBJCCPMQeXQpTXwlblimODQCuQ4mzkzTv0dXyB750f
-        OGN02HtkpBOZzzvUARTR10JQoSe2/5PIwQ==
-        --END EC PRIVATE KEY--
+      private_key: "--BEGIN EC PRIVATE KEY-- MHcCAQEEIObtRo8tkUqoMjeHhsOh2ouPpXCgBcP+EDxZCB/tws15oAoGCCqGSM49
+        AwEHoUQDQgAEHGzpcRJ4XzfBJCCPMQeXQpTXwlblimODQCuQ4mzkzTv0dXyB750f OGN02HtkpBOZzzvUARTR10JQoSe2/5PIwQ==
+        --END EC PRIVATE KEY--\n"
       project: "test_project"
       auth_kind: "service_account"
       service_account_file: "/tmp/auth.pem"

@@ -537,8 +537,6 @@ def return_if_object(module, response):
 
     if navigate_hash(result, ['error', 'errors']):
         module.fail_json(msg=navigate_hash(result, ['error', 'errors']))
-    if result['kind'] != 'compute#instanceList':
-        module.fail_json(msg="Incorrect result: {kind}".format(**result))
 
     return result
 if __name__ == "__main__":
