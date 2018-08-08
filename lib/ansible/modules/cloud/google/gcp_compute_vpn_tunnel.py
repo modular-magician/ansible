@@ -30,11 +30,10 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 
 DOCUMENTATION = '''
 ---
-module: gcp_compute_target_vpn_gateway
+module: gcp_compute_vpn_tunnel
 description:
-    - Represents a VPN gateway running in GCP. This virtual device is managed by Google,
-      but used only by you.
-short_description: Creates a GCP TargetVpnGateway
+    - VPN tunnel resource.
+short_description: Creates a GCP VpnTunnel
 version_added: 2.7
 author: Google Inc. (@googlecloudplatform)
 requirements:
@@ -47,55 +46,114 @@ options:
             - Whether the given object should exist in GCP
         choices: ['present', 'absent']
         default: 'present'
+    name:
+        description:
+            - Name of the resource. The name must be 1-63 characters long, and comply with RFC1035.
+              Specifically, the name must be 1-63 characters long and match the regular expression
+              `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase
+              letter, and all following characters must be a dash, lowercase letter, or digit,
+              except the last character, which cannot be a dash.
+        required: true
     description:
         description:
             - An optional description of this resource.
         required: false
-    name:
+    target_vpn_gateway:
         description:
-            - Name of the resource. Provided by the client when the resource is created. The name
-              must be 1-63 characters long, and comply with RFC1035.  Specifically, the name must
-              be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
-              which means the first character must be a lowercase letter, and all following characters
-              must be a dash, lowercase letter, or digit, except the last character, which cannot
-              be a dash.
+            - URL of the Target VPN gateway with which this VPN tunnel is associated.
         required: true
-    network:
+    router:
         description:
-            - The network this VPN gateway is accepting traffic for.
+            - URL of router resource to be used for dynamic routing.
+        required: false
+    peer_ip:
+        description:
+            - IP address of the peer VPN gateway. Only IPv4 is supported.
         required: true
+    shared_secret:
+        description:
+            - Shared secret used to set the secure session between the Cloud VPN gateway and the
+              peer VPN gateway.
+        required: true
+    ike_version:
+        description:
+            - IKE protocol version to use when establishing the VPN tunnel with peer VPN gateway.
+            - Acceptable IKE versions are 1 or 2. Default version is 2.
+        required: false
+        default: 2
+    local_traffic_selector:
+        description:
+            - Local traffic selector to use when establishing the VPN tunnel with peer VPN gateway.
+              The value should be a CIDR formatted string, for example `192.168.0.0/16`. The ranges
+              should be disjoint.
+            - Only IPv4 is supported.
+        required: false
+    remote_traffic_selector:
+        description:
+            - Remote traffic selector to use when establishing the VPN tunnel with peer VPN gateway.
+              The value should be a CIDR formatted string, for example `192.168.0.0/16`. The ranges
+              should be disjoint.
+            - Only IPv4 is supported.
+        required: false
+    labels:
+        description:
+            - Labels to apply to this VpnTunnel.
+        required: false
     region:
         description:
-            - The region this gateway should sit in.
+            - The region where the tunnel is located.
         required: true
 extends_documentation_fragment: gcp
 notes:
-    - "API Reference: U(https://cloud.google.com/compute/docs/reference/rest/v1/targetVpnGateways)"
+    - "API Reference: U(https://cloud.google.com/compute/docs/reference/rest/v1/vpnTunnels)"
+    - "Cloud VPN Overview: U(https://cloud.google.com/vpn/docs/concepts/overview)"
+    - "Networks and Tunnel Routing: U(https://cloud.google.com/vpn/docs/concepts/choosing-networks-routing)"
 '''
 
 EXAMPLES = '''
-- name: create a address
-  gcp_compute_address:
-      name: "address-vpngateway"
-      region: us-west1
-      project: "{{ gcp_project }}"
-      auth_kind: "{{ gcp_cred_kind }}"
-      service_account_file: "{{ gcp_cred_file }}"
-      state: present
-  register: address
 - name: create a network
   gcp_compute_network:
-      name: "network-vpngateway"
+      name: "network-vpn_tunnel"
       project: "{{ gcp_project }}"
       auth_kind: "{{ gcp_cred_kind }}"
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: network
+- name: create a router
+  gcp_compute_router:
+      name: "router-vpn_tunnel"
+      network: "{{ network }}"
+      bgp:
+        asn: 64514
+        advertise_mode: CUSTOM
+        advertised_groups:
+        - ALL_SUBNETS
+        advertised_ip_ranges:
+        - range: 1.2.3.4
+        - range: 6.7.0.0/16
+      region: us-central1
+      project: "{{ gcp_project }}"
+      auth_kind: "{{ gcp_cred_kind }}"
+      service_account_file: "{{ gcp_cred_file }}"
+      state: present
+  register: router
 - name: create a target vpn gateway
   gcp_compute_target_vpn_gateway:
-      name: "test_object"
+      name: "gateway-vpn_tunnel"
       region: us-west1
       network: "{{ network }}"
+      project: "{{ gcp_project }}"
+      auth_kind: "{{ gcp_cred_kind }}"
+      service_account_file: "{{ gcp_cred_file }}"
+      state: present
+  register: gateway
+- name: create a vpn tunnel
+  gcp_compute_vpn_tunnel:
+      name: "test_object"
+      region: us-west1
+      target_vpn_gateway: "{{ gateway }}"
+      router: "{{ router }}"
+      shared_secret: super secret
       project: "test_project"
       auth_kind: "service_account"
       service_account_file: "/tmp/auth.pem"
@@ -108,44 +166,76 @@ RETURN = '''
             - Creation timestamp in RFC3339 text format.
         returned: success
         type: str
+    name:
+        description:
+            - Name of the resource. The name must be 1-63 characters long, and comply with RFC1035.
+              Specifically, the name must be 1-63 characters long and match the regular expression
+              `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase
+              letter, and all following characters must be a dash, lowercase letter, or digit,
+              except the last character, which cannot be a dash.
+        returned: success
+        type: str
     description:
         description:
             - An optional description of this resource.
         returned: success
         type: str
-    name:
+    target_vpn_gateway:
         description:
-            - Name of the resource. Provided by the client when the resource is created. The name
-              must be 1-63 characters long, and comply with RFC1035.  Specifically, the name must
-              be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
-              which means the first character must be a lowercase letter, and all following characters
-              must be a dash, lowercase letter, or digit, except the last character, which cannot
-              be a dash.
-        returned: success
-        type: str
-    id:
-        description:
-            - The unique identifier for the resource.
-        returned: success
-        type: int
-    network:
-        description:
-            - The network this VPN gateway is accepting traffic for.
+            - URL of the Target VPN gateway with which this VPN tunnel is associated.
         returned: success
         type: dict
-    tunnels:
+    router:
         description:
-            - A list of references to VpnTunnel resources associated to this VPN gateway.
+            - URL of router resource to be used for dynamic routing.
+        returned: success
+        type: str
+    peer_ip:
+        description:
+            - IP address of the peer VPN gateway. Only IPv4 is supported.
+        returned: success
+        type: str
+    shared_secret:
+        description:
+            - Shared secret used to set the secure session between the Cloud VPN gateway and the
+              peer VPN gateway.
+        returned: success
+        type: str
+    shared_secret_hash:
+        description:
+            - Hash of the shared secret.
+        returned: success
+        type: str
+    ike_version:
+        description:
+            - IKE protocol version to use when establishing the VPN tunnel with peer VPN gateway.
+            - Acceptable IKE versions are 1 or 2. Default version is 2.
+        returned: success
+        type: int
+    local_traffic_selector:
+        description:
+            - Local traffic selector to use when establishing the VPN tunnel with peer VPN gateway.
+              The value should be a CIDR formatted string, for example `192.168.0.0/16`. The ranges
+              should be disjoint.
+            - Only IPv4 is supported.
         returned: success
         type: list
-    forwarding_rules:
+    remote_traffic_selector:
         description:
-            - A list of references to the ForwardingRule resources associated to this VPN gateway.
+            - Remote traffic selector to use when establishing the VPN tunnel with peer VPN gateway.
+              The value should be a CIDR formatted string, for example `192.168.0.0/16`. The ranges
+              should be disjoint.
+            - Only IPv4 is supported.
         returned: success
         type: list
+    labels:
+        description:
+            - Labels to apply to this VpnTunnel.
+        returned: success
+        type: dict
     region:
         description:
-            - The region this gateway should sit in.
+            - The region where the tunnel is located.
         returned: success
         type: str
 '''
@@ -169,9 +259,16 @@ def main():
     module = GcpModule(
         argument_spec=dict(
             state=dict(default='present', choices=['present', 'absent'], type='str'),
-            description=dict(type='str'),
             name=dict(required=True, type='str'),
-            network=dict(required=True, type='dict'),
+            description=dict(type='str'),
+            target_vpn_gateway=dict(required=True, type='dict'),
+            router=dict(type='str'),
+            peer_ip=dict(required=True, type='str'),
+            shared_secret=dict(required=True, type='str'),
+            ike_version=dict(default=2, type='int'),
+            local_traffic_selector=dict(type='list', elements='str'),
+            remote_traffic_selector=dict(type='list', elements='str'),
+            labels=dict(type='dict'),
             region=dict(required=True, type='str')
         )
     )
@@ -180,7 +277,7 @@ def main():
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
 
     state = module.params['state']
-    kind = 'compute#targetVpnGateway'
+    kind = 'compute#vpnTunnel'
 
     fetch = fetch_resource(module, self_link(module), kind)
     changed = False
@@ -223,10 +320,17 @@ def delete(module, link, kind):
 
 def resource_to_request(module):
     request = {
-        u'kind': 'compute#targetVpnGateway',
-        u'description': module.params.get('description'),
+        u'kind': 'compute#vpnTunnel',
         u'name': module.params.get('name'),
-        u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink')
+        u'description': module.params.get('description'),
+        u'targetVpnGateway': replace_resource_dict(module.params.get(u'target_vpn_gateway', {}), 'selfLink'),
+        u'router': module.params.get('router'),
+        u'peerIp': module.params.get('peer_ip'),
+        u'sharedSecret': module.params.get('shared_secret'),
+        u'ikeVersion': module.params.get('ike_version'),
+        u'localTrafficSelector': module.params.get('local_traffic_selector'),
+        u'remoteTrafficSelector': module.params.get('remote_traffic_selector'),
+        u'labels': module.params.get('labels')
     }
     return_vals = {}
     for k, v in request.items():
@@ -242,11 +346,11 @@ def fetch_resource(module, link, kind):
 
 
 def self_link(module):
-    return "https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}/targetVpnGateways/{name}".format(**module.params)
+    return "https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}/vpnTunnels/{name}".format(**module.params)
 
 
 def collection(module):
-    return "https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}/targetVpnGateways".format(**module.params)
+    return "https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}/vpnTunnels".format(**module.params)
 
 
 def return_if_object(module, response, kind):
@@ -295,12 +399,17 @@ def is_different(module, response):
 def response_to_hash(module, response):
     return {
         u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'name': response.get(u'name'),
         u'description': module.params.get('description'),
-        u'name': module.params.get('name'),
-        u'id': response.get(u'id'),
-        u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
-        u'tunnels': response.get(u'tunnels'),
-        u'forwardingRules': response.get(u'forwardingRules')
+        u'targetVpnGateway': replace_resource_dict(module.params.get(u'target_vpn_gateway', {}), 'selfLink'),
+        u'router': module.params.get('router'),
+        u'peerIp': response.get(u'peerIp'),
+        u'sharedSecret': response.get(u'sharedSecret'),
+        u'sharedSecretHash': response.get(u'sharedSecretHash'),
+        u'ikeVersion': response.get(u'ikeVersion'),
+        u'localTrafficSelector': response.get(u'localTrafficSelector'),
+        u'remoteTrafficSelector': response.get(u'remoteTrafficSelector'),
+        u'labels': response.get(u'labels')
     }
 
 
@@ -319,7 +428,7 @@ def wait_for_operation(module, response):
         return {}
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
-    return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#targetVpnGateway')
+    return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#vpnTunnel')
 
 
 def wait_for_completion(status, op_result, module):
