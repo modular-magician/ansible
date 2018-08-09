@@ -251,6 +251,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: instancegroup
+
 - name: create a http health check
   gcp_compute_http_health_check:
       name: "httphealthcheck-backendservice"
@@ -263,6 +264,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: healthcheck
+
 - name: create a backend service
   gcp_compute_backend_service:
       name: "test_object"

@@ -83,6 +83,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: address
+
 - name: create a network
   gcp_compute_network:
       name: "network-vpngateway"
@@ -91,6 +92,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: network
+
 - name: create a target vpn gateway
   gcp_compute_target_vpn_gateway:
       name: "test_object"

@@ -104,6 +104,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: bucket
+
 - name: create a bucket access control
   gcp_storage_bucket_access_control:
       bucket: "{{ bucket }}"

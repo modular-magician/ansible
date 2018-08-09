@@ -106,6 +106,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: network
+
 - name: create a instance group
   gcp_compute_instance_group:
       name: "test_object"

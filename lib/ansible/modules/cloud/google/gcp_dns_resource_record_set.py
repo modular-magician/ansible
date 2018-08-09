@@ -86,6 +86,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: managed_zone
+
 '''
 
 RETURN = '''

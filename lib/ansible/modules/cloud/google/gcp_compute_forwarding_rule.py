@@ -178,6 +178,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: address
+
 - name: create a target pool
   gcp_compute_target_pool:
       name: "targetpool-forwardingrule"
@@ -187,6 +188,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: targetpool
+
 - name: create a forwarding rule
   gcp_compute_forwarding_rule:
       name: "test_object"

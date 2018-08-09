@@ -115,6 +115,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: network
+
 - name: create a address
   gcp_compute_address:
       name: "address-instancetemplate"
@@ -124,6 +125,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: address
+
 - name: create a instance template
   gcp_compute_instance_template:
       name: "{{ resource_name }}"
@@ -145,6 +147,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: instancetemplate
+
 - name: create a instance group manager
   gcp_compute_instance_group_manager:
       name: "test_object"

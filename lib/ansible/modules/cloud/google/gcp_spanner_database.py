@@ -79,6 +79,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: instance
+
 - name: create a database
   gcp_spanner_database:
       name: webstore
