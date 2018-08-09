@@ -266,6 +266,8 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
+                update_fields(module, resource_to_request(module),
+                              response_to_hash(module, fetch))
                 fetch = update(module, self_link(module), kind)
                 changed = True
         else:
@@ -292,6 +294,41 @@ def create(module, link, kind):
 def update(module, link, kind):
     auth = GcpSession(module, 'compute')
     return wait_for_operation(module, auth.put(link, resource_to_request(module)))
+
+
+def update_fields(module, request, response):
+    difference = GcpRequest(request).difference(GcpRequest(response))
+    auth = GcpSession(module, 'compute')
+    if difference.get('quic_override'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/global/targetHttpsProxies/{name}/setQuicOverride"
+            ]).format(**module.params),
+            {
+                        u'quicOverride': module.params.get('quic_override')
+            }
+        )
+    if difference.get('ssl_certificates'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/targetHttpsProxies/{name}/setSslCertificates"
+            ]).format(**module.params),
+            {
+                        u'sslCertificates': replace_resource_dict(module.params.get('ssl_certificates', []), 'selfLink')
+            }
+        )
+    if difference.get('url_map'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/targetHttpsProxies/{name}/setUrlMap"
+            ]).format(**module.params),
+            {
+                        u'urlMap': replace_resource_dict(module.params.get(u'url_map', {}), 'selfLink')
+            }
+        )
 
 
 def delete(module, link, kind):
