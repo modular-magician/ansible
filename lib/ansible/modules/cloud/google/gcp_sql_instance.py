@@ -634,14 +634,14 @@ def resource_to_request(module):
         u'backendType': module.params.get('backend_type'),
         u'connectionName': module.params.get('connection_name'),
         u'databaseVersion': module.params.get('database_version'),
-        u'failoverReplica': InstancFailoveReplica(module.params.get('failover_replica', {}), module).to_request(),
+        u'failoverReplica': InstanceFailoverReplica(module.params.get('failover_replica', {}), module).to_request(),
         u'instanceType': module.params.get('instance_type'),
         u'ipv6Address': module.params.get('ipv6_address'),
         u'masterInstanceName': module.params.get('master_instance_name'),
         u'maxDiskSize': module.params.get('max_disk_size'),
         u'name': module.params.get('name'),
         u'region': module.params.get('region'),
-        u'replicaConfiguration': InstancReplicaConfigu(module.params.get('replica_configuration', {}), module).to_request(),
+        u'replicaConfiguration': InstanceReplicaConfiguration(module.params.get('replica_configuration', {}), module).to_request(),
         u'settings': InstanceSettings(module.params.get('settings', {}), module).to_request()
     }
     return_vals = {}
@@ -716,15 +716,15 @@ def response_to_hash(module, response):
         u'backendType': response.get(u'backendType'),
         u'connectionName': response.get(u'connectionName'),
         u'databaseVersion': response.get(u'databaseVersion'),
-        u'failoverReplica': InstancFailoveReplica(response.get(u'failoverReplica', {}), module).from_response(),
+        u'failoverReplica': InstanceFailoverReplica(response.get(u'failoverReplica', {}), module).from_response(),
         u'instanceType': response.get(u'instanceType'),
-        u'ipAddresses': InstancIpAddressArray(response.get(u'ipAddresses', []), module).from_response(),
+        u'ipAddresses': InstanceIpAddressesArray(response.get(u'ipAddresses', []), module).from_response(),
         u'ipv6Address': response.get(u'ipv6Address'),
         u'masterInstanceName': response.get(u'masterInstanceName'),
         u'maxDiskSize': response.get(u'maxDiskSize'),
         u'name': response.get(u'name'),
         u'region': response.get(u'region'),
-        u'replicaConfiguration': InstancReplicaConfigu(response.get(u'replicaConfiguration', {}), module).from_response(),
+        u'replicaConfiguration': InstanceReplicaConfiguration(response.get(u'replicaConfiguration', {}), module).from_response(),
         u'settings': InstanceSettings(response.get(u'settings', {}), module).from_response()
     }
 
@@ -766,7 +766,7 @@ def raise_if_errors(response, err_path, module):
         module.fail_json(msg=errors)
 
 
-class InstancFailoveReplica(object):
+class InstanceFailoverReplica(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -787,7 +787,7 @@ class InstancFailoveReplica(object):
         })
 
 
-class InstancIpAddressArray(object):
+class InstanceIpAddressesArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -822,7 +822,7 @@ class InstancIpAddressArray(object):
         })
 
 
-class InstancReplicaConfigu(object):
+class InstanceReplicaConfiguration(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -833,7 +833,7 @@ class InstancReplicaConfigu(object):
     def to_request(self):
         return remove_nones_from_dict({
             u'failoverTarget': self.request.get('failover_target'),
-            u'mysqlReplicaConfiguration': InstaMysqlRepliConfi(self.request.get('mysql_replica_configuration', {}), self.module).to_request(),
+            u'mysqlReplicaConfiguration': InstanceMysqlReplicaConfiguration(self.request.get('mysql_replica_configuration', {}), self.module).to_request(),
             u'replicaNames': self.request.get('replica_names'),
             u'serviceAccountEmailAddress': self.request.get('service_account_email_address')
         })
@@ -841,13 +841,13 @@ class InstancReplicaConfigu(object):
     def from_response(self):
         return remove_nones_from_dict({
             u'failoverTarget': self.request.get(u'failoverTarget'),
-            u'mysqlReplicaConfiguration': InstaMysqlRepliConfi(self.request.get(u'mysqlReplicaConfiguration', {}), self.module).from_response(),
+            u'mysqlReplicaConfiguration': InstanceMysqlReplicaConfiguration(self.request.get(u'mysqlReplicaConfiguration', {}), self.module).from_response(),
             u'replicaNames': self.request.get(u'replicaNames'),
             u'serviceAccountEmailAddress': self.request.get(u'serviceAccountEmailAddress')
         })
 
 
-class InstaMysqlRepliConfi(object):
+class InstanceMysqlReplicaConfiguration(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -894,18 +894,18 @@ class InstanceSettings(object):
 
     def to_request(self):
         return remove_nones_from_dict({
-            u'ipConfiguration': InstancIpConfigu(self.request.get('ip_configuration', {}), self.module).to_request(),
+            u'ipConfiguration': InstanceIpConfiguration(self.request.get('ip_configuration', {}), self.module).to_request(),
             u'tier': self.request.get('tier')
         })
 
     def from_response(self):
         return remove_nones_from_dict({
-            u'ipConfiguration': InstancIpConfigu(self.request.get(u'ipConfiguration', {}), self.module).from_response(),
+            u'ipConfiguration': InstanceIpConfiguration(self.request.get(u'ipConfiguration', {}), self.module).from_response(),
             u'tier': self.request.get(u'tier')
         })
 
 
-class InstancIpConfigu(object):
+class InstanceIpConfiguration(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -916,19 +916,19 @@ class InstancIpConfigu(object):
     def to_request(self):
         return remove_nones_from_dict({
             u'ipv4Enabled': self.request.get('ipv4_enabled'),
-            u'authorizedNetworks': InstancAuthoriNetworkArray(self.request.get('authorized_networks', []), self.module).to_request(),
+            u'authorizedNetworks': InstanceAuthorizedNetworksArray(self.request.get('authorized_networks', []), self.module).to_request(),
             u'requireSsl': self.request.get('require_ssl')
         })
 
     def from_response(self):
         return remove_nones_from_dict({
             u'ipv4Enabled': self.request.get(u'ipv4Enabled'),
-            u'authorizedNetworks': InstancAuthoriNetworkArray(self.request.get(u'authorizedNetworks', []), self.module).from_response(),
+            u'authorizedNetworks': InstanceAuthorizedNetworksArray(self.request.get(u'authorizedNetworks', []), self.module).from_response(),
             u'requireSsl': self.request.get(u'requireSsl')
         })
 
 
-class InstancAuthoriNetworkArray(object):
+class InstanceAuthorizedNetworksArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:

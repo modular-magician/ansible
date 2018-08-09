@@ -609,9 +609,9 @@ def resource_to_request(module):
     request = {
         u'kind': 'compute#backendService',
         u'affinityCookieTtlSec': module.params.get('affinity_cookie_ttl_sec'),
-        u'backends': BackendServiceBackendArray(module.params.get('backends', []), module).to_request(),
-        u'cdnPolicy': BackeServiCdnPolic(module.params.get('cdn_policy', {}), module).to_request(),
-        u'connectionDraining': BackeServiConneDrain(module.params.get('connection_draining', {}), module).to_request(),
+        u'backends': BackendServiceBackendsArray(module.params.get('backends', []), module).to_request(),
+        u'cdnPolicy': BackendServiceCdnPolicy(module.params.get('cdn_policy', {}), module).to_request(),
+        u'connectionDraining': BackendServiceConnectionDraining(module.params.get('connection_draining', {}), module).to_request(),
         u'description': module.params.get('description'),
         u'enableCDN': module.params.get('enable_cdn'),
         u'healthChecks': module.params.get('health_checks'),
@@ -689,9 +689,9 @@ def is_different(module, response):
 def response_to_hash(module, response):
     return {
         u'affinityCookieTtlSec': response.get(u'affinityCookieTtlSec'),
-        u'backends': BackendServiceBackendArray(response.get(u'backends', []), module).from_response(),
-        u'cdnPolicy': BackeServiCdnPolic(response.get(u'cdnPolicy', {}), module).from_response(),
-        u'connectionDraining': BackeServiConneDrain(response.get(u'connectionDraining', {}), module).from_response(),
+        u'backends': BackendServiceBackendsArray(response.get(u'backends', []), module).from_response(),
+        u'cdnPolicy': BackendServiceCdnPolicy(response.get(u'cdnPolicy', {}), module).from_response(),
+        u'connectionDraining': BackendServiceConnectionDraining(response.get(u'connectionDraining', {}), module).from_response(),
         u'creationTimestamp': response.get(u'creationTimestamp'),
         u'description': response.get(u'description'),
         u'enableCDN': response.get(u'enableCDN'),
@@ -752,7 +752,7 @@ def raise_if_errors(response, err_path, module):
         module.fail_json(msg=errors)
 
 
-class BackendServiceBackendArray(object):
+class BackendServiceBackendsArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -799,7 +799,7 @@ class BackendServiceBackendArray(object):
         })
 
 
-class BackeServiCdnPolic(object):
+class BackendServiceCdnPolicy(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -809,16 +809,16 @@ class BackeServiCdnPolic(object):
 
     def to_request(self):
         return remove_nones_from_dict({
-            u'cacheKeyPolicy': BackServCachKeyPoli(self.request.get('cache_key_policy', {}), self.module).to_request()
+            u'cacheKeyPolicy': BackendServiceCacheKeyPolicy(self.request.get('cache_key_policy', {}), self.module).to_request()
         })
 
     def from_response(self):
         return remove_nones_from_dict({
-            u'cacheKeyPolicy': BackServCachKeyPoli(self.request.get(u'cacheKeyPolicy', {}), self.module).from_response()
+            u'cacheKeyPolicy': BackendServiceCacheKeyPolicy(self.request.get(u'cacheKeyPolicy', {}), self.module).from_response()
         })
 
 
-class BackServCachKeyPoli(object):
+class BackendServiceCacheKeyPolicy(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -845,7 +845,7 @@ class BackServCachKeyPoli(object):
         })
 
 
-class BackeServiConneDrain(object):
+class BackendServiceConnectionDraining(object):
     def __init__(self, request, module):
         self.module = module
         if request:

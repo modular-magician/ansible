@@ -896,18 +896,18 @@ class ClusterAddonsConfig(object):
 
     def to_request(self):
         return remove_nones_from_dict({
-            u'httpLoadBalancing': ClustHttpLoadBalan(self.request.get('http_load_balancing', {}), self.module).to_request(),
-            u'horizontalPodAutoscaling': ClustHorizPodAutos(self.request.get('horizontal_pod_autoscaling', {}), self.module).to_request()
+            u'httpLoadBalancing': ClusterHttpLoadBalancing(self.request.get('http_load_balancing', {}), self.module).to_request(),
+            u'horizontalPodAutoscaling': ClusterHorizontalPodAutoscaling(self.request.get('horizontal_pod_autoscaling', {}), self.module).to_request()
         })
 
     def from_response(self):
         return remove_nones_from_dict({
-            u'httpLoadBalancing': ClustHttpLoadBalan(self.request.get(u'httpLoadBalancing', {}), self.module).from_response(),
-            u'horizontalPodAutoscaling': ClustHorizPodAutos(self.request.get(u'horizontalPodAutoscaling', {}), self.module).from_response()
+            u'httpLoadBalancing': ClusterHttpLoadBalancing(self.request.get(u'httpLoadBalancing', {}), self.module).from_response(),
+            u'horizontalPodAutoscaling': ClusterHorizontalPodAutoscaling(self.request.get(u'horizontalPodAutoscaling', {}), self.module).from_response()
         })
 
 
-class ClustHttpLoadBalan(object):
+class ClusterHttpLoadBalancing(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -926,7 +926,7 @@ class ClustHttpLoadBalan(object):
         })
 
 
-class ClustHorizPodAutos(object):
+class ClusterHorizontalPodAutoscaling(object):
     def __init__(self, request, module):
         self.module = module
         if request:

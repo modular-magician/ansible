@@ -512,8 +512,8 @@ def resource_to_request(module):
         u'name': module.params.get('name'),
         u'config': NodePoolConfig(module.params.get('config', {}), module).to_request(),
         u'initialNodeCount': module.params.get('initial_node_count'),
-        u'autoscaling': NodePoolAutosca(module.params.get('autoscaling', {}), module).to_request(),
-        u'management': NodePoolManagem(module.params.get('management', {}), module).to_request()
+        u'autoscaling': NodePoolAutoscaling(module.params.get('autoscaling', {}), module).to_request(),
+        u'management': NodePoolManagement(module.params.get('management', {}), module).to_request()
     }
     request = encode_request(request, module)
     return_vals = {}
@@ -595,8 +595,8 @@ def response_to_hash(module, response):
         u'config': NodePoolConfig(response.get(u'config', {}), module).from_response(),
         u'initialNodeCount': module.params.get('initial_node_count'),
         u'version': response.get(u'version'),
-        u'autoscaling': NodePoolAutosca(response.get(u'autoscaling', {}), module).from_response(),
-        u'management': NodePoolManagem(response.get(u'management', {}), module).from_response()
+        u'autoscaling': NodePoolAutoscaling(response.get(u'autoscaling', {}), module).from_response(),
+        u'management': NodePoolManagement(response.get(u'management', {}), module).from_response()
     }
 
 
@@ -690,7 +690,7 @@ class NodePoolConfig(object):
         })
 
 
-class NodePoolAutosca(object):
+class NodePoolAutoscaling(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -713,7 +713,7 @@ class NodePoolAutosca(object):
         })
 
 
-class NodePoolManagem(object):
+class NodePoolManagement(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -725,18 +725,18 @@ class NodePoolManagem(object):
         return remove_nones_from_dict({
             u'autoUpgrade': self.request.get('auto_upgrade'),
             u'autoRepair': self.request.get('auto_repair'),
-            u'upgradeOptions': NodePoolUpgraOptio(self.request.get('upgrade_options', {}), self.module).to_request()
+            u'upgradeOptions': NodePoolUpgradeOptions(self.request.get('upgrade_options', {}), self.module).to_request()
         })
 
     def from_response(self):
         return remove_nones_from_dict({
             u'autoUpgrade': self.request.get(u'autoUpgrade'),
             u'autoRepair': self.request.get(u'autoRepair'),
-            u'upgradeOptions': NodePoolUpgraOptio(self.request.get(u'upgradeOptions', {}), self.module).from_response()
+            u'upgradeOptions': NodePoolUpgradeOptions(self.request.get(u'upgradeOptions', {}), self.module).from_response()
         })
 
 
-class NodePoolUpgraOptio(object):
+class NodePoolUpgradeOptions(object):
     def __init__(self, request, module):
         self.module = module
         if request:

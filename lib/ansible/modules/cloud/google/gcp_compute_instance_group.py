@@ -270,7 +270,7 @@ def resource_to_request(module):
         u'kind': 'compute#instanceGroup',
         u'description': module.params.get('description'),
         u'name': module.params.get('name'),
-        u'namedPorts': InstaGroupNamedPortsArray(module.params.get('named_ports', []), module).to_request(),
+        u'namedPorts': InstanceGroupNamedPortsArray(module.params.get('named_ports', []), module).to_request(),
         u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
         u'region': region_selflink(module.params.get('region'), module.params),
         u'subnetwork': replace_resource_dict(module.params.get(u'subnetwork', {}), 'selfLink')
@@ -345,7 +345,7 @@ def response_to_hash(module, response):
         u'description': response.get(u'description'),
         u'id': response.get(u'id'),
         u'name': response.get(u'name'),
-        u'namedPorts': InstaGroupNamedPortsArray(response.get(u'namedPorts', []), module).from_response(),
+        u'namedPorts': InstanceGroupNamedPortsArray(response.get(u'namedPorts', []), module).from_response(),
         u'network': response.get(u'network'),
         u'region': response.get(u'region'),
         u'subnetwork': response.get(u'subnetwork')
@@ -398,7 +398,7 @@ def raise_if_errors(response, err_path, module):
         module.fail_json(msg=errors)
 
 
-class InstaGroupNamedPortsArray(object):
+class InstanceGroupNamedPortsArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:

@@ -415,7 +415,7 @@ def resource_to_request(module):
         u'description': module.params.get('description'),
         u'hostRules': UrlMapHostRulesArray(module.params.get('host_rules', []), module).to_request(),
         u'name': module.params.get('name'),
-        u'pathMatchers': UrlMapPathMatchArray(module.params.get('path_matchers', []), module).to_request(),
+        u'pathMatchers': UrlMapPathMatchersArray(module.params.get('path_matchers', []), module).to_request(),
         u'tests': UrlMapTestsArray(module.params.get('tests', []), module).to_request()
     }
     return_vals = {}
@@ -490,7 +490,7 @@ def response_to_hash(module, response):
         u'hostRules': UrlMapHostRulesArray(response.get(u'hostRules', []), module).from_response(),
         u'id': response.get(u'id'),
         u'name': response.get(u'name'),
-        u'pathMatchers': UrlMapPathMatchArray(response.get(u'pathMatchers', []), module).from_response(),
+        u'pathMatchers': UrlMapPathMatchersArray(response.get(u'pathMatchers', []), module).from_response(),
         u'tests': UrlMapTestsArray(response.get(u'tests', []), module).from_response()
     }
 
@@ -567,7 +567,7 @@ class UrlMapHostRulesArray(object):
         })
 
 
-class UrlMapPathMatchArray(object):
+class UrlMapPathMatchersArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:

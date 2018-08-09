@@ -565,10 +565,10 @@ def resource_to_request(module):
         u'timeoutSec': module.params.get('timeout_sec'),
         u'unhealthyThreshold': module.params.get('unhealthy_threshold'),
         u'type': module.params.get('type'),
-        u'httpHealthCheck': HealChecHttpHealChec(module.params.get('http_health_check', {}), module).to_request(),
-        u'httpsHealthCheck': HealChecHttpHealChec(module.params.get('https_health_check', {}), module).to_request(),
-        u'tcpHealthCheck': HealChecTcpHealChec(module.params.get('tcp_health_check', {}), module).to_request(),
-        u'sslHealthCheck': HealChecSslHealChec(module.params.get('ssl_health_check', {}), module).to_request()
+        u'httpHealthCheck': HealthCheckHttpHealthCheck(module.params.get('http_health_check', {}), module).to_request(),
+        u'httpsHealthCheck': HealthCheckHttpsHealthCheck(module.params.get('https_health_check', {}), module).to_request(),
+        u'tcpHealthCheck': HealthCheckTcpHealthCheck(module.params.get('tcp_health_check', {}), module).to_request(),
+        u'sslHealthCheck': HealthCheckSslHealthCheck(module.params.get('ssl_health_check', {}), module).to_request()
     }
     return_vals = {}
     for k, v in request.items():
@@ -645,10 +645,10 @@ def response_to_hash(module, response):
         u'timeoutSec': response.get(u'timeoutSec'),
         u'unhealthyThreshold': response.get(u'unhealthyThreshold'),
         u'type': response.get(u'type'),
-        u'httpHealthCheck': HealChecHttpHealChec(response.get(u'httpHealthCheck', {}), module).from_response(),
-        u'httpsHealthCheck': HealChecHttpHealChec(response.get(u'httpsHealthCheck', {}), module).from_response(),
-        u'tcpHealthCheck': HealChecTcpHealChec(response.get(u'tcpHealthCheck', {}), module).from_response(),
-        u'sslHealthCheck': HealChecSslHealChec(response.get(u'sslHealthCheck', {}), module).from_response()
+        u'httpHealthCheck': HealthCheckHttpHealthCheck(response.get(u'httpHealthCheck', {}), module).from_response(),
+        u'httpsHealthCheck': HealthCheckHttpsHealthCheck(response.get(u'httpsHealthCheck', {}), module).from_response(),
+        u'tcpHealthCheck': HealthCheckTcpHealthCheck(response.get(u'tcpHealthCheck', {}), module).from_response(),
+        u'sslHealthCheck': HealthCheckSslHealthCheck(response.get(u'sslHealthCheck', {}), module).from_response()
     }
 
 
@@ -689,7 +689,7 @@ def raise_if_errors(response, err_path, module):
         module.fail_json(msg=errors)
 
 
-class HealChecHttpHealChec(object):
+class HealthCheckHttpHealthCheck(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -716,7 +716,7 @@ class HealChecHttpHealChec(object):
         })
 
 
-class HealChecHttpHealChec(object):
+class HealthCheckHttpsHealthCheck(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -743,7 +743,7 @@ class HealChecHttpHealChec(object):
         })
 
 
-class HealChecTcpHealChec(object):
+class HealthCheckTcpHealthCheck(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -770,7 +770,7 @@ class HealChecTcpHealChec(object):
         })
 
 
-class HealChecSslHealChec(object):
+class HealthCheckSslHealthCheck(object):
     def __init__(self, request, module):
         self.module = module
         if request:
