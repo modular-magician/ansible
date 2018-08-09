@@ -190,6 +190,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: disk
+
 - name: create a image
   gcp_compute_image:
       name: "test_object"

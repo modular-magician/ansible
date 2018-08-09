@@ -95,6 +95,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: instancegroup
+
 - name: create a http health check
   gcp_compute_http_health_check:
       name: "httphealthcheck-targethttpsproxy"
@@ -107,6 +108,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: healthcheck
+
 - name: create a backend service
   gcp_compute_backend_service:
       name: "backendservice-targethttpsproxy"
@@ -120,6 +122,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: backendservice
+
 - name: create a url map
   gcp_compute_url_map:
       name: "urlmap-targethttpsproxy"
@@ -129,6 +132,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: urlmap
+
 - name: create a ssl certificate
   gcp_compute_ssl_certificate:
       name: "sslcert-targethttpsproxy"
@@ -162,6 +166,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: sslcert
+
 - name: create a target https proxy
   gcp_compute_target_https_proxy:
       name: "test_object"

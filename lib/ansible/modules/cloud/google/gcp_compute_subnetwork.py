@@ -115,6 +115,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: network
+
 - name: create a subnetwork
   gcp_compute_subnetwork:
       name: ansiblenet

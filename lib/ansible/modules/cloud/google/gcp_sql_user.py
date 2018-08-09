@@ -83,6 +83,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: instance
+
 - name: create a user
   gcp_sql_user:
       name: test-user

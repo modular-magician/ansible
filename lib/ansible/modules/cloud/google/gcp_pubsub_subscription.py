@@ -96,6 +96,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: topic
+
 - name: create a subscription
   gcp_pubsub_subscription:
       name: "test_object"

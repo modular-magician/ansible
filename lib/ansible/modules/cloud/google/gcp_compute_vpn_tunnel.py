@@ -119,6 +119,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: network
+
 - name: create a router
   gcp_compute_router:
       name: "router-vpn_tunnel"
@@ -137,6 +138,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: router
+
 - name: create a target vpn gateway
   gcp_compute_target_vpn_gateway:
       name: "gateway-vpn_tunnel"
@@ -147,6 +149,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: gateway
+
 - name: create a vpn tunnel
   gcp_compute_vpn_tunnel:
       name: "test_object"

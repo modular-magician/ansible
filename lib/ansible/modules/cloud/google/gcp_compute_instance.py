@@ -378,6 +378,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: disk
+
 - name: create a network
   gcp_compute_network:
       name: "network-instance"
@@ -386,6 +387,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: network
+
 - name: create a address
   gcp_compute_address:
       name: "address-instance"
@@ -395,6 +397,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: address
+
 - name: create a instance
   gcp_compute_instance:
       name: "test_object"

@@ -86,6 +86,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: instancegroup
+
 - name: create a health check
   gcp_compute_health_check:
       name: "healthcheck-targettcpproxy"
@@ -102,6 +103,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: healthcheck
+
 - name: create a backend service
   gcp_compute_backend_service:
       name: "backendservice-targettcpproxy"
@@ -115,6 +117,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: backendservice
+
 - name: create a target tcp proxy
   gcp_compute_target_tcp_proxy:
       name: "test_object"

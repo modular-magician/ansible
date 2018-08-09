@@ -168,6 +168,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: globaladdress
+
 - name: create a instance group
   gcp_compute_instance_group:
       name: "instancegroup-globalforwardingrule"
@@ -177,6 +178,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: instancegroup
+
 - name: create a http health check
   gcp_compute_http_health_check:
       name: "httphealthcheck-globalforwardingrule"
@@ -189,6 +191,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: healthcheck
+
 - name: create a backend service
   gcp_compute_backend_service:
       name: "backendservice-globalforwardingrule"
@@ -202,6 +205,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: backendservice
+
 - name: create a url map
   gcp_compute_url_map:
       name: "urlmap-globalforwardingrule"
@@ -211,6 +215,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: urlmap
+
 - name: create a target http proxy
   gcp_compute_target_http_proxy:
       name: "targethttpproxy-globalforwardingrule"
@@ -220,6 +225,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: httpproxy
+
 - name: create a global forwarding rule
   gcp_compute_global_forwarding_rule:
       name: "test_object"

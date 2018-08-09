@@ -88,6 +88,7 @@ EXAMPLES = '''
       service_account_file: "{{ gcp_cred_file }}"
       state: present
   register: bucket
+
 - name: create a backend bucket
   gcp_compute_backend_bucket:
       name: "test_object"
