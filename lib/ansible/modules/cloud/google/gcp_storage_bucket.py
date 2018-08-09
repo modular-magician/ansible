@@ -880,7 +880,7 @@ def resource_to_request(module):
         u'predefinedDefaultObjectAcl': module.params.get('predefined_default_object_acl'),
         u'acl': BucketAclArray(module.params.get('acl', []), module).to_request(),
         u'cors': BucketCorsArray(module.params.get('cors', []), module).to_request(),
-        u'defaultObjectAcl': BuckeDefauObjecAclArray(module.params.get('default_object_acl', []), module).to_request(),
+        u'defaultObjectAcl': BucketDefaultObjectAclArray(module.params.get('default_object_acl', []), module).to_request(),
         u'lifecycle': BucketLifecycle(module.params.get('lifecycle', {}), module).to_request(),
         u'location': module.params.get('location'),
         u'logging': BucketLogging(module.params.get('logging', {}), module).to_request(),
@@ -959,7 +959,7 @@ def response_to_hash(module, response):
     return {
         u'acl': BucketAclArray(response.get(u'acl', []), module).from_response(),
         u'cors': BucketCorsArray(response.get(u'cors', []), module).from_response(),
-        u'defaultObjectAcl': BuckeDefauObjecAclArray(module.params.get('default_object_acl', []), module).to_request(),
+        u'defaultObjectAcl': BucketDefaultObjectAclArray(module.params.get('default_object_acl', []), module).to_request(),
         u'id': response.get(u'id'),
         u'lifecycle': BucketLifecycle(response.get(u'lifecycle', {}), module).from_response(),
         u'location': response.get(u'location'),
@@ -1079,7 +1079,7 @@ class BucketCorsArray(object):
         })
 
 
-class BuckeDefauObjecAclArray(object):
+class BucketDefaultObjectAclArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:

@@ -922,7 +922,7 @@ def resource_to_request(module):
         u'kind': 'compute#instanceTemplate',
         u'description': module.params.get('description'),
         u'name': module.params.get('name'),
-        u'properties': InstancTemplatPropert(module.params.get('properties', {}), module).to_request()
+        u'properties': InstanceTemplateProperties(module.params.get('properties', {}), module).to_request()
     }
     request = encode_request(request, module)
     return_vals = {}
@@ -998,7 +998,7 @@ def response_to_hash(module, response):
         u'description': response.get(u'description'),
         u'id': response.get(u'id'),
         u'name': response.get(u'name'),
-        u'properties': InstancTemplatPropert(response.get(u'properties', {}), module).from_response()
+        u'properties': InstanceTemplateProperties(response.get(u'properties', {}), module).from_response()
     }
 
 
@@ -1099,7 +1099,7 @@ def metadata_decoder(metadata):
     return items
 
 
-class InstancTemplatPropert(object):
+class InstanceTemplateProperties(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1111,32 +1111,32 @@ class InstancTemplatPropert(object):
         return remove_nones_from_dict({
             u'canIpForward': self.request.get('can_ip_forward'),
             u'description': self.request.get('description'),
-            u'disks': InstancTemplatDisksArray(self.request.get('disks', []), self.module).to_request(),
+            u'disks': InstanceTemplateDisksArray(self.request.get('disks', []), self.module).to_request(),
             u'machineType': self.request.get('machine_type'),
             u'metadata': self.request.get('metadata'),
-            u'guestAccelerators': InstaTemplGuestAccelArray(self.request.get('guest_accelerators', []), self.module).to_request(),
-            u'networkInterfaces': InstaTemplNetwoInterArray(self.request.get('network_interfaces', []), self.module).to_request(),
-            u'scheduling': InstancTemplatSchedul(self.request.get('scheduling', {}), self.module).to_request(),
-            u'serviceAccounts': InstaTemplServiAccouArray(self.request.get('service_accounts', []), self.module).to_request(),
-            u'tags': InstancTemplatTags(self.request.get('tags', {}), self.module).to_request()
+            u'guestAccelerators': InstanceTemplateGuestAcceleratorsArray(self.request.get('guest_accelerators', []), self.module).to_request(),
+            u'networkInterfaces': InstanceTemplateNetworkInterfacesArray(self.request.get('network_interfaces', []), self.module).to_request(),
+            u'scheduling': InstanceTemplateScheduling(self.request.get('scheduling', {}), self.module).to_request(),
+            u'serviceAccounts': InstanceTemplateServiceAccountsArray(self.request.get('service_accounts', []), self.module).to_request(),
+            u'tags': InstanceTemplateTags(self.request.get('tags', {}), self.module).to_request()
         })
 
     def from_response(self):
         return remove_nones_from_dict({
             u'canIpForward': self.request.get(u'canIpForward'),
             u'description': self.request.get(u'description'),
-            u'disks': InstancTemplatDisksArray(self.request.get(u'disks', []), self.module).from_response(),
+            u'disks': InstanceTemplateDisksArray(self.request.get(u'disks', []), self.module).from_response(),
             u'machineType': self.request.get(u'machineType'),
             u'metadata': self.request.get(u'metadata'),
-            u'guestAccelerators': InstaTemplGuestAccelArray(self.request.get(u'guestAccelerators', []), self.module).from_response(),
-            u'networkInterfaces': InstaTemplNetwoInterArray(self.request.get(u'networkInterfaces', []), self.module).from_response(),
-            u'scheduling': InstancTemplatSchedul(self.request.get(u'scheduling', {}), self.module).from_response(),
-            u'serviceAccounts': InstaTemplServiAccouArray(self.request.get(u'serviceAccounts', []), self.module).from_response(),
-            u'tags': InstancTemplatTags(self.request.get(u'tags', {}), self.module).from_response()
+            u'guestAccelerators': InstanceTemplateGuestAcceleratorsArray(self.request.get(u'guestAccelerators', []), self.module).from_response(),
+            u'networkInterfaces': InstanceTemplateNetworkInterfacesArray(self.request.get(u'networkInterfaces', []), self.module).from_response(),
+            u'scheduling': InstanceTemplateScheduling(self.request.get(u'scheduling', {}), self.module).from_response(),
+            u'serviceAccounts': InstanceTemplateServiceAccountsArray(self.request.get(u'serviceAccounts', []), self.module).from_response(),
+            u'tags': InstanceTemplateTags(self.request.get(u'tags', {}), self.module).from_response()
         })
 
 
-class InstancTemplatDisksArray(object):
+class InstanceTemplateDisksArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1161,9 +1161,9 @@ class InstancTemplatDisksArray(object):
             u'autoDelete': item.get('auto_delete'),
             u'boot': item.get('boot'),
             u'deviceName': item.get('device_name'),
-            u'diskEncryptionKey': InstTempDiskEncrKey(item.get('disk_encryption_key', {}), self.module).to_request(),
+            u'diskEncryptionKey': InstanceTemplateDiskEncryptionKey(item.get('disk_encryption_key', {}), self.module).to_request(),
             u'index': item.get('index'),
-            u'initializeParams': InstaTemplInitiParam(item.get('initialize_params', {}), self.module).to_request(),
+            u'initializeParams': InstanceTemplateInitializeParams(item.get('initialize_params', {}), self.module).to_request(),
             u'interface': item.get('interface'),
             u'mode': item.get('mode'),
             u'source': replace_resource_dict(item.get(u'source', {}), 'name'),
@@ -1175,9 +1175,9 @@ class InstancTemplatDisksArray(object):
             u'autoDelete': item.get(u'autoDelete'),
             u'boot': item.get(u'boot'),
             u'deviceName': item.get(u'deviceName'),
-            u'diskEncryptionKey': InstTempDiskEncrKey(item.get(u'diskEncryptionKey', {}), self.module).from_response(),
+            u'diskEncryptionKey': InstanceTemplateDiskEncryptionKey(item.get(u'diskEncryptionKey', {}), self.module).from_response(),
             u'index': item.get(u'index'),
-            u'initializeParams': InstaTemplInitiParam(self.module.params.get('initialize_params', {}), self.module).to_request(),
+            u'initializeParams': InstanceTemplateInitializeParams(self.module.params.get('initialize_params', {}), self.module).to_request(),
             u'interface': item.get(u'interface'),
             u'mode': item.get(u'mode'),
             u'source': item.get(u'source'),
@@ -1185,7 +1185,7 @@ class InstancTemplatDisksArray(object):
         })
 
 
-class InstTempDiskEncrKey(object):
+class InstanceTemplateDiskEncryptionKey(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1208,7 +1208,7 @@ class InstTempDiskEncrKey(object):
         })
 
 
-class InstaTemplInitiParam(object):
+class InstanceTemplateInitializeParams(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1222,7 +1222,7 @@ class InstaTemplInitiParam(object):
             u'diskSizeGb': self.request.get('disk_size_gb'),
             u'diskType': disk_type_selflink(self.request.get('disk_type'), self.module.params),
             u'sourceImage': self.request.get('source_image'),
-            u'sourceImageEncryptionKey': InsTemSouImaEncKey(self.request.get('source_image_encryption_key', {}), self.module).to_request()
+            u'sourceImageEncryptionKey': InstanceTemplateSourceImageEncryptionKey(self.request.get('source_image_encryption_key', {}), self.module).to_request()
         })
 
     def from_response(self):
@@ -1231,11 +1231,12 @@ class InstaTemplInitiParam(object):
             u'diskSizeGb': self.request.get(u'diskSizeGb'),
             u'diskType': self.request.get(u'diskType'),
             u'sourceImage': self.request.get(u'sourceImage'),
-            u'sourceImageEncryptionKey': InsTemSouImaEncKey(self.request.get(u'sourceImageEncryptionKey', {}), self.module).from_response()
+            u'sourceImageEncryptionKey':
+                InstanceTemplateSourceImageEncryptionKey(self.request.get(u'sourceImageEncryptionKey', {}), self.module).from_response()
         })
 
 
-class InsTemSouImaEncKey(object):
+class InstanceTemplateSourceImageEncryptionKey(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1256,7 +1257,7 @@ class InsTemSouImaEncKey(object):
         })
 
 
-class InstaTemplGuestAccelArray(object):
+class InstanceTemplateGuestAcceleratorsArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1289,7 +1290,7 @@ class InstaTemplGuestAccelArray(object):
         })
 
 
-class InstaTemplNetwoInterArray(object):
+class InstanceTemplateNetworkInterfacesArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1311,8 +1312,8 @@ class InstaTemplNetwoInterArray(object):
 
     def _request_for_item(self, item):
         return remove_nones_from_dict({
-            u'accessConfigs': InstaTemplAccesConfiArray(item.get('access_configs', []), self.module).to_request(),
-            u'aliasIpRanges': InstTempAliaIpRangArray(item.get('alias_ip_ranges', []), self.module).to_request(),
+            u'accessConfigs': InstanceTemplateAccessConfigsArray(item.get('access_configs', []), self.module).to_request(),
+            u'aliasIpRanges': InstanceTemplateAliasIpRangesArray(item.get('alias_ip_ranges', []), self.module).to_request(),
             u'name': item.get('name'),
             u'network': replace_resource_dict(item.get(u'network', {}), 'selfLink'),
             u'networkIP': item.get('network_ip'),
@@ -1321,8 +1322,8 @@ class InstaTemplNetwoInterArray(object):
 
     def _response_from_item(self, item):
         return remove_nones_from_dict({
-            u'accessConfigs': InstaTemplAccesConfiArray(item.get(u'accessConfigs', []), self.module).from_response(),
-            u'aliasIpRanges': InstTempAliaIpRangArray(item.get(u'aliasIpRanges', []), self.module).from_response(),
+            u'accessConfigs': InstanceTemplateAccessConfigsArray(item.get(u'accessConfigs', []), self.module).from_response(),
+            u'aliasIpRanges': InstanceTemplateAliasIpRangesArray(item.get(u'aliasIpRanges', []), self.module).from_response(),
             u'name': item.get(u'name'),
             u'network': item.get(u'network'),
             u'networkIP': item.get(u'networkIP'),
@@ -1330,7 +1331,7 @@ class InstaTemplNetwoInterArray(object):
         })
 
 
-class InstaTemplAccesConfiArray(object):
+class InstanceTemplateAccessConfigsArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1365,7 +1366,7 @@ class InstaTemplAccesConfiArray(object):
         })
 
 
-class InstTempAliaIpRangArray(object):
+class InstanceTemplateAliasIpRangesArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1398,7 +1399,7 @@ class InstTempAliaIpRangArray(object):
         })
 
 
-class InstancTemplatSchedul(object):
+class InstanceTemplateScheduling(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1421,7 +1422,7 @@ class InstancTemplatSchedul(object):
         })
 
 
-class InstaTemplServiAccouArray(object):
+class InstanceTemplateServiceAccountsArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1454,7 +1455,7 @@ class InstaTemplServiAccouArray(object):
         })
 
 
-class InstancTemplatTags(object):
+class InstanceTemplateTags(object):
     def __init__(self, request, module):
         self.module = module
         if request:

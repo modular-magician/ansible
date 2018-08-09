@@ -949,15 +949,15 @@ def resource_to_request(module):
         u'kind': 'compute#instance',
         u'canIpForward': module.params.get('can_ip_forward'),
         u'disks': InstanceDisksArray(module.params.get('disks', []), module).to_request(),
-        u'guestAccelerators': InstancGuestAccelerArray(module.params.get('guest_accelerators', []), module).to_request(),
+        u'guestAccelerators': InstanceGuestAcceleratorsArray(module.params.get('guest_accelerators', []), module).to_request(),
         u'labelFingerprint': module.params.get('label_fingerprint'),
         u'metadata': module.params.get('metadata'),
         u'machineType': machine_type_selflink(module.params.get('machine_type'), module.params),
         u'minCpuPlatform': module.params.get('min_cpu_platform'),
         u'name': module.params.get('name'),
-        u'networkInterfaces': InstancNetworkInterfaArray(module.params.get('network_interfaces', []), module).to_request(),
+        u'networkInterfaces': InstanceNetworkInterfacesArray(module.params.get('network_interfaces', []), module).to_request(),
         u'scheduling': InstanceScheduling(module.params.get('scheduling', {}), module).to_request(),
-        u'serviceAccounts': InstancServiceAccountArray(module.params.get('service_accounts', []), module).to_request(),
+        u'serviceAccounts': InstanceServiceAccountsArray(module.params.get('service_accounts', []), module).to_request(),
         u'tags': InstanceTags(module.params.get('tags', {}), module).to_request()
     }
     request = encode_request(request, module)
@@ -1034,16 +1034,16 @@ def response_to_hash(module, response):
         u'cpuPlatform': response.get(u'cpuPlatform'),
         u'creationTimestamp': response.get(u'creationTimestamp'),
         u'disks': InstanceDisksArray(module.params.get('disks', []), module).to_request(),
-        u'guestAccelerators': InstancGuestAccelerArray(response.get(u'guestAccelerators', []), module).from_response(),
+        u'guestAccelerators': InstanceGuestAcceleratorsArray(response.get(u'guestAccelerators', []), module).from_response(),
         u'id': response.get(u'id'),
         u'labelFingerprint': response.get(u'labelFingerprint'),
         u'metadata': response.get(u'metadata'),
         u'machineType': response.get(u'machineType'),
         u'minCpuPlatform': response.get(u'minCpuPlatform'),
         u'name': response.get(u'name'),
-        u'networkInterfaces': InstancNetworkInterfaArray(response.get(u'networkInterfaces', []), module).from_response(),
+        u'networkInterfaces': InstanceNetworkInterfacesArray(response.get(u'networkInterfaces', []), module).from_response(),
         u'scheduling': InstanceScheduling(response.get(u'scheduling', {}), module).from_response(),
-        u'serviceAccounts': InstancServiceAccountArray(response.get(u'serviceAccounts', []), module).from_response(),
+        u'serviceAccounts': InstanceServiceAccountsArray(response.get(u'serviceAccounts', []), module).from_response(),
         u'status': response.get(u'status'),
         u'statusMessage': response.get(u'statusMessage'),
         u'tags': InstanceTags(response.get(u'tags', {}), module).from_response()
@@ -1181,9 +1181,9 @@ class InstanceDisksArray(object):
             u'autoDelete': item.get('auto_delete'),
             u'boot': item.get('boot'),
             u'deviceName': item.get('device_name'),
-            u'diskEncryptionKey': InstaDiskEncryKey(item.get('disk_encryption_key', {}), self.module).to_request(),
+            u'diskEncryptionKey': InstanceDiskEncryptionKey(item.get('disk_encryption_key', {}), self.module).to_request(),
             u'index': item.get('index'),
-            u'initializeParams': InstancInitialParams(item.get('initialize_params', {}), self.module).to_request(),
+            u'initializeParams': InstanceInitializeParams(item.get('initialize_params', {}), self.module).to_request(),
             u'interface': item.get('interface'),
             u'mode': item.get('mode'),
             u'source': replace_resource_dict(item.get(u'source', {}), 'selfLink'),
@@ -1195,9 +1195,9 @@ class InstanceDisksArray(object):
             u'autoDelete': item.get(u'autoDelete'),
             u'boot': item.get(u'boot'),
             u'deviceName': item.get(u'deviceName'),
-            u'diskEncryptionKey': InstaDiskEncryKey(item.get(u'diskEncryptionKey', {}), self.module).from_response(),
+            u'diskEncryptionKey': InstanceDiskEncryptionKey(item.get(u'diskEncryptionKey', {}), self.module).from_response(),
             u'index': item.get(u'index'),
-            u'initializeParams': InstancInitialParams(self.module.params.get('initialize_params', {}), self.module).to_request(),
+            u'initializeParams': InstanceInitializeParams(self.module.params.get('initialize_params', {}), self.module).to_request(),
             u'interface': item.get(u'interface'),
             u'mode': item.get(u'mode'),
             u'source': item.get(u'source'),
@@ -1205,7 +1205,7 @@ class InstanceDisksArray(object):
         })
 
 
-class InstaDiskEncryKey(object):
+class InstanceDiskEncryptionKey(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1228,7 +1228,7 @@ class InstaDiskEncryKey(object):
         })
 
 
-class InstancInitialParams(object):
+class InstanceInitializeParams(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1242,7 +1242,7 @@ class InstancInitialParams(object):
             u'diskSizeGb': self.request.get('disk_size_gb'),
             u'diskType': disk_type_selflink(self.request.get('disk_type'), self.module.params),
             u'sourceImage': self.request.get('source_image'),
-            u'sourceImageEncryptionKey': InstSourImagEncrKey(self.request.get('source_image_encryption_key', {}), self.module).to_request()
+            u'sourceImageEncryptionKey': InstanceSourceImageEncryptionKey(self.request.get('source_image_encryption_key', {}), self.module).to_request()
         })
 
     def from_response(self):
@@ -1251,11 +1251,11 @@ class InstancInitialParams(object):
             u'diskSizeGb': self.request.get(u'diskSizeGb'),
             u'diskType': self.request.get(u'diskType'),
             u'sourceImage': self.request.get(u'sourceImage'),
-            u'sourceImageEncryptionKey': InstSourImagEncrKey(self.request.get(u'sourceImageEncryptionKey', {}), self.module).from_response()
+            u'sourceImageEncryptionKey': InstanceSourceImageEncryptionKey(self.request.get(u'sourceImageEncryptionKey', {}), self.module).from_response()
         })
 
 
-class InstSourImagEncrKey(object):
+class InstanceSourceImageEncryptionKey(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1276,7 +1276,7 @@ class InstSourImagEncrKey(object):
         })
 
 
-class InstancGuestAccelerArray(object):
+class InstanceGuestAcceleratorsArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1309,7 +1309,7 @@ class InstancGuestAccelerArray(object):
         })
 
 
-class InstancNetworkInterfaArray(object):
+class InstanceNetworkInterfacesArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1331,8 +1331,8 @@ class InstancNetworkInterfaArray(object):
 
     def _request_for_item(self, item):
         return remove_nones_from_dict({
-            u'accessConfigs': InstancAccessConfigsArray(item.get('access_configs', []), self.module).to_request(),
-            u'aliasIpRanges': InstaAliasIpRangeArray(item.get('alias_ip_ranges', []), self.module).to_request(),
+            u'accessConfigs': InstanceAccessConfigsArray(item.get('access_configs', []), self.module).to_request(),
+            u'aliasIpRanges': InstanceAliasIpRangesArray(item.get('alias_ip_ranges', []), self.module).to_request(),
             u'name': item.get('name'),
             u'network': replace_resource_dict(item.get(u'network', {}), 'selfLink'),
             u'networkIP': item.get('network_ip'),
@@ -1341,8 +1341,8 @@ class InstancNetworkInterfaArray(object):
 
     def _response_from_item(self, item):
         return remove_nones_from_dict({
-            u'accessConfigs': InstancAccessConfigsArray(item.get(u'accessConfigs', []), self.module).from_response(),
-            u'aliasIpRanges': InstaAliasIpRangeArray(item.get(u'aliasIpRanges', []), self.module).from_response(),
+            u'accessConfigs': InstanceAccessConfigsArray(item.get(u'accessConfigs', []), self.module).from_response(),
+            u'aliasIpRanges': InstanceAliasIpRangesArray(item.get(u'aliasIpRanges', []), self.module).from_response(),
             u'name': item.get(u'name'),
             u'network': item.get(u'network'),
             u'networkIP': item.get(u'networkIP'),
@@ -1350,7 +1350,7 @@ class InstancNetworkInterfaArray(object):
         })
 
 
-class InstancAccessConfigsArray(object):
+class InstanceAccessConfigsArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1385,7 +1385,7 @@ class InstancAccessConfigsArray(object):
         })
 
 
-class InstaAliasIpRangeArray(object):
+class InstanceAliasIpRangesArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1441,7 +1441,7 @@ class InstanceScheduling(object):
         })
 
 
-class InstancServiceAccountArray(object):
+class InstanceServiceAccountsArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:

@@ -334,7 +334,7 @@ def response_to_hash(module, response):
         u'enabledFeatures': response.get(u'enabledFeatures'),
         u'customFeatures': response.get(u'customFeatures'),
         u'fingerprint': response.get(u'fingerprint'),
-        u'warnings': SslPolicyWarningArray(response.get(u'warnings', []), module).from_response()
+        u'warnings': SslPolicyWarningsArray(response.get(u'warnings', []), module).from_response()
     }
 
 
@@ -375,7 +375,7 @@ def raise_if_errors(response, err_path, module):
         module.fail_json(msg=errors)
 
 
-class SslPolicyWarningArray(object):
+class SslPolicyWarningsArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:
