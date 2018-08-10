@@ -116,6 +116,12 @@ RETURN = '''
             - The URLs of the resources that are using this address.
         returned: success
         type: list
+    label_fingerprint:
+        description:
+            - The fingerprint used for optimistic locking of this resource.  Used internally during
+              updates.
+        returned: success
+        type: str
     region:
         description:
             - URL of the region where the regional address resides.

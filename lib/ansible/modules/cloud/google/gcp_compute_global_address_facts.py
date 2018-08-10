@@ -92,6 +92,12 @@ RETURN = '''
               be a dash.
         returned: success
         type: str
+    label_fingerprint:
+        description:
+            - The fingerprint used for optimistic locking of this resource.  Used internally during
+              updates.
+        returned: success
+        type: str
     ip_version:
         description:
             - The IP Version that will be used by this address. Valid options are IPV4 or IPV6.

@@ -331,6 +331,12 @@ RETURN = '''
             - This field is not used for internal load balancing.
         returned: success
         type: dict
+    label_fingerprint:
+        description:
+            - The fingerprint used for optimistic locking of this resource.  Used internally during
+              updates.
+        returned: success
+        type: str
     region:
         description:
             - A reference to the region where the regional forwarding rule resides.
@@ -386,6 +392,8 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
+                update_fields(module, resource_to_request(module),
+                              response_to_hash(module, fetch))
                 fetch = update(module, self_link(module), kind)
                 changed = True
         else:
@@ -412,6 +420,31 @@ def create(module, link, kind):
 def update(module, link, kind):
     auth = GcpSession(module, 'compute')
     return wait_for_operation(module, auth.put(link, resource_to_request(module)))
+
+
+def update_fields(module, request, response):
+    difference = GcpRequest(request).difference(GcpRequest(response))
+    auth = GcpSession(module, 'compute')
+    if difference.get('target'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/regions/{region}/forwardingRules/{name}/setTarget"
+            ]).format(**module.params),
+            {
+                u'target': replace_resource_dict(module.params.get(u'target', {}), 'selfLink')
+            }
+        )
+    if difference.get('label_fingerprint'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/regions/{region}/forwardingRules/{name}/setLabels"
+            ]).format(**module.params),
+            {
+                u'labelFingerprint': response.get('labelFingerprint')
+            }
+        )
 
 
 def delete(module, link, kind):
@@ -514,7 +547,8 @@ def response_to_hash(module, response):
         u'portRange': response.get(u'portRange'),
         u'ports': response.get(u'ports'),
         u'subnetwork': response.get(u'subnetwork'),
-        u'target': response.get(u'target')
+        u'target': response.get(u'target'),
+        u'labelFingerprint': response.get(u'labelFingerprint')
     }
 
 

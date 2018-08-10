@@ -161,6 +161,12 @@ RETURN = '''
             - The URLs of the resources that are using this address.
         returned: success
         type: list
+    label_fingerprint:
+        description:
+            - The fingerprint used for optimistic locking of this resource.  Used internally during
+              updates.
+        returned: success
+        type: str
     region:
         description:
             - URL of the region where the regional address resides.
@@ -209,6 +215,8 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
+                update_fields(module, resource_to_request(module),
+                              response_to_hash(module, fetch))
                 fetch = update(module, self_link(module), kind)
                 changed = True
         else:
@@ -235,6 +243,21 @@ def create(module, link, kind):
 def update(module, link, kind):
     auth = GcpSession(module, 'compute')
     return wait_for_operation(module, auth.put(link, resource_to_request(module)))
+
+
+def update_fields(module, request, response):
+    difference = GcpRequest(request).difference(GcpRequest(response))
+    auth = GcpSession(module, 'compute')
+    if difference.get('label_fingerprint'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/regions/{region}/addresses/{name}/setLabels"
+            ]).format(**module.params),
+            {
+                u'labelFingerprint': response.get('labelFingerprint')
+            }
+        )
 
 
 def delete(module, link, kind):
@@ -324,7 +347,8 @@ def response_to_hash(module, response):
         u'id': response.get(u'id'),
         u'name': response.get(u'name'),
         u'subnetwork': response.get(u'subnetwork'),
-        u'users': response.get(u'users')
+        u'users': response.get(u'users'),
+        u'labelFingerprint': response.get(u'labelFingerprint')
     }
 
 
