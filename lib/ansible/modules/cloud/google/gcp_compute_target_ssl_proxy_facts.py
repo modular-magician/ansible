@@ -61,48 +61,53 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-    creation_timestamp:
+items:
+    description: List of items
+    returned: always
+    type: complex
+    contains:
+        creation_timestamp:
+            description:
+                - Creation timestamp in RFC3339 text format.
+            returned: success
+            type: str
         description:
-            - Creation timestamp in RFC3339 text format.
-        returned: success
-        type: str
-    description:
-        description:
-            - An optional description of this resource.
-        returned: success
-        type: str
-    id:
-        description:
-            - The unique identifier for the resource.
-        returned: success
-        type: int
-    name:
-        description:
-            - Name of the resource. Provided by the client when the resource is created. The name
-              must be 1-63 characters long, and comply with RFC1035. Specifically, the name must
-              be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
-              which means the first character must be a lowercase letter, and all following characters
-              must be a dash, lowercase letter, or digit, except the last character, which cannot
-              be a dash.
-        returned: success
-        type: str
-    proxy_header:
-        description:
-            - Specifies the type of proxy header to append before sending data to the backend,
-              either NONE or PROXY_V1. The default is NONE.
-        returned: success
-        type: str
-    service:
-        description:
-            - A reference to the BackendService resource.
-        returned: success
-        type: dict
-    ssl_certificates:
-        description:
-            - A list of SslCertificate resources that are used to authenticate connections between
-              users and the load balancer. Currently, exactly one SSL certificate must be specified.
-        returned: success
-        type: list
+            description:
+                - An optional description of this resource.
+            returned: success
+            type: str
+        id:
+            description:
+                - The unique identifier for the resource.
+            returned: success
+            type: int
+        name:
+            description:
+                - Name of the resource. Provided by the client when the resource is created. The name
+                  must be 1-63 characters long, and comply with RFC1035. Specifically, the name must
+                  be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
+                  which means the first character must be a lowercase letter, and all following characters
+                  must be a dash, lowercase letter, or digit, except the last character, which cannot
+                  be a dash.
+            returned: success
+            type: str
+        proxy_header:
+            description:
+                - Specifies the type of proxy header to append before sending data to the backend,
+                  either NONE or PROXY_V1. The default is NONE.
+            returned: success
+            type: str
+        service:
+            description:
+                - A reference to the BackendService resource.
+            returned: success
+            type: dict
+        ssl_certificates:
+            description:
+                - A list of SslCertificate resources that are used to authenticate connections between
+                  users and the load balancer. Currently, exactly one SSL certificate must be specified.
+            returned: success
+            type: list
 '''
 
 ################################################################################

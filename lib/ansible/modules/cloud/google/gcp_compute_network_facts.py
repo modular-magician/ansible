@@ -61,59 +61,64 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-    description:
+items:
+    description: List of items
+    returned: always
+    type: complex
+    contains:
         description:
-            - An optional description of this resource. Provide this property when you create
-              the resource.
-        returned: success
-        type: str
-    gateway_ipv4:
-        description:
-            - A gateway address for default routing to other networks. This value is read only
-              and is selected by the Google Compute Engine, typically as the first usable address
-              in the IPv4Range.
-        returned: success
-        type: str
-    id:
-        description:
-            - The unique identifier for the resource.
-        returned: success
-        type: int
-    ipv4_range:
-        description:
-            - 'The range of internal addresses that are legal on this network. This range is a
-              CIDR specification, for example: 192.168.0.0/16. Provided by the client when the
-              network is created.'
-        returned: success
-        type: str
-    name:
-        description:
-            - Name of the resource. Provided by the client when the resource is created. The name
-              must be 1-63 characters long, and comply with RFC1035. Specifically, the name must
-              be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
-              which means the first character must be a lowercase letter, and all following characters
-              must be a dash, lowercase letter, or digit, except the last character, which cannot
-              be a dash.
-        returned: success
-        type: str
-    subnetworks:
-        description:
-            - Server-defined fully-qualified URLs for all subnetworks in this network.
-        returned: success
-        type: list
-    auto_create_subnetworks:
-        description:
-            - When set to true, the network is created in "auto subnet mode". When set to false,
-              the network is in "custom subnet mode".
-            - In "auto subnet mode", a newly created network is assigned the default CIDR of 10.128.0.0/9
-              and it automatically creates one subnetwork per region.
-        returned: success
-        type: bool
-    creation_timestamp:
-        description:
-            - Creation timestamp in RFC3339 text format.
-        returned: success
-        type: str
+            description:
+                - An optional description of this resource. Provide this property when you create
+                  the resource.
+            returned: success
+            type: str
+        gateway_ipv4:
+            description:
+                - A gateway address for default routing to other networks. This value is read only
+                  and is selected by the Google Compute Engine, typically as the first usable address
+                  in the IPv4Range.
+            returned: success
+            type: str
+        id:
+            description:
+                - The unique identifier for the resource.
+            returned: success
+            type: int
+        ipv4_range:
+            description:
+                - 'The range of internal addresses that are legal on this network. This range is a
+                  CIDR specification, for example: 192.168.0.0/16. Provided by the client when the
+                  network is created.'
+            returned: success
+            type: str
+        name:
+            description:
+                - Name of the resource. Provided by the client when the resource is created. The name
+                  must be 1-63 characters long, and comply with RFC1035. Specifically, the name must
+                  be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
+                  which means the first character must be a lowercase letter, and all following characters
+                  must be a dash, lowercase letter, or digit, except the last character, which cannot
+                  be a dash.
+            returned: success
+            type: str
+        subnetworks:
+            description:
+                - Server-defined fully-qualified URLs for all subnetworks in this network.
+            returned: success
+            type: list
+        auto_create_subnetworks:
+            description:
+                - When set to true, the network is created in "auto subnet mode". When set to false,
+                  the network is in "custom subnet mode".
+                - In "auto subnet mode", a newly created network is assigned the default CIDR of 10.128.0.0/9
+                  and it automatically creates one subnetwork per region.
+            returned: success
+            type: bool
+        creation_timestamp:
+            description:
+                - Creation timestamp in RFC3339 text format.
+            returned: success
+            type: str
 '''
 
 ################################################################################
