@@ -66,70 +66,75 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-    creation_timestamp:
+items:
+    description: List of items
+    returned: always
+    type: complex
+    contains:
+        creation_timestamp:
+            description:
+                - Creation timestamp in RFC3339 text format.
+            returned: success
+            type: str
         description:
-            - Creation timestamp in RFC3339 text format.
-        returned: success
-        type: str
-    description:
-        description:
-            - An optional description of this resource. Provide this property when you create
-              the resource.
-        returned: success
-        type: str
-    id:
-        description:
-            - A unique identifier for this instance group.
-        returned: success
-        type: int
-    name:
-        description:
-            - The name of the instance group.
-            - The name must be 1-63 characters long, and comply with RFC1035.
-        returned: success
-        type: str
-    named_ports:
-        description:
-            - Assigns a name to a port number.
-            - 'For example: {name: "http", port: 80}.'
-            - This allows the system to reference ports by the assigned name instead of a port
-              number. Named ports can also contain multiple ports.
-            - 'For example: [{name: "http", port: 80},{name: "http", port: 8080}]  Named ports
-              apply to all instances in this instance group.'
-        returned: success
-        type: complex
-        contains:
-            name:
-                description:
-                    - The name for this named port.
-                    - The name must be 1-63 characters long, and comply with RFC1035.
-                returned: success
-                type: str
-            port:
-                description:
-                    - The port number, which can be a value between 1 and 65535.
-                returned: success
-                type: int
-    network:
-        description:
-            - The network to which all instances in the instance group belong.
-        returned: success
-        type: dict
-    region:
-        description:
-            - The region where the instance group is located (for regional resources).
-        returned: success
-        type: str
-    subnetwork:
-        description:
-            - The subnetwork to which all instances in the instance group belong.
-        returned: success
-        type: dict
-    zone:
-        description:
-            - A reference to the zone where the instance group resides.
-        returned: success
-        type: str
+            description:
+                - An optional description of this resource. Provide this property when you create
+                  the resource.
+            returned: success
+            type: str
+        id:
+            description:
+                - A unique identifier for this instance group.
+            returned: success
+            type: int
+        name:
+            description:
+                - The name of the instance group.
+                - The name must be 1-63 characters long, and comply with RFC1035.
+            returned: success
+            type: str
+        named_ports:
+            description:
+                - Assigns a name to a port number.
+                - 'For example: {name: "http", port: 80}.'
+                - This allows the system to reference ports by the assigned name instead of a port
+                  number. Named ports can also contain multiple ports.
+                - 'For example: [{name: "http", port: 80},{name: "http", port: 8080}]  Named ports
+                  apply to all instances in this instance group.'
+            returned: success
+            type: complex
+            contains:
+                name:
+                    description:
+                        - The name for this named port.
+                        - The name must be 1-63 characters long, and comply with RFC1035.
+                    returned: success
+                    type: str
+                port:
+                    description:
+                        - The port number, which can be a value between 1 and 65535.
+                    returned: success
+                    type: int
+        network:
+            description:
+                - The network to which all instances in the instance group belong.
+            returned: success
+            type: dict
+        region:
+            description:
+                - The region where the instance group is located (for regional resources).
+            returned: success
+            type: str
+        subnetwork:
+            description:
+                - The subnetwork to which all instances in the instance group belong.
+            returned: success
+            type: dict
+        zone:
+            description:
+                - A reference to the zone where the instance group resides.
+            returned: success
+            type: str
 '''
 
 ################################################################################
