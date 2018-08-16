@@ -253,7 +253,7 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
-                fetch = update(module, self_link(module), kind)
+                fetch = update(module, self_link(module), kind, fetch)
                 changed = True
         else:
             delete(module, self_link(module), kind)
@@ -276,8 +276,44 @@ def create(module, link, kind):
     return wait_for_operation(module, auth.post(link, resource_to_request(module)))
 
 
-def update(module, link, kind):
-    module.fail_json(msg="TargetSslProxy cannot be edited")
+def update(module, link, kind, fetch):
+    update_fields(module, resource_to_request(module),
+                  response_to_hash(module, fetch))
+    return fetch_resource(module, self_link(module), kind)
+
+
+def update_fields(module, request, response):
+    auth = GcpSession(module, 'compute')
+    if response.get('proxyHeader') != request.get('proxyHeader'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/global/targetSslProxies/{name}/setProxyHeader"
+            ]).format(**module.params),
+            {
+                u'proxyHeader': module.params.get('proxy_header')
+            }
+        )
+    if response.get('service') != request.get('service'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/global/targetSslProxies/{name}/setBackendService"
+            ]).format(**module.params),
+            {
+                u'service': replace_resource_dict(module.params.get(u'service', {}), 'selfLink')
+            }
+        )
+    if response.get('sslCertificates') != request.get('sslCertificates'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/global/targetSslProxies/{name}/setSslCertificates"
+            ]).format(**module.params),
+            {
+                u'sslCertificates': replace_resource_dict(module.params.get('ssl_certificates', []), 'selfLink')
+            }
+        )
 
 
 def delete(module, link, kind):

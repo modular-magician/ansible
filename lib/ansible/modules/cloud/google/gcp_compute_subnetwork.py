@@ -228,7 +228,7 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
-                fetch = update(module, self_link(module), kind)
+                fetch = update(module, self_link(module), kind, fetch)
                 changed = True
         else:
             delete(module, self_link(module), kind)
@@ -251,8 +251,34 @@ def create(module, link, kind):
     return wait_for_operation(module, auth.post(link, resource_to_request(module)))
 
 
-def update(module, link, kind):
-    module.fail_json(msg="Subnetwork cannot be edited")
+def update(module, link, kind, fetch):
+    update_fields(module, resource_to_request(module),
+                  response_to_hash(module, fetch))
+    return fetch_resource(module, self_link(module), kind)
+
+
+def update_fields(module, request, response):
+    auth = GcpSession(module, 'compute')
+    if response.get('ipCidrRange') != request.get('ipCidrRange'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/regions/{region}/subnetworks/{name}/expandIpCidrRange"
+            ]).format(**module.params),
+            {
+                u'ipCidrRange': module.params.get('ip_cidr_range')
+            }
+        )
+    if response.get('privateIpGoogleAccess') != request.get('privateIpGoogleAccess'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/regions/{region}/subnetworks/{name}/setPrivateIpGoogleAccess"
+            ]).format(**module.params),
+            {
+                u'privateIpGoogleAccess': module.params.get('private_ip_google_access')
+            }
+        )
 
 
 def delete(module, link, kind):
