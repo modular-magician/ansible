@@ -193,6 +193,12 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
+    label_fingerprint:
+        description:
+            - The fingerprint used for optimistic locking of this resource.  Used internally during
+              updates.
+        returned: success
+        type: str
     creation_timestamp:
         description:
             - Creation timestamp in RFC3339 text format.
@@ -427,7 +433,7 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
-                fetch = update(module, self_link(module), kind)
+                fetch = update(module, self_link(module), kind, fetch)
                 changed = True
         else:
             delete(module, self_link(module), kind)
@@ -450,8 +456,35 @@ def create(module, link, kind):
     return wait_for_operation(module, auth.post(link, resource_to_request(module)))
 
 
-def update(module, link, kind):
-    module.fail_json(msg="Disk cannot be edited")
+def update(module, link, kind, fetch):
+    update_fields(module, resource_to_request(module),
+                  response_to_hash(module, fetch))
+    return fetch_resource(module, self_link(module), kind)
+
+
+def update_fields(module, request, response):
+    auth = GcpSession(module, 'compute')
+    if response.get('labels') != request.get('labels'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/zones/{zone}/disks/{name}/setLabels"
+            ]).format(**module.params),
+            {
+                u'labelFingerprint': response.get('labelFingerprint'),
+                u'labels': module.params.get('labels')
+            }
+        )
+    if response.get('sizeGb') != request.get('sizeGb'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/zones/{zone}/disks/{name}/resize"
+            ]).format(**module.params),
+            {
+                u'sizeGb': module.params.get('size_gb')
+            }
+        )
 
 
 def delete(module, link, kind):
@@ -539,6 +572,7 @@ def is_different(module, response):
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
     return {
+        u'labelFingerprint': response.get(u'labelFingerprint'),
         u'creationTimestamp': response.get(u'creationTimestamp'),
         u'description': response.get(u'description'),
         u'id': response.get(u'id'),

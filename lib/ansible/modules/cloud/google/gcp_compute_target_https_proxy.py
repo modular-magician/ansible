@@ -266,7 +266,7 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
-                fetch = update(module, self_link(module), kind)
+                fetch = update(module, self_link(module), kind, fetch)
                 changed = True
         else:
             delete(module, self_link(module), kind)
@@ -289,8 +289,44 @@ def create(module, link, kind):
     return wait_for_operation(module, auth.post(link, resource_to_request(module)))
 
 
-def update(module, link, kind):
-    module.fail_json(msg="TargetHttpsProxy cannot be edited")
+def update(module, link, kind, fetch):
+    update_fields(module, resource_to_request(module),
+                  response_to_hash(module, fetch))
+    return fetch_resource(module, self_link(module), kind)
+
+
+def update_fields(module, request, response):
+    auth = GcpSession(module, 'compute')
+    if response.get('quicOverride') != request.get('quicOverride'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/global/targetHttpsProxies/{name}/setQuicOverride"
+            ]).format(**module.params),
+            {
+                u'quicOverride': module.params.get('quic_override')
+            }
+        )
+    if response.get('sslCertificates') != request.get('sslCertificates'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/targetHttpsProxies/{name}/setSslCertificates"
+            ]).format(**module.params),
+            {
+                u'sslCertificates': replace_resource_dict(module.params.get('ssl_certificates', []), 'selfLink')
+            }
+        )
+    if response.get('urlMap') != request.get('urlMap'):
+        auth.post(
+            ''.join([
+                "https://www.googleapis.com/compute/v1/",
+                "projects/{project}/targetHttpsProxies/{name}/setUrlMap"
+            ]).format(**module.params),
+            {
+                u'urlMap': replace_resource_dict(module.params.get(u'url_map', {}), 'selfLink')
+            }
+        )
 
 
 def delete(module, link, kind):
