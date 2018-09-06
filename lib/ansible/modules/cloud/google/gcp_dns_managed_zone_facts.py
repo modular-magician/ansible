@@ -30,10 +30,10 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 
 DOCUMENTATION = '''
 ---
-module: gcp_compute_target_http_proxy_facts
+module: gcp_dns_managed_zone_facts
 description:
-  - Gather facts for GCP TargetHttpProxy
-short_description: Gather facts for GCP TargetHttpProxy
+  - Gather facts for GCP ManagedZone
+short_description: Gather facts for GCP ManagedZone
 version_added: 2.7
 author: Google Inc. (@googlecloudplatform)
 requirements:
@@ -41,20 +41,16 @@ requirements:
     - requests >= 2.18.4
     - google-auth >= 1.3.0
 options:
-    filters:
+    dns_name:
        description:
-           A list of filter value pairs. Available filters are listed here
-           U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
-           Each additional filter in the list will act be added as an AND condition
-           (filter1 and filter2)
+           Restricts the list to return only zones with this domain name.
 extends_documentation_fragment: gcp
 '''
 
 EXAMPLES = '''
-- name:  a target http proxy facts
-  gcp_compute_target_http_proxy_facts:
-      filters:
-      - name = test_object
+- name:  a managed zone facts
+  gcp_dns_managed_zone_facts:
+      dns_name: test.somewild2.example.com.
       project: test_project
       auth_kind: service_account
       service_account_file: "/tmp/auth.pem"
@@ -66,36 +62,47 @@ items:
     returned: always
     type: complex
     contains:
-        creation_timestamp:
-            description:
-                - Creation timestamp in RFC3339 text format.
-            returned: success
-            type: str
         description:
             description:
-                - An optional description of this resource.
+                - A mutable string of at most 1024 characters associated with this resource for the
+                  user's convenience. Has no effect on the managed zone's function.
+            returned: success
+            type: str
+        dns_name:
+            description:
+                - The DNS name of this managed zone, for instance "example.com.".
             returned: success
             type: str
         id:
             description:
-                - The unique identifier for the resource.
+                - Unique identifier for the resource; defined by the server.
             returned: success
             type: int
         name:
             description:
-                - Name of the resource. Provided by the client when the resource is created. The name
-                  must be 1-63 characters long, and comply with RFC1035. Specifically, the name must
-                  be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
-                  which means the first character must be a lowercase letter, and all following characters
-                  must be a dash, lowercase letter, or digit, except the last character, which cannot
-                  be a dash.
+                - User assigned name for this resource.
+                - Must be unique within the project.
             returned: success
             type: str
-        url_map:
+        name_servers:
             description:
-                - A reference to the UrlMap resource that defines the mapping from URL to the BackendService.
+                - Delegate your managed_zone to these virtual name servers; defined by the server
+                  .
             returned: success
-            type: dict
+            type: list
+        name_server_set:
+            description:
+                - Optionally specifies the NameServerSet for this ManagedZone. A NameServerSet is
+                  a set of DNS name servers that all host the same ManagedZones. Most users will leave
+                  this field unset.
+            returned: success
+            type: list
+        creation_time:
+            description:
+                - The time that this resource was created on the server.
+                - This is in RFC3339 text format.
+            returned: success
+            type: str
 '''
 
 ################################################################################
@@ -112,16 +119,16 @@ import json
 def main():
     module = GcpModule(
         argument_spec=dict(
-            filters=dict(type='list', elements='str')
+            dns_name=dict(type='str')
         )
     )
 
     if 'scopes' not in module.params:
-        module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
+        module.params['scopes'] = ['https://www.googleapis.com/auth/ndev.clouddns.readwrite']
 
-    items = fetch_list(module, collection(module), query_options(module.params['filters']))
-    if items.get('items'):
-        items = items.get('items')
+    items = fetch_list(module, collection(module), module.params['dns_name'])
+    if items.get('managedZones'):
+        items = items.get('managedZones')
     else:
         items = []
     return_value = {
@@ -131,31 +138,13 @@ def main():
 
 
 def collection(module):
-    return "https://www.googleapis.com/compute/v1/projects/{project}/global/targetHttpProxies".format(**module.params)
+    return "https://www.googleapis.com/dns/v1/projects/{project}/managedZones".format(**module.params)
 
 
 def fetch_list(module, link, query):
-    auth = GcpSession(module, 'compute')
-    response = auth.get(link, params={'filter': query})
+    auth = GcpSession(module, 'dns')
+    response = auth.get(link, params={'dnsName': query})
     return return_if_object(module, response)
-
-
-def query_options(filters):
-    if not filters:
-        return ''
-
-    if len(filters) == 1:
-        return filters[0]
-    else:
-        queries = []
-        for f in filters:
-            # For multiple queries, all queries should have ()
-            if f[0] != '(' and f[-1] != ')':
-                queries.append("(%s)" % ''.join(f))
-            else:
-                queries.append(f)
-
-        return ' '.join(queries)
 
 
 def return_if_object(module, response):
