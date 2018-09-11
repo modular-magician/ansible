@@ -53,8 +53,7 @@ extends_documentation_fragment: gcp
 EXAMPLES = '''
 - name:  a image facts
   gcp_compute_image_facts:
-      filters:
-      - name = test_object
+      filters: 
       project: test_project
       auth_kind: serviceaccount
       service_account_file: "/tmp/auth.pem"
@@ -278,7 +277,7 @@ import json
 def main():
     module = GcpModule(
         argument_spec=dict(
-            filters=dict(type='list', elements='str'),
+            filters=dict(type='str', elements='str')
         )
     )
 

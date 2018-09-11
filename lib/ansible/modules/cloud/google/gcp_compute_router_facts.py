@@ -58,8 +58,7 @@ EXAMPLES = '''
 - name:  a router facts
   gcp_compute_router_facts:
       region: us-central1
-      filters:
-      - name = test_object
+      filters: 
       project: test_project
       auth_kind: serviceaccount
       service_account_file: "/tmp/auth.pem"
@@ -168,7 +167,7 @@ import json
 def main():
     module = GcpModule(
         argument_spec=dict(
-            filters=dict(type='list', elements='str'),
+            filters=dict(type='str', elements='str'),
             region=dict(required=True, type='str')
         )
     )

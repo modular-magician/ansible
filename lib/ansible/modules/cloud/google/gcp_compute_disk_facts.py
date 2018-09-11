@@ -58,8 +58,7 @@ EXAMPLES = '''
 - name:  a disk facts
   gcp_compute_disk_facts:
       zone: us-central1-a
-      filters:
-      - name = test_object
+      filters: 
       project: test_project
       auth_kind: serviceaccount
       service_account_file: "/tmp/auth.pem"
@@ -269,7 +268,7 @@ import json
 def main():
     module = GcpModule(
         argument_spec=dict(
-            filters=dict(type='list', elements='str'),
+            filters=dict(type='str', elements='str'),
             zone=dict(required=True, type='str')
         )
     )
