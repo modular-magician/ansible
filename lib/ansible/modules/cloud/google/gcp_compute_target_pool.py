@@ -59,6 +59,10 @@ options:
               the backup pool are unhealthy, the traffic will be directed back to the primary
               pool in the "force" mode, where traffic will be spread to the healthy instances
               with the best effort, or to all instances when no instance is healthy.
+            - This field represents a link to a TargetPool resource in GCP. This field uses the
+              `selfLink` field from a TargetPool that already exists. This field takes in a dictionary
+              that contains at least a `selfLink` key. You can make this dictionary manually,
+              or use the output of a `gcp_compute_target_pool` task directly.
         required: false
     description:
         description:
@@ -84,6 +88,10 @@ options:
             - A member instance in this pool is considered healthy if and only if the health checks
               pass. If not specified it means all member instances will be considered healthy
               at all times.
+            - This field represents a link to a HttpHealthCheck resource in GCP. This field uses
+              the `selfLink` field from a HttpHealthCheck that already exists. This field takes
+              in a dictionary that contains at least a `selfLink` key. You can make this dictionary
+              manually, or use the output of a `gcp_compute_http_health_check` task directly.
         required: false
     instances:
         description:

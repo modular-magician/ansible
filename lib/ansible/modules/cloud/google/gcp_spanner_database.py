@@ -61,6 +61,10 @@ options:
     instance:
         description:
             - The instance to create the database on.
+            - This field represents a link to a Instance resource in GCP. This field uses the
+              `name` field from a Instance that already exists. This field takes in a dictionary
+              that contains at least a `name` key. You can make this dictionary manually, or use
+              the output of a `gcp_spanner_instance` task directly.
         required: true
 extends_documentation_fragment: gcp
 '''

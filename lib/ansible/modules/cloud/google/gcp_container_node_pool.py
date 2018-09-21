@@ -198,6 +198,10 @@ options:
     cluster:
         description:
             - The cluster this node pool belongs to.
+            - This field represents a link to a Cluster resource in GCP. This field uses the `name`
+              field from a Cluster that already exists. This field takes in a dictionary that
+              contains at least a `name` key. You can make this dictionary manually, or use the
+              output of a `gcp_container_cluster` task directly.
         required: true
     zone:
         description:

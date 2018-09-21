@@ -85,6 +85,10 @@ options:
             - A reference to a BackendService to receive the matched traffic.
             - This is used for internal load balancing.
             - "(not used for external load balancing) ."
+            - This field represents a link to a BackendService resource in GCP. This field uses
+              the `selfLink` field from a BackendService that already exists. This field takes
+              in a dictionary that contains at least a `selfLink` key. You can make this dictionary
+              manually, or use the output of a `gcp_compute_backend_service` task directly.
         required: false
     ip_version:
         description:
@@ -116,6 +120,10 @@ options:
               IP should belong to for this Forwarding Rule. If this field is not specified, the
               default network will be used.
             - This field is not used for external load balancing.
+            - This field represents a link to a Network resource in GCP. This field uses the `selfLink`
+              field from a Network that already exists. This field takes in a dictionary that
+              contains at least a `selfLink` key. You can make this dictionary manually, or use
+              the output of a `gcp_compute_network` task directly.
         required: false
     port_range:
         description:
@@ -147,6 +155,10 @@ options:
             - If the network specified is in auto subnet mode, this field is optional. However,
               if the network is in custom subnet mode, a subnetwork must be specified.
             - This field is not used for external load balancing.
+            - This field represents a link to a Subnetwork resource in GCP. This field uses the
+              `selfLink` field from a Subnetwork that already exists. This field takes in a dictionary
+              that contains at least a `selfLink` key. You can make this dictionary manually,
+              or use the output of a `gcp_compute_subnetwork` task directly.
         required: false
     target:
         description:
@@ -155,6 +167,10 @@ options:
               rule. For global forwarding rules, this target must be a global load balancing resource.
               The forwarded traffic must be of a type appropriate to the target object.
             - This field is not used for internal load balancing.
+            - This field represents a link to a TargetPool resource in GCP. This field uses the
+              `selfLink` field from a TargetPool that already exists. This field takes in a dictionary
+              that contains at least a `selfLink` key. You can make this dictionary manually,
+              or use the output of a `gcp_compute_target_pool` task directly.
         required: false
         version_added: 2.7
     region:

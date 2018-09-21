@@ -71,6 +71,10 @@ options:
         description:
             - Identifies the managed zone addressed by this request.
             - Can be the managed zone name or id.
+            - This field represents a link to a ManagedZone resource in GCP. This field uses the
+              `name` field from a ManagedZone that already exists. This field takes in a dictionary
+              that contains at least a `name` key. You can make this dictionary manually, or use
+              the output of a `gcp_dns_managed_zone` task directly.
         required: true
 extends_documentation_fragment: gcp
 '''

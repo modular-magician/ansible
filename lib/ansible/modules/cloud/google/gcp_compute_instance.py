@@ -171,6 +171,10 @@ options:
                       or disks.source is required.
                     - If desired, you can also attach existing non-root persistent disks using this property.
                       This field is only applicable for persistent disks.
+                    - This field represents a link to a Disk resource in GCP. This field uses the `selfLink`
+                      field from a Disk that already exists. This field takes in a dictionary that contains
+                      at least a `selfLink` key. You can make this dictionary manually, or use the output
+                      of a `gcp_compute_disk` task directly.
                 required: false
             type:
                 description:
@@ -249,6 +253,10 @@ options:
                               field undefined to use an IP from a shared ephemeral IP address pool. If you specify
                               a static external IP address, it must live in the same region as the zone of the
                               instance.
+                            - This field represents a link to a Address resource in GCP. This field uses the `address`
+                              field from a Address that already exists. This field takes in a dictionary that
+                              contains at least a `address` key. You can make this dictionary manually, or use
+                              the output of a `gcp_compute_address` task directly.
                         required: false
                     type:
                         description:
@@ -286,6 +294,10 @@ options:
                       if neither the network nor the subnetwork is specified, the default network global/networks/default
                       is used; if the network is not specified but the subnetwork is specified, the network
                       is inferred.
+                    - This field represents a link to a Network resource in GCP. This field uses the `selfLink`
+                      field from a Network that already exists. This field takes in a dictionary that
+                      contains at least a `selfLink` key. You can make this dictionary manually, or use
+                      the output of a `gcp_compute_network` task directly.
                 required: false
             network_ip:
                 description:
@@ -298,6 +310,10 @@ options:
                     - If the network resource is in legacy mode, do not provide this property.  If the
                       network is in auto subnet mode, providing the subnetwork is optional. If the network
                       is in custom subnet mode, then this field should be specified.
+                    - This field represents a link to a Subnetwork resource in GCP. This field uses the
+                      `selfLink` field from a Subnetwork that already exists. This field takes in a dictionary
+                      that contains at least a `selfLink` key. You can make this dictionary manually,
+                      or use the output of a `gcp_compute_subnetwork` task directly.
                 required: false
     scheduling:
         description:

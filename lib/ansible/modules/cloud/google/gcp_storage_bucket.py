@@ -59,6 +59,10 @@ options:
             bucket:
                 description:
                     - The name of the bucket.
+                    - This field represents a link to a Bucket resource in GCP. This field uses the `name`
+                      field from a Bucket that already exists. This field takes in a dictionary that contains
+                      at least a `name` key. You can make this dictionary manually, or use the output
+                      of a `gcp_storage_bucket` task directly.
                 required: true
             domain:
                 description:
@@ -139,6 +143,10 @@ options:
             bucket:
                 description:
                     - The name of the bucket.
+                    - This field represents a link to a Bucket resource in GCP. This field uses the `name`
+                      field from a Bucket that already exists. This field takes in a dictionary that contains
+                      at least a `name` key. You can make this dictionary manually, or use the output
+                      of a `gcp_storage_bucket` task directly.
                 required: true
             domain:
                 description:

@@ -89,6 +89,10 @@ options:
                     - No two backends in a backend service are allowed to use same Instance Group resource.
                     - When the BackendService has load balancing scheme INTERNAL, the instance group must
                       be in a zone within the same region as the BackendService.
+                    - This field represents a link to a InstanceGroup resource in GCP. This field uses
+                      the `selfLink` field from a InstanceGroup that already exists. This field takes
+                      in a dictionary that contains at least a `selfLink` key. You can make this dictionary
+                      manually, or use the output of a `gcp_compute_instance_group` task directly.
                 required: false
             max_connections:
                 description:

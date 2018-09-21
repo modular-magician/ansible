@@ -84,6 +84,10 @@ options:
     network:
         description:
             - The network that this route applies to.
+            - This field represents a link to a Network resource in GCP. This field uses the `selfLink`
+              field from a Network that already exists. This field takes in a dictionary that
+              contains at least a `selfLink` key. You can make this dictionary manually, or use
+              the output of a `gcp_compute_network` task directly.
         required: true
     priority:
         description:

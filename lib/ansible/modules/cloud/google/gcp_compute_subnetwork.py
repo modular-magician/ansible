@@ -87,6 +87,10 @@ options:
         description:
             - The network this subnet belongs to.
             - Only networks that are in the distributed mode can have subnetworks.
+            - This field represents a link to a Network resource in GCP. This field uses the `selfLink`
+              field from a Network that already exists. This field takes in a dictionary that
+              contains at least a `selfLink` key. You can make this dictionary manually, or use
+              the output of a `gcp_compute_network` task directly.
         required: true
     private_ip_google_access:
         description:

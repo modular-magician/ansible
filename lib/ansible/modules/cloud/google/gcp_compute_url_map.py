@@ -50,6 +50,10 @@ options:
     default_service:
         description:
             - A reference to BackendService resource if none of the hostRules match.
+            - This field represents a link to a BackendService resource in GCP. This field uses
+              the `selfLink` field from a BackendService that already exists. This field takes
+              in a dictionary that contains at least a `selfLink` key. You can make this dictionary
+              manually, or use the output of a `gcp_compute_backend_service` task directly.
         required: true
     description:
         description:
@@ -95,6 +99,10 @@ options:
                 description:
                     - A reference to a BackendService resource. This will be used if none of the pathRules
                       defined by this PathMatcher is matched by the URL's path portion.
+                    - This field represents a link to a BackendService resource in GCP. This field uses
+                      the `selfLink` field from a BackendService that already exists. This field takes
+                      in a dictionary that contains at least a `selfLink` key. You can make this dictionary
+                      manually, or use the output of a `gcp_compute_backend_service` task directly.
                 required: false
             description:
                 description:
@@ -118,6 +126,10 @@ options:
                     service:
                         description:
                             - A reference to the BackendService resource if this rule is matched.
+                            - This field represents a link to a BackendService resource in GCP. This field uses
+                              the `selfLink` field from a BackendService that already exists. This field takes
+                              in a dictionary that contains at least a `selfLink` key. You can make this dictionary
+                              manually, or use the output of a `gcp_compute_backend_service` task directly.
                         required: false
     tests:
         description:
@@ -140,6 +152,10 @@ options:
             service:
                 description:
                     - A reference to expected BackendService resource the given URL should be mapped to.
+                    - This field represents a link to a BackendService resource in GCP. This field uses
+                      the `selfLink` field from a BackendService that already exists. This field takes
+                      in a dictionary that contains at least a `selfLink` key. You can make this dictionary
+                      manually, or use the output of a `gcp_compute_backend_service` task directly.
                 required: false
 extends_documentation_fragment: gcp
 '''

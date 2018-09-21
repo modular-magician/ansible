@@ -59,6 +59,10 @@ options:
     instance:
         description:
             - The name of the Cloud SQL instance. This does not include the project ID.
+            - This field represents a link to a Instance resource in GCP. This field uses the
+              `name` field from a Instance that already exists. This field takes in a dictionary
+              that contains at least a `name` key. You can make this dictionary manually, or use
+              the output of a `gcp_sql_instance` task directly.
         required: true
     password:
         description:

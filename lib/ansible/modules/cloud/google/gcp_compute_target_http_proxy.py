@@ -63,6 +63,10 @@ options:
     url_map:
         description:
             - A reference to the UrlMap resource that defines the mapping from URL to the BackendService.
+            - This field represents a link to a UrlMap resource in GCP. This field uses the `selfLink`
+              field from a UrlMap that already exists. This field takes in a dictionary that contains
+              at least a `selfLink` key. You can make this dictionary manually, or use the output
+              of a `gcp_compute_url_map` task directly.
         required: true
 extends_documentation_fragment: gcp
 notes:

@@ -81,6 +81,10 @@ options:
     network:
         description:
             - The network to which all instances in the instance group belong.
+            - This field represents a link to a Network resource in GCP. This field uses the `selfLink`
+              field from a Network that already exists. This field takes in a dictionary that
+              contains at least a `selfLink` key. You can make this dictionary manually, or use
+              the output of a `gcp_compute_network` task directly.
         required: false
     region:
         description:
@@ -89,6 +93,10 @@ options:
     subnetwork:
         description:
             - The subnetwork to which all instances in the instance group belong.
+            - This field represents a link to a Subnetwork resource in GCP. This field uses the
+              `selfLink` field from a Subnetwork that already exists. This field takes in a dictionary
+              that contains at least a `selfLink` key. You can make this dictionary manually,
+              or use the output of a `gcp_compute_subnetwork` task directly.
         required: false
     zone:
         description:

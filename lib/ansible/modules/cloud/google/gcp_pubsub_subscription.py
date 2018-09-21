@@ -54,6 +54,10 @@ options:
     topic:
         description:
             - A reference to a Topic resource.
+            - This field represents a link to a Topic resource in GCP. This field uses the `name`
+              field from a Topic that already exists. This field takes in a dictionary that contains
+              at least a `name` key. You can make this dictionary manually, or use the output
+              of a `gcp_pubsub_topic` task directly.
         required: false
     push_config:
         description:

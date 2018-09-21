@@ -148,6 +148,10 @@ options:
         description:
             - Refers to a gcompute_disk object You must provide either this property or the rawDisk.source
               property but not both to create an image.
+            - This field represents a link to a Disk resource in GCP. This field uses the `selfLink`
+              field from a Disk that already exists. This field takes in a dictionary that contains
+              at least a `selfLink` key. You can make this dictionary manually, or use the output
+              of a `gcp_compute_disk` task directly.
         required: false
     source_disk_encryption_key:
         description:

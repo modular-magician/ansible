@@ -69,6 +69,10 @@ options:
     service:
         description:
             - A reference to the BackendService resource.
+            - This field represents a link to a BackendService resource in GCP. This field uses
+              the `selfLink` field from a BackendService that already exists. This field takes
+              in a dictionary that contains at least a `selfLink` key. You can make this dictionary
+              manually, or use the output of a `gcp_compute_backend_service` task directly.
         required: true
     ssl_certificates:
         description:
