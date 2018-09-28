@@ -434,7 +434,7 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
-                update(module, self_link(module), kind)
+                update(module, self_link(module), kind, fetch)
                 fetch = fetch_resource(module, self_link(module), kind)
                 changed = True
         else:
@@ -458,9 +458,29 @@ def create(module, link, kind):
     return wait_for_operation(module, auth.post(link, resource_to_request(module)))
 
 
-def update(module, link, kind):
+def update(module, link, kind, fetch):
+    update_fields(module, resource_to_request(module),
+                  response_to_hash(module, fetch))
     auth = GcpSession(module, 'compute')
     return wait_for_operation(module, auth.put(link, resource_to_request(module)))
+
+
+def update_fields(module, request, response):
+    if response.get('target') != request.get('target'):
+        target_update(module, request, response)
+
+
+def target_update(module, request, response):
+    auth = GcpSession(module, 'compute')
+    auth.post(
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "products/{product}/global/forwardingRules/{name}/setTarget"
+        ]).format(**module.params),
+        {
+            u'target': module.params.get('target')
+        }
+    )
 
 
 def delete(module, link, kind):
