@@ -92,6 +92,11 @@ options:
                       and does not enable or disable any features.
                 required: false
                 choices: ['VIRTIO_SCSI_MULTIQUEUE']
+    labels:
+        description:
+            - Labels to apply to this VpnTunnel.
+        required: false
+        version_added: 2.8
     image_encryption_key:
         description:
             - Encrypts the image using a customer-supplied encryption key.
@@ -300,6 +305,17 @@ RETURN = '''
                       and does not enable or disable any features.
                 returned: success
                 type: str
+    labels:
+        description:
+            - Labels to apply to this VpnTunnel.
+        returned: success
+        type: dict
+    labelFingerprint:
+        description:
+            - The fingerprint used for optimistic locking of this resource.  Used internally during
+              updates.
+        returned: success
+        type: str
     id:
         description:
             - The unique identifier for the resource. This identifier is defined by the server.
@@ -430,6 +446,7 @@ def main():
             guest_os_features=dict(type='list', elements='dict', options=dict(
                 type=dict(type='str', choices=['VIRTIO_SCSI_MULTIQUEUE'])
             )),
+            labels=dict(type='dict'),
             image_encryption_key=dict(type='dict', options=dict(
                 raw_key=dict(type='str'),
                 sha256=dict(type='str')
@@ -463,7 +480,7 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
-                update(module, self_link(module), kind)
+                update(module, self_link(module), kind, fetch)
                 fetch = fetch_resource(module, self_link(module), kind)
                 changed = True
         else:
@@ -487,9 +504,29 @@ def create(module, link, kind):
     return wait_for_operation(module, auth.post(link, resource_to_request(module)))
 
 
-def update(module, link, kind):
+def update(module, link, kind, fetch):
+    update_fields(module, resource_to_request(module),
+                  response_to_hash(module, fetch))
+    return fetch_resource(module, self_link(module), kind)
+
+
+def update_fields(module, request, response):
+    if response.get('labels') != request.get('labels'):
+        labels_update(module, request, response)
+
+
+def labels_update(module, request, response):
     auth = GcpSession(module, 'compute')
-    return wait_for_operation(module, auth.put(link, resource_to_request(module)))
+    auth.post(
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "projects/{project}/global/images/{name}/setLabels"
+        ]).format(**module.params),
+        {
+            u'labels': module.params.get('labels'),
+            u'labelFingerprint': response.get('labelFingerprint')
+        }
+    )
 
 
 def delete(module, link, kind):
@@ -504,6 +541,7 @@ def resource_to_request(module):
         u'diskSizeGb': module.params.get('disk_size_gb'),
         u'family': module.params.get('family'),
         u'guestOsFeatures': ImageGuestOsFeaturesArray(module.params.get('guest_os_features', []), module).to_request(),
+        u'labels': module.params.get('labels'),
         u'imageEncryptionKey': ImageImageEncryptionKey(module.params.get('image_encryption_key', {}), module).to_request(),
         u'licenses': module.params.get('licenses'),
         u'name': module.params.get('name'),
@@ -584,6 +622,8 @@ def response_to_hash(module, response):
         u'diskSizeGb': response.get(u'diskSizeGb'),
         u'family': response.get(u'family'),
         u'guestOsFeatures': ImageGuestOsFeaturesArray(response.get(u'guestOsFeatures', []), module).from_response(),
+        u'labels': response.get(u'labels'),
+        u'labelFingerprint': response.get(u'labelFingerprint'),
         u'id': response.get(u'id'),
         u'imageEncryptionKey': ImageImageEncryptionKey(response.get(u'imageEncryptionKey', {}), module).from_response(),
         u'licenses': response.get(u'licenses'),

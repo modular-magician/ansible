@@ -159,6 +159,17 @@ items:
                           and does not enable or disable any features.
                     returned: success
                     type: str
+        labels:
+            description:
+                - Labels to apply to this VpnTunnel.
+            returned: success
+            type: dict
+        labelFingerprint:
+            description:
+                - The fingerprint used for optimistic locking of this resource.  Used internally during
+                  updates.
+            returned: success
+            type: str
         id:
             description:
                 - The unique identifier for the resource. This identifier is defined by the server.
