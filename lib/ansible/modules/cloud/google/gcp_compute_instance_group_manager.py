@@ -360,7 +360,7 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
-                update(module, self_link(module), kind)
+                update(module, self_link(module), kind, fetch)
                 fetch = fetch_resource(module, self_link(module), kind)
                 changed = True
         else:
@@ -384,9 +384,28 @@ def create(module, link, kind):
     return wait_for_operation(module, auth.post(link, resource_to_request(module)))
 
 
-def update(module, link, kind):
+def update(module, link, kind, fetch):
+    update_fields(module, resource_to_request(module),
+                  response_to_hash(module, fetch))
+    return fetch_resource(module, self_link(module), kind)
+
+
+def update_fields(module, request, response):
+    if response.get('instanceTemplate') != request.get('instanceTemplate'):
+        instance_template_update(module, request, response)
+
+
+def instance_template_update(module, request, response):
     auth = GcpSession(module, 'compute')
-    return wait_for_operation(module, auth.put(link, resource_to_request(module)))
+    auth.post(
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "projects/{project}/zones/{zone}/instanceGroupManagers/{name}/setInstanceTemplate"
+        ]).format(**module.params),
+        {
+            u'instanceTemplate': replace_resource_dict(module.params.get(u'instance_template', {}), 'selfLink')
+        }
+    )
 
 
 def delete(module, link, kind):
