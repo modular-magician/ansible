@@ -201,7 +201,7 @@ options:
             role:
                 description:
                     - The access permission for the entity.
-                required: false
+                required: true
                 choices: ['OWNER', 'READER']
     lifecycle:
         description:
@@ -792,7 +792,7 @@ def main():
                     project_number=dict(type='str'),
                     team=dict(type='str', choices=['editors', 'owners', 'viewers'])
                 )),
-                role=dict(type='str', choices=['OWNER', 'READER'])
+                role=dict(required=True, type='str', choices=['OWNER', 'READER'])
             )),
             lifecycle=dict(type='dict', options=dict(
                 rule=dict(type='list', elements='dict', options=dict(
