@@ -160,9 +160,9 @@ options:
                 required: false
             entity:
                 description:
-                    - 'The entity holding the permission, in one of the following forms: user-userId
-                      user-email group-groupId group-email domain-domain project-team-projectId allUsers
-                      allAuthenticatedUsers Examples: The user liz@example.com would be
+                    - 'The entity holding the permission, in one of the following forms:   * user-userId   *
+                      user-email   * group-groupId   * group-email   * domain-domain   * project-team-projectId   *
+                      allUsers   * allAuthenticatedUsers  Examples:   The user liz@example.com would be
                       user-liz@example.com.'
                     - The group example@googlegroups.com would be   group-example@googlegroups.com.
                     - To refer to all members of the Google Apps for Business domain   example.com, the
@@ -201,7 +201,7 @@ options:
             role:
                 description:
                     - The access permission for the entity.
-                required: false
+                required: true
                 choices: ['OWNER', 'READER']
     lifecycle:
         description:
@@ -490,9 +490,9 @@ RETURN = '''
                 type: str
             entity:
                 description:
-                    - 'The entity holding the permission, in one of the following forms: user-userId
-                      user-email group-groupId group-email domain-domain project-team-projectId allUsers
-                      allAuthenticatedUsers Examples: The user liz@example.com would be
+                    - 'The entity holding the permission, in one of the following forms:   * user-userId   *
+                      user-email   * group-groupId   * group-email   * domain-domain   * project-team-projectId   *
+                      allUsers   * allAuthenticatedUsers  Examples:   The user liz@example.com would be
                       user-liz@example.com.'
                     - The group example@googlegroups.com would be   group-example@googlegroups.com.
                     - To refer to all members of the Google Apps for Business domain   example.com, the
@@ -792,7 +792,7 @@ def main():
                     project_number=dict(type='str'),
                     team=dict(type='str', choices=['editors', 'owners', 'viewers'])
                 )),
-                role=dict(type='str', choices=['OWNER', 'READER'])
+                role=dict(required=True, type='str', choices=['OWNER', 'READER'])
             )),
             lifecycle=dict(type='dict', options=dict(
                 rule=dict(type='list', elements='dict', options=dict(
