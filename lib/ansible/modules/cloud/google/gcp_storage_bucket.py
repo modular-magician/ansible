@@ -885,7 +885,7 @@ def resource_to_request(module):
         u'predefinedDefaultObjectAcl': module.params.get('predefined_default_object_acl'),
         u'acl': BucketAclArray(module.params.get('acl', []), module).to_request(),
         u'cors': BucketCorsArray(module.params.get('cors', []), module).to_request(),
-        u'defaultObjectAcl': BucketDefaultObjectAclArray(module.params.get('default_object_acl', []), module).to_request(),
+        u'defaultObjectAcl': BucketDefaultobjectaclArray(module.params.get('default_object_acl', []), module).to_request(),
         u'lifecycle': BucketLifecycle(module.params.get('lifecycle', {}), module).to_request(),
         u'location': module.params.get('location'),
         u'logging': BucketLogging(module.params.get('logging', {}), module).to_request(),
@@ -962,7 +962,7 @@ def response_to_hash(module, response):
     return {
         u'acl': BucketAclArray(response.get(u'acl', []), module).from_response(),
         u'cors': BucketCorsArray(response.get(u'cors', []), module).from_response(),
-        u'defaultObjectAcl': BucketDefaultObjectAclArray(module.params.get('default_object_acl', []), module).to_request(),
+        u'defaultObjectAcl': BucketDefaultobjectaclArray(module.params.get('default_object_acl', []), module).to_request(),
         u'id': response.get(u'id'),
         u'lifecycle': BucketLifecycle(response.get(u'lifecycle', {}), module).from_response(),
         u'location': response.get(u'location'),
@@ -1007,7 +1007,7 @@ class BucketAclArray(object):
             u'entity': item.get('entity'),
             u'entityId': item.get('entity_id'),
             u'id': item.get('id'),
-            u'projectTeam': BucketProjectTeam(item.get('project_team', {}), self.module).to_request(),
+            u'projectTeam': BucketProjectteam(item.get('project_team', {}), self.module).to_request(),
             u'role': item.get('role')
         })
 
@@ -1019,12 +1019,12 @@ class BucketAclArray(object):
             u'entity': item.get(u'entity'),
             u'entityId': item.get(u'entityId'),
             u'id': item.get(u'id'),
-            u'projectTeam': BucketProjectTeam(item.get(u'projectTeam', {}), self.module).from_response(),
+            u'projectTeam': BucketProjectteam(item.get(u'projectTeam', {}), self.module).from_response(),
             u'role': item.get(u'role')
         })
 
 
-class BucketProjectTeam(object):
+class BucketProjectteam(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1082,7 +1082,7 @@ class BucketCorsArray(object):
         })
 
 
-class BucketDefaultObjectAclArray(object):
+class BucketDefaultobjectaclArray(object):
     def __init__(self, request, module):
         self.module = module
         if request:
@@ -1112,7 +1112,7 @@ class BucketDefaultObjectAclArray(object):
             u'generation': item.get('generation'),
             u'id': item.get('id'),
             u'object': item.get('object'),
-            u'projectTeam': BucketProjectTeam(item.get('project_team', {}), self.module).to_request(),
+            u'projectTeam': BucketProjectteam(item.get('project_team', {}), self.module).to_request(),
             u'role': item.get('role')
         })
 
@@ -1126,12 +1126,12 @@ class BucketDefaultObjectAclArray(object):
             u'generation': item.get(u'generation'),
             u'id': item.get(u'id'),
             u'object': item.get(u'object'),
-            u'projectTeam': BucketProjectTeam(item.get(u'projectTeam', {}), self.module).from_response(),
+            u'projectTeam': BucketProjectteam(item.get(u'projectTeam', {}), self.module).from_response(),
             u'role': item.get(u'role')
         })
 
 
-class BucketProjectTeam(object):
+class BucketProjectteam(object):
     def __init__(self, request, module):
         self.module = module
         if request:
