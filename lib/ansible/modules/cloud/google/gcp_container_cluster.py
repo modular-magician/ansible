@@ -473,6 +473,12 @@ clusterIpv4Cidr:
     in 10.0.0.0/8.
   returned: success
   type: str
+tpuIpv4CidrBlock:
+  description:
+  - The IP address range of the Cloud TPUs in this cluster, in [CIDR](http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing)
+    notation (e.g. `1.2.3.4/29`).
+  returned: success
+  type: str
 addonsConfig:
   description:
   - Configurations for the various addons available to run in the cluster.
@@ -772,6 +778,7 @@ def response_to_hash(module, response):
         u'monitoringService': response.get(u'monitoringService'),
         u'network': response.get(u'network'),
         u'clusterIpv4Cidr': response.get(u'clusterIpv4Cidr'),
+        u'tpuIpv4CidrBlock': response.get(u'tpuIpv4CidrBlock'),
         u'addonsConfig': ClusterAddonsconfig(response.get(u'addonsConfig', {}), module).from_response(),
         u'subnetwork': response.get(u'subnetwork'),
         u'location': response.get(u'location'),

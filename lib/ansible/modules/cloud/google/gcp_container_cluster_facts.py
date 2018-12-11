@@ -251,6 +251,12 @@ items:
         a /14 block in 10.0.0.0/8.
       returned: success
       type: str
+    tpuIpv4CidrBlock:
+      description:
+      - The IP address range of the Cloud TPUs in this cluster, in [CIDR](http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing)
+        notation (e.g. `1.2.3.4/29`).
+      returned: success
+      type: str
     addonsConfig:
       description:
       - Configurations for the various addons available to run in the cluster.
