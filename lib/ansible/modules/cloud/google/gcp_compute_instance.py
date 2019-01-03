@@ -1008,6 +1008,8 @@ def update(module, link, kind, fetch):
 def update_fields(module, request, response):
     if response.get('machineType') != request.get('machineType'):
         machine_type_update(module, request, response)
+    if response.get('tags') != request.get('tags'):
+        tags_update(module, request, response)
 
 
 def machine_type_update(module, request, response):
@@ -1019,6 +1021,19 @@ def machine_type_update(module, request, response):
         ]).format(**module.params),
         {
             u'machineType': machine_type_selflink(module.params.get('machine_type'), module.params)
+        }
+    )
+
+
+def tags_update(module, request, response):
+    auth = GcpSession(module, 'compute')
+    auth.post(
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "projects/{project}/zones/{zone}/instances/{name}/setTags"
+        ]).format(**module.params),
+        {
+            u'tags': InstanceTags(module.params.get('tags', {}), module).to_request()
         }
     )
 
