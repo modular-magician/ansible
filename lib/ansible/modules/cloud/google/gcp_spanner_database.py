@@ -53,7 +53,7 @@ options:
     - A unique identifier for the database, which cannot be changed after the instance
       is created. Values are of the form projects/<project>/instances/[a-z][-a-z0-9]*[a-z0-9].
       The final segment of the name must be between 6 and 30 characters in length.
-    required: false
+    required: true
   extra_statements:
     description:
     - 'An optional list of DDL statements to run inside the newly created database.
@@ -138,7 +138,7 @@ def main():
     module = GcpModule(
         argument_spec=dict(
             state=dict(default='present', choices=['present', 'absent'], type='str'),
-            name=dict(type='str'),
+            name=dict(required=True, type='str'),
             extra_statements=dict(type='list', elements='str'),
             instance=dict(required=True)
         )
@@ -180,8 +180,7 @@ def create(module, link):
 
 
 def update(module, link):
-    auth = GcpSession(module, 'spanner')
-    return return_if_object(module, auth.put(link, resource_to_request(module)))
+    module.fail_json(msg="Database cannot be edited")
 
 
 def delete(module, link):
@@ -191,6 +190,7 @@ def delete(module, link):
 
 def resource_to_request(module):
     request = {
+        u'instance': replace_resource_dict(module.params.get(u'instance', {}), 'name'),
         u'name': module.params.get('name'),
         u'extraStatements': module.params.get('extra_statements')
     }
@@ -271,7 +271,7 @@ def is_different(module, response):
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
     return {
-        u'name': response.get(u'name'),
+        u'name': module.params.get('name'),
         u'extraStatements': module.params.get('extra_statements')
     }
 
