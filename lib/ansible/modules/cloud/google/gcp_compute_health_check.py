@@ -536,14 +536,20 @@ def main():
             name=dict(required=True, type='str'),
             timeout_sec=dict(default=5, type='int', aliases=['timeout_seconds']),
             unhealthy_threshold=dict(default=2, type='int'),
-            type=dict(type='str', choices=['TCP', 'SSL', 'HTTP', 'HTTPS']),
+            type=dict(type='str',
+                      choices=['TCP',
+                               'SSL',
+                               'HTTP',
+                               'HTTPS']),
             http_health_check=dict(type='dict', options=dict(
                 host=dict(type='str'),
                 request_path=dict(default='/', type='str'),
                 response=dict(type='str'),
                 port=dict(type='int'),
                 port_name=dict(type='str'),
-                proxy_header=dict(default='NONE', type='str', choices=['NONE', 'PROXY_V1'])
+                proxy_header=dict(default='NONE', type='str',
+                                  choices=['NONE',
+                                           'PROXY_V1'])
             )),
             https_health_check=dict(type='dict', options=dict(
                 host=dict(type='str'),
@@ -551,24 +557,37 @@ def main():
                 response=dict(type='str'),
                 port=dict(type='int'),
                 port_name=dict(type='str'),
-                proxy_header=dict(default='NONE', type='str', choices=['NONE', 'PROXY_V1'])
+                proxy_header=dict(default='NONE', type='str',
+                                  choices=['NONE',
+                                           'PROXY_V1'])
             )),
             tcp_health_check=dict(type='dict', options=dict(
                 request=dict(type='str'),
                 response=dict(type='str'),
                 port=dict(type='int'),
                 port_name=dict(type='str'),
-                proxy_header=dict(default='NONE', type='str', choices=['NONE', 'PROXY_V1'])
+                proxy_header=dict(default='NONE', type='str',
+                                  choices=['NONE',
+                                           'PROXY_V1'])
             )),
             ssl_health_check=dict(type='dict', options=dict(
                 request=dict(type='str'),
                 response=dict(type='str'),
                 port=dict(type='int'),
                 port_name=dict(type='str'),
-                proxy_header=dict(default='NONE', type='str', choices=['NONE', 'PROXY_V1'])
+                proxy_header=dict(default='NONE', type='str',
+                                  choices=['NONE',
+                                           'PROXY_V1'])
             ))
         ),
-        mutually_exclusive=[['http_health_check', 'https_health_check', 'ssl_health_check', 'tcp_health_check']]
+        mutually_exclusive=[
+            [
+                'http_health_check',
+                'https_health_check',
+                'ssl_health_check',
+                'tcp_health_check',
+            ]
+        ]
     )
 
     if not module.params['scopes']:

@@ -277,7 +277,10 @@ def main():
             state=dict(default='present', choices=['present', 'absent'], type='str'),
             description=dict(type='str'),
             name=dict(required=True, type='str'),
-            quic_override=dict(type='str', choices=['NONE', 'ENABLE', 'DISABLE']),
+            quic_override=dict(type='str',
+                               choices=['NONE',
+                                        'ENABLE',
+                                        'DISABLE']),
             ssl_certificates=dict(required=True, type='list'),
             ssl_policy=dict(),
             url_map=dict(required=True)

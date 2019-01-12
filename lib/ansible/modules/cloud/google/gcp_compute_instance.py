@@ -911,10 +911,16 @@ def main():
                         sha256=dict(type='str')
                     ))
                 )),
-                interface=dict(type='str', choices=['SCSI', 'NVME']),
-                mode=dict(type='str', choices=['READ_WRITE', 'READ_ONLY']),
+                interface=dict(type='str',
+                               choices=['SCSI',
+                                        'NVME']),
+                mode=dict(type='str',
+                          choices=['READ_WRITE',
+                                   'READ_ONLY']),
                 source=dict(),
-                type=dict(type='str', choices=['SCRATCH', 'PERSISTENT'])
+                type=dict(type='str',
+                          choices=['SCRATCH',
+                                   'PERSISTENT'])
             )),
             guest_accelerators=dict(type='list', elements='dict', options=dict(
                 accelerator_count=dict(type='int'),
@@ -929,7 +935,8 @@ def main():
                 access_configs=dict(type='list', elements='dict', options=dict(
                     name=dict(required=True, type='str'),
                     nat_ip=dict(),
-                    type=dict(required=True, type='str', choices=['ONE_TO_ONE_NAT'])
+                    type=dict(required=True, type='str',
+                              choices=['ONE_TO_ONE_NAT'])
                 )),
                 alias_ip_ranges=dict(type='list', elements='dict', options=dict(
                     ip_cidr_range=dict(type='str'),
@@ -949,7 +956,14 @@ def main():
                 email=dict(type='str'),
                 scopes=dict(type='list', elements='str')
             )),
-            status=dict(type='str', choices=['PROVISIONING', 'STAGING', 'RUNNING', 'STOPPING', 'SUSPENDING', 'SUSPENDED', 'TERMINATED']),
+            status=dict(type='str',
+                        choices=['PROVISIONING',
+                                 'STAGING',
+                                 'RUNNING',
+                                 'STOPPING',
+                                 'SUSPENDING',
+                                 'SUSPENDED',
+                                 'TERMINATED']),
             tags=dict(type='dict', options=dict(
                 fingerprint=dict(type='str'),
                 items=dict(type='list', elements='str')
@@ -1355,7 +1369,8 @@ class InstanceInitializeparams(object):
             u'diskSizeGb': self.request.get('disk_size_gb'),
             u'diskType': disk_type_selflink(self.request.get('disk_type'), self.module.params),
             u'sourceImage': self.request.get('source_image'),
-            u'sourceImageEncryptionKey': InstanceSourceimageencryptionkey(self.request.get('source_image_encryption_key', {}), self.module).to_request()
+            u'sourceImageEncryptionKey':
+                InstanceSourceimageencryptionkey(self.request.get('source_image_encryption_key', {}), self.module).to_request()
         })
 
     def from_response(self):
@@ -1364,7 +1379,8 @@ class InstanceInitializeparams(object):
             u'diskSizeGb': self.request.get(u'diskSizeGb'),
             u'diskType': self.request.get(u'diskType'),
             u'sourceImage': self.request.get(u'sourceImage'),
-            u'sourceImageEncryptionKey': InstanceSourceimageencryptionkey(self.request.get(u'sourceImageEncryptionKey', {}), self.module).from_response()
+            u'sourceImageEncryptionKey':
+                InstanceSourceimageencryptionkey(self.request.get(u'sourceImageEncryptionKey', {}), self.module).from_response()
         })
 
 

@@ -616,8 +616,12 @@ def main():
                 client_certificate=dict(type='str'),
                 client_key=dict(type='str')
             )),
-            logging_service=dict(type='str', choices=['logging.googleapis.com', 'none']),
-            monitoring_service=dict(type='str', choices=['monitoring.googleapis.com', 'none']),
+            logging_service=dict(type='str',
+                                 choices=['logging.googleapis.com',
+                                          'none']),
+            monitoring_service=dict(type='str',
+                                    choices=['monitoring.googleapis.com',
+                                             'none']),
             network=dict(type='str'),
             cluster_ipv4_cidr=dict(type='str'),
             addons_config=dict(type='dict', options=dict(
@@ -909,13 +913,15 @@ class ClusterAddonsconfig(object):
     def to_request(self):
         return remove_nones_from_dict({
             u'httpLoadBalancing': ClusterHttploadbalancing(self.request.get('http_load_balancing', {}), self.module).to_request(),
-            u'horizontalPodAutoscaling': ClusterHorizontalpodautoscaling(self.request.get('horizontal_pod_autoscaling', {}), self.module).to_request()
+            u'horizontalPodAutoscaling':
+                ClusterHorizontalpodautoscaling(self.request.get('horizontal_pod_autoscaling', {}), self.module).to_request()
         })
 
     def from_response(self):
         return remove_nones_from_dict({
             u'httpLoadBalancing': ClusterHttploadbalancing(self.request.get(u'httpLoadBalancing', {}), self.module).from_response(),
-            u'horizontalPodAutoscaling': ClusterHorizontalpodautoscaling(self.request.get(u'horizontalPodAutoscaling', {}), self.module).from_response()
+            u'horizontalPodAutoscaling':
+                ClusterHorizontalpodautoscaling(self.request.get(u'horizontalPodAutoscaling', {}), self.module).from_response()
         })
 
 

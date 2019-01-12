@@ -922,15 +922,28 @@ def main():
             )),
             time_partitioning=dict(type='dict', options=dict(
                 expiration_ms=dict(type='int'),
-                type=dict(type='str', choices=['DAY'])
+                type=dict(type='str',
+                          choices=['DAY'])
             )),
             schema=dict(type='dict', options=dict(
                 fields=dict(type='list', elements='dict', options=dict(
                     description=dict(type='str'),
                     fields=dict(type='list', elements='str'),
-                    mode=dict(type='str', choices=['NULLABLE', 'REQUIRED', 'REPEATED']),
+                    mode=dict(type='str',
+                              choices=['NULLABLE',
+                                       'REQUIRED',
+                                       'REPEATED']),
                     name=dict(type='str'),
-                    type=dict(type='str', choices=['STRING', 'BYTES', 'INTEGER', 'FLOAT', 'TIMESTAMP', 'DATE', 'TIME', 'DATETIME', 'RECORD'])
+                    type=dict(type='str',
+                              choices=['STRING',
+                                       'BYTES',
+                                       'INTEGER',
+                                       'FLOAT',
+                                       'TIMESTAMP',
+                                       'DATE',
+                                       'TIME',
+                                       'DATETIME',
+                                       'RECORD'])
                 ))
             )),
             encryption_configuration=dict(type='dict', options=dict(
@@ -939,18 +952,38 @@ def main():
             expiration_time=dict(type='int'),
             external_data_configuration=dict(type='dict', options=dict(
                 autodetect=dict(type='bool'),
-                compression=dict(type='str', choices=['GZIP', 'NONE']),
+                compression=dict(type='str',
+                                 choices=['GZIP',
+                                          'NONE']),
                 ignore_unknown_values=dict(type='bool'),
                 max_bad_records=dict(default=0, type='int'),
-                source_format=dict(type='str', choices=['CSV', 'GOOGLE_SHEETS', 'NEWLINE_DELIMITED_JSON', 'AVRO', 'DATASTORE_BACKUP', 'BIGTABLE']),
+                source_format=dict(type='str',
+                                   choices=['CSV',
+                                            'GOOGLE_SHEETS',
+                                            'NEWLINE_DELIMITED_JSON',
+                                            'AVRO',
+                                            'DATASTORE_BACKUP',
+                                            'BIGTABLE']),
                 source_uris=dict(type='list', elements='str'),
                 schema=dict(type='dict', options=dict(
                     fields=dict(type='list', elements='dict', options=dict(
                         description=dict(type='str'),
                         fields=dict(type='list', elements='str'),
-                        mode=dict(type='str', choices=['NULLABLE', 'REQUIRED', 'REPEATED']),
+                        mode=dict(type='str',
+                                  choices=['NULLABLE',
+                                           'REQUIRED',
+                                           'REPEATED']),
                         name=dict(type='str'),
-                        type=dict(type='str', choices=['STRING', 'BYTES', 'INTEGER', 'FLOAT', 'TIMESTAMP', 'DATE', 'TIME', 'DATETIME', 'RECORD'])
+                        type=dict(type='str',
+                                  choices=['STRING',
+                                           'BYTES',
+                                           'INTEGER',
+                                           'FLOAT',
+                                           'TIMESTAMP',
+                                           'DATE',
+                                           'TIME',
+                                           'DATETIME',
+                                           'RECORD'])
                     ))
                 )),
                 google_sheets_options=dict(type='dict', options=dict(
@@ -959,7 +992,9 @@ def main():
                 csv_options=dict(type='dict', options=dict(
                     allow_jagged_rows=dict(type='bool'),
                     allow_quoted_newlines=dict(type='bool'),
-                    encoding=dict(type='str', choices=['UTF-8', 'ISO-8859-1']),
+                    encoding=dict(type='str',
+                                  choices=['UTF-8',
+                                           'ISO-8859-1']),
                     field_delimiter=dict(type='str'),
                     quote=dict(type='str'),
                     skip_leading_rows=dict(default=0, type='int')
@@ -969,16 +1004,30 @@ def main():
                     read_rowkey_as_string=dict(type='bool'),
                     column_families=dict(type='list', elements='dict', options=dict(
                         columns=dict(type='list', elements='dict', options=dict(
-                            encoding=dict(type='str', choices=['TEXT', 'BINARY']),
+                            encoding=dict(type='str',
+                                          choices=['TEXT',
+                                                   'BINARY']),
                             field_name=dict(type='str'),
                             only_read_latest=dict(type='bool'),
                             qualifier_string=dict(required=True, type='str'),
-                            type=dict(type='str', choices=['BYTES', 'STRING', 'INTEGER', 'FLOAT', 'BOOLEAN'])
+                            type=dict(type='str',
+                                      choices=['BYTES',
+                                               'STRING',
+                                               'INTEGER',
+                                               'FLOAT',
+                                               'BOOLEAN'])
                         )),
-                        encoding=dict(type='str', choices=['TEXT', 'BINARY']),
+                        encoding=dict(type='str',
+                                      choices=['TEXT',
+                                               'BINARY']),
                         family_id=dict(type='str'),
                         only_read_latest=dict(type='bool'),
-                        type=dict(type='str', choices=['BYTES', 'STRING', 'INTEGER', 'FLOAT', 'BOOLEAN'])
+                        type=dict(type='str',
+                                  choices=['BYTES',
+                                           'STRING',
+                                           'INTEGER',
+                                           'FLOAT',
+                                           'BOOLEAN'])
                     ))
                 ))
             )),
@@ -1043,9 +1092,11 @@ def resource_to_request(module):
         u'view': TableView(module.params.get('view', {}), module).to_request(),
         u'timePartitioning': TableTimepartitioning(module.params.get('time_partitioning', {}), module).to_request(),
         u'schema': TableSchema(module.params.get('schema', {}), module).to_request(),
-        u'encryptionConfiguration': TableEncryptionconfiguration(module.params.get('encryption_configuration', {}), module).to_request(),
+        u'encryptionConfiguration':
+            TableEncryptionconfiguration(module.params.get('encryption_configuration', {}), module).to_request(),
         u'expirationTime': module.params.get('expiration_time'),
-        u'externalDataConfiguration': TableExternaldataconfiguration(module.params.get('external_data_configuration', {}), module).to_request()
+        u'externalDataConfiguration':
+            TableExternaldataconfiguration(module.params.get('external_data_configuration', {}), module).to_request()
     }
     return_vals = {}
     for k, v in request.items():
@@ -1130,7 +1181,8 @@ def response_to_hash(module, response):
         u'schema': TableSchema(response.get(u'schema', {}), module).from_response(),
         u'encryptionConfiguration': TableEncryptionconfiguration(response.get(u'encryptionConfiguration', {}), module).from_response(),
         u'expirationTime': response.get(u'expirationTime'),
-        u'externalDataConfiguration': TableExternaldataconfiguration(response.get(u'externalDataConfiguration', {}), module).from_response()
+        u'externalDataConfiguration':
+            TableExternaldataconfiguration(response.get(u'externalDataConfiguration', {}), module).from_response()
     }
 
 

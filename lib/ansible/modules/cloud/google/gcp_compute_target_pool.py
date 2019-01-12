@@ -256,7 +256,10 @@ def main():
             health_check=dict(),
             instances=dict(type='list'),
             name=dict(required=True, type='str'),
-            session_affinity=dict(type='str', choices=['NONE', 'CLIENT_IP', 'CLIENT_IP_PROTO']),
+            session_affinity=dict(type='str',
+                                  choices=['NONE',
+                                           'CLIENT_IP',
+                                           'CLIENT_IP_PROTO']),
             region=dict(required=True, type='str')
         )
     )

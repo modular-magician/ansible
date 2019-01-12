@@ -568,14 +568,24 @@ def main():
     module = GcpModule(
         argument_spec=dict(
             state=dict(default='present', choices=['present', 'absent'], type='str'),
-            backend_type=dict(type='str', choices=['FIRST_GEN', 'SECOND_GEN', 'EXTERNAL']),
+            backend_type=dict(type='str',
+                              choices=['FIRST_GEN',
+                                       'SECOND_GEN',
+                                       'EXTERNAL']),
             connection_name=dict(type='str'),
-            database_version=dict(type='str', choices=['MYSQL_5_5', 'MYSQL_5_6', 'MYSQL_5_7', 'POSTGRES_9_6']),
+            database_version=dict(type='str',
+                                  choices=['MYSQL_5_5',
+                                           'MYSQL_5_6',
+                                           'MYSQL_5_7',
+                                           'POSTGRES_9_6']),
             failover_replica=dict(type='dict', options=dict(
                 available=dict(type='bool'),
                 name=dict(type='str')
             )),
-            instance_type=dict(type='str', choices=['CLOUD_SQL_INSTANCE', 'ON_PREMISES_INSTANCE', 'READ_REPLICA_INSTANCE']),
+            instance_type=dict(type='str',
+                               choices=['CLOUD_SQL_INSTANCE',
+                                        'ON_PREMISES_INSTANCE',
+                                        'READ_REPLICA_INSTANCE']),
             ipv6_address=dict(type='str'),
             master_instance_name=dict(type='str'),
             max_disk_size=dict(type='int'),
@@ -861,7 +871,8 @@ class InstanceReplicaconfiguration(object):
     def to_request(self):
         return remove_nones_from_dict({
             u'failoverTarget': self.request.get('failover_target'),
-            u'mysqlReplicaConfiguration': InstanceMysqlreplicaconfiguration(self.request.get('mysql_replica_configuration', {}), self.module).to_request(),
+            u'mysqlReplicaConfiguration':
+                InstanceMysqlreplicaconfiguration(self.request.get('mysql_replica_configuration', {}), self.module).to_request(),
             u'replicaNames': self.request.get('replica_names'),
             u'serviceAccountEmailAddress': self.request.get('service_account_email_address')
         })
@@ -869,7 +880,8 @@ class InstanceReplicaconfiguration(object):
     def from_response(self):
         return remove_nones_from_dict({
             u'failoverTarget': self.request.get(u'failoverTarget'),
-            u'mysqlReplicaConfiguration': InstanceMysqlreplicaconfiguration(self.request.get(u'mysqlReplicaConfiguration', {}), self.module).from_response(),
+            u'mysqlReplicaConfiguration':
+                InstanceMysqlreplicaconfiguration(self.request.get(u'mysqlReplicaConfiguration', {}), self.module).from_response(),
             u'replicaNames': self.request.get(u'replicaNames'),
             u'serviceAccountEmailAddress': self.request.get(u'serviceAccountEmailAddress')
         })
@@ -946,14 +958,16 @@ class InstanceIpconfiguration(object):
     def to_request(self):
         return remove_nones_from_dict({
             u'ipv4Enabled': self.request.get('ipv4_enabled'),
-            u'authorizedNetworks': InstanceAuthorizednetworksArray(self.request.get('authorized_networks', []), self.module).to_request(),
+            u'authorizedNetworks':
+                InstanceAuthorizednetworksArray(self.request.get('authorized_networks', []), self.module).to_request(),
             u'requireSsl': self.request.get('require_ssl')
         })
 
     def from_response(self):
         return remove_nones_from_dict({
             u'ipv4Enabled': self.request.get(u'ipv4Enabled'),
-            u'authorizedNetworks': InstanceAuthorizednetworksArray(self.request.get(u'authorizedNetworks', []), self.module).from_response(),
+            u'authorizedNetworks':
+                InstanceAuthorizednetworksArray(self.request.get(u'authorizedNetworks', []), self.module).from_response(),
             u'requireSsl': self.request.get(u'requireSsl')
         })
 

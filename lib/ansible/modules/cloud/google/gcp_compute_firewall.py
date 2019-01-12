@@ -437,7 +437,9 @@ def main():
             )),
             description=dict(type='str'),
             destination_ranges=dict(type='list', elements='str'),
-            direction=dict(type='str', choices=['INGRESS', 'EGRESS']),
+            direction=dict(type='str',
+                           choices=['INGRESS',
+                                    'EGRESS']),
             disabled=dict(type='bool'),
             name=dict(required=True, type='str'),
             network=dict(default={'selfLink': 'global/networks/default'}),
@@ -448,13 +450,42 @@ def main():
             target_service_accounts=dict(type='list', elements='str'),
             target_tags=dict(type='list', elements='str')
         ),
-        mutually_exclusive=[['allowed', 'denied'],
-                            ['destination_ranges', 'source_ranges', 'source_tags'],
-                            ['destination_ranges', 'source_ranges'],
-                            ['source_service_accounts', 'source_tags', 'target_tags'],
-                            ['destination_ranges', 'source_service_accounts', 'source_tags', 'target_service_accounts'],
-                            ['source_tags', 'target_service_accounts', 'target_tags'],
-                            ['source_service_accounts', 'target_service_accounts', 'target_tags']]
+        mutually_exclusive=[
+            [
+                'allowed',
+                'denied',
+            ],
+            [
+                'destination_ranges',
+                'source_ranges',
+                'source_tags',
+            ],
+            [
+                'destination_ranges',
+                'source_ranges',
+            ],
+            [
+                'source_service_accounts',
+                'source_tags',
+                'target_tags',
+            ],
+            [
+                'destination_ranges',
+                'source_service_accounts',
+                'source_tags',
+                'target_service_accounts',
+            ],
+            [
+                'source_tags',
+                'target_service_accounts',
+                'target_tags',
+            ],
+            [
+                'source_service_accounts',
+                'target_service_accounts',
+                'target_tags',
+            ],
+        ]
     )
 
     if not module.params['scopes']:

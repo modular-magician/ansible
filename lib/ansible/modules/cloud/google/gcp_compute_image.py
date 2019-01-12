@@ -453,7 +453,8 @@ def main():
             disk_size_gb=dict(type='int'),
             family=dict(type='str'),
             guest_os_features=dict(type='list', elements='dict', options=dict(
-                type=dict(type='str', choices=['VIRTIO_SCSI_MULTIQUEUE'])
+                type=dict(type='str',
+                          choices=['VIRTIO_SCSI_MULTIQUEUE'])
             )),
             image_encryption_key=dict(type='dict', options=dict(
                 raw_key=dict(type='str'),
@@ -463,7 +464,8 @@ def main():
             licenses=dict(type='list', elements='str'),
             name=dict(required=True, type='str'),
             raw_disk=dict(type='dict', options=dict(
-                container_type=dict(type='str', choices=['TAR']),
+                container_type=dict(type='str',
+                                    choices=['TAR']),
                 sha1_checksum=dict(type='str'),
                 source=dict(required=True, type='str')
             )),
@@ -473,7 +475,8 @@ def main():
                 sha256=dict(type='str')
             )),
             source_disk_id=dict(type='str'),
-            source_type=dict(type='str', choices=['RAW'])
+            source_type=dict(type='str',
+                             choices=['RAW'])
         )
     )
 
@@ -556,7 +559,8 @@ def resource_to_request(module):
         u'name': module.params.get('name'),
         u'rawDisk': ImageRawdisk(module.params.get('raw_disk', {}), module).to_request(),
         u'sourceDisk': replace_resource_dict(module.params.get(u'source_disk', {}), 'selfLink'),
-        u'sourceDiskEncryptionKey': ImageSourcediskencryptionkey(module.params.get('source_disk_encryption_key', {}), module).to_request(),
+        u'sourceDiskEncryptionKey':
+            ImageSourcediskencryptionkey(module.params.get('source_disk_encryption_key', {}), module).to_request(),
         u'sourceDiskId': module.params.get('source_disk_id'),
         u'sourceType': module.params.get('source_type')
     }

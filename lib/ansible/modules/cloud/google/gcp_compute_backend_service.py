@@ -623,7 +623,10 @@ def main():
             state=dict(default='present', choices=['present', 'absent'], type='str'),
             affinity_cookie_ttl_sec=dict(type='int'),
             backends=dict(type='list', elements='dict', options=dict(
-                balancing_mode=dict(type='str', choices=['UTILIZATION', 'RATE', 'CONNECTION']),
+                balancing_mode=dict(type='str',
+                                    choices=['UTILIZATION',
+                                             'RATE',
+                                             'CONNECTION']),
                 capacity_scaler=dict(type='str'),
                 description=dict(type='str'),
                 group=dict(),
@@ -654,12 +657,23 @@ def main():
                 oauth2_client_secret=dict(type='str'),
                 oauth2_client_secret_sha256=dict(type='str')
             )),
-            load_balancing_scheme=dict(type='str', choices=['INTERNAL', 'EXTERNAL']),
+            load_balancing_scheme=dict(type='str',
+                                       choices=['INTERNAL',
+                                                'EXTERNAL']),
             name=dict(type='str'),
             port_name=dict(type='str'),
-            protocol=dict(type='str', choices=['HTTP', 'HTTPS', 'TCP', 'SSL']),
+            protocol=dict(type='str',
+                          choices=['HTTP',
+                                   'HTTPS',
+                                   'TCP',
+                                   'SSL']),
             region=dict(type='str'),
-            session_affinity=dict(type='str', choices=['NONE', 'CLIENT_IP', 'GENERATED_COOKIE', 'CLIENT_IP_PROTO', 'CLIENT_IP_PORT_PROTO']),
+            session_affinity=dict(type='str',
+                                  choices=['NONE',
+                                           'CLIENT_IP',
+                                           'GENERATED_COOKIE',
+                                           'CLIENT_IP_PROTO',
+                                           'CLIENT_IP_PORT_PROTO']),
             timeout_sec=dict(type='int', aliases=['timeout_seconds'])
         )
     )

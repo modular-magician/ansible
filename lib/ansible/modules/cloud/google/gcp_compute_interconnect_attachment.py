@@ -326,7 +326,8 @@ def response_to_hash(module, response):
         u'customerRouterIpAddress': response.get(u'customerRouterIpAddress'),
         u'interconnect': response.get(u'interconnect'),
         u'description': response.get(u'description'),
-        u'privateInterconnectInfo': InterconnectAttachmentPrivateinterconnectinfo(response.get(u'privateInterconnectInfo', {}), module).from_response(),
+        u'privateInterconnectInfo':
+            InterconnectAttachmentPrivateinterconnectinfo(response.get(u'privateInterconnectInfo', {}), module).from_response(),
         u'googleReferenceId': response.get(u'googleReferenceId'),
         u'router': response.get(u'router'),
         u'creationTimestamp': response.get(u'creationTimestamp'),

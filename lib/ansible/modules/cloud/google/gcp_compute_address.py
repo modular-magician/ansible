@@ -216,10 +216,14 @@ def main():
         argument_spec=dict(
             state=dict(default='present', choices=['present', 'absent'], type='str'),
             address=dict(type='str'),
-            address_type=dict(default='EXTERNAL', type='str', choices=['INTERNAL', 'EXTERNAL']),
+            address_type=dict(default='EXTERNAL', type='str',
+                              choices=['INTERNAL',
+                                       'EXTERNAL']),
             description=dict(type='str'),
             name=dict(required=True, type='str'),
-            network_tier=dict(type='str', choices=['PREMIUM', 'STANDARD']),
+            network_tier=dict(type='str',
+                              choices=['PREMIUM',
+                                       'STANDARD']),
             subnetwork=dict(),
             region=dict(required=True, type='str')
         )

@@ -209,9 +209,15 @@ def main():
             entity_id=dict(type='str'),
             project_team=dict(type='dict', options=dict(
                 project_number=dict(type='str'),
-                team=dict(type='str', choices=['editors', 'owners', 'viewers'])
+                team=dict(type='str',
+                          choices=['editors',
+                                   'owners',
+                                   'viewers'])
             )),
-            role=dict(type='str', choices=['OWNER', 'READER', 'WRITER'])
+            role=dict(type='str',
+                      choices=['OWNER',
+                               'READER',
+                               'WRITER'])
         )
     )
 

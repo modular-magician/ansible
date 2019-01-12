@@ -343,7 +343,11 @@ def wait_for_operation(module, response):
         return {}
     status = navigate_hash(op_result, ['status'])
     wait_for_completion(status, op_result, module)
-    return fetch_wrapped_resource(module, 'sql#user', 'sql#usersList', 'items')
+    return fetch_wrapped_resource(
+        module,
+        'sql#user',
+        'sql#usersList',
+        'items')
 
 
 def wait_for_completion(status, op_result, module):

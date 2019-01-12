@@ -799,9 +799,15 @@ def main():
                 id=dict(type='str'),
                 project_team=dict(type='dict', options=dict(
                     project_number=dict(type='str'),
-                    team=dict(type='str', choices=['editors', 'owners', 'viewers'])
+                    team=dict(type='str',
+                              choices=['editors',
+                                       'owners',
+                                       'viewers'])
                 )),
-                role=dict(type='str', choices=['OWNER', 'READER', 'WRITER'])
+                role=dict(type='str',
+                          choices=['OWNER',
+                                   'READER',
+                                   'WRITER'])
             )),
             cors=dict(type='list', elements='dict', options=dict(
                 max_age_seconds=dict(type='int'),
@@ -820,15 +826,22 @@ def main():
                 object=dict(type='str'),
                 project_team=dict(type='dict', options=dict(
                     project_number=dict(type='str'),
-                    team=dict(type='str', choices=['editors', 'owners', 'viewers'])
+                    team=dict(type='str',
+                              choices=['editors',
+                                       'owners',
+                                       'viewers'])
                 )),
-                role=dict(required=True, type='str', choices=['OWNER', 'READER'])
+                role=dict(required=True, type='str',
+                          choices=['OWNER',
+                                   'READER'])
             )),
             lifecycle=dict(type='dict', options=dict(
                 rule=dict(type='list', elements='dict', options=dict(
                     action=dict(type='dict', options=dict(
                         storage_class=dict(type='str'),
-                        type=dict(type='str', choices=['Delete', 'SetStorageClass'])
+                        type=dict(type='str',
+                                  choices=['Delete',
+                                           'SetStorageClass'])
                     )),
                     condition=dict(type='dict', options=dict(
                         age_days=dict(type='int'),
@@ -850,7 +863,13 @@ def main():
                 entity=dict(type='str'),
                 entity_id=dict(type='str')
             )),
-            storage_class=dict(type='str', choices=['MULTI_REGIONAL', 'REGIONAL', 'STANDARD', 'NEARLINE', 'COLDLINE', 'DURABLE_REDUCED_AVAILABILITY']),
+            storage_class=dict(type='str',
+                               choices=['MULTI_REGIONAL',
+                                        'REGIONAL',
+                                        'STANDARD',
+                                        'NEARLINE',
+                                        'COLDLINE',
+                                        'DURABLE_REDUCED_AVAILABILITY']),
             versioning=dict(type='dict', options=dict(
                 enabled=dict(type='bool')
             )),
@@ -859,12 +878,13 @@ def main():
                 not_found_page=dict(type='str')
             )),
             project=dict(type='str'),
-            predefined_default_object_acl=dict(type='str', choices=['authenticatedRead',
-                                                                    'bucketOwnerFullControl',
-                                                                    'bucketOwnerRead',
-                                                                    'private',
-                                                                    'projectPrivate',
-                                                                    'publicRead'])
+            predefined_default_object_acl=dict(type='str',
+                                               choices=['authenticatedRead',
+                                                        'bucketOwnerFullControl',
+                                                        'bucketOwnerRead',
+                                                        'private',
+                                                        'projectPrivate',
+                                                        'publicRead'])
         )
     )
 

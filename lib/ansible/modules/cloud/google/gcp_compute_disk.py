@@ -509,9 +509,11 @@ def delete(module, link, kind):
 def resource_to_request(module):
     request = {
         u'kind': 'compute#disk',
-        u'sourceImageEncryptionKey': DiskSourceimageencryptionkey(module.params.get('source_image_encryption_key', {}), module).to_request(),
+        u'sourceImageEncryptionKey':
+            DiskSourceimageencryptionkey(module.params.get('source_image_encryption_key', {}), module).to_request(),
         u'diskEncryptionKey': DiskDiskencryptionkey(module.params.get('disk_encryption_key', {}), module).to_request(),
-        u'sourceSnapshotEncryptionKey': DiskSourcesnapshotencryptionkey(module.params.get('source_snapshot_encryption_key', {}), module).to_request(),
+        u'sourceSnapshotEncryptionKey':
+            DiskSourcesnapshotencryptionkey(module.params.get('source_snapshot_encryption_key', {}), module).to_request(),
         u'description': module.params.get('description'),
         u'labels': module.params.get('labels'),
         u'licenses': module.params.get('licenses'),

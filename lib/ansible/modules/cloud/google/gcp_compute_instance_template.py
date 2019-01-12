@@ -890,10 +890,16 @@ def main():
                             sha256=dict(type='str')
                         ))
                     )),
-                    interface=dict(type='str', choices=['SCSI', 'NVME']),
-                    mode=dict(type='str', choices=['READ_WRITE', 'READ_ONLY']),
+                    interface=dict(type='str',
+                                   choices=['SCSI',
+                                            'NVME']),
+                    mode=dict(type='str',
+                              choices=['READ_WRITE',
+                                       'READ_ONLY']),
                     source=dict(),
-                    type=dict(type='str', choices=['SCRATCH', 'PERSISTENT'])
+                    type=dict(type='str',
+                              choices=['SCRATCH',
+                                       'PERSISTENT'])
                 )),
                 machine_type=dict(required=True, type='str'),
                 min_cpu_platform=dict(type='str'),
@@ -906,7 +912,8 @@ def main():
                     access_configs=dict(type='list', elements='dict', options=dict(
                         name=dict(required=True, type='str'),
                         nat_ip=dict(),
-                        type=dict(required=True, type='str', choices=['ONE_TO_ONE_NAT'])
+                        type=dict(required=True, type='str',
+                                  choices=['ONE_TO_ONE_NAT'])
                     )),
                     alias_ip_ranges=dict(type='list', elements='dict', options=dict(
                         ip_cidr_range=dict(type='str'),
@@ -1173,10 +1180,13 @@ class InstanceTemplateProperties(object):
             u'machineType': self.request.get('machine_type'),
             u'minCpuPlatform': self.request.get('min_cpu_platform'),
             u'metadata': self.request.get('metadata'),
-            u'guestAccelerators': InstanceTemplateGuestacceleratorsArray(self.request.get('guest_accelerators', []), self.module).to_request(),
-            u'networkInterfaces': InstanceTemplateNetworkinterfacesArray(self.request.get('network_interfaces', []), self.module).to_request(),
+            u'guestAccelerators':
+                InstanceTemplateGuestacceleratorsArray(self.request.get('guest_accelerators', []), self.module).to_request(),
+            u'networkInterfaces':
+                InstanceTemplateNetworkinterfacesArray(self.request.get('network_interfaces', []), self.module).to_request(),
             u'scheduling': InstanceTemplateScheduling(self.request.get('scheduling', {}), self.module).to_request(),
-            u'serviceAccounts': InstanceTemplateServiceaccountsArray(self.request.get('service_accounts', []), self.module).to_request(),
+            u'serviceAccounts':
+                InstanceTemplateServiceaccountsArray(self.request.get('service_accounts', []), self.module).to_request(),
             u'tags': InstanceTemplateTags(self.request.get('tags', {}), self.module).to_request()
         })
 
@@ -1188,10 +1198,13 @@ class InstanceTemplateProperties(object):
             u'machineType': self.request.get(u'machineType'),
             u'minCpuPlatform': self.request.get(u'minCpuPlatform'),
             u'metadata': self.request.get(u'metadata'),
-            u'guestAccelerators': InstanceTemplateGuestacceleratorsArray(self.request.get(u'guestAccelerators', []), self.module).from_response(),
-            u'networkInterfaces': InstanceTemplateNetworkinterfacesArray(self.request.get(u'networkInterfaces', []), self.module).from_response(),
+            u'guestAccelerators':
+                InstanceTemplateGuestacceleratorsArray(self.request.get(u'guestAccelerators', []), self.module).from_response(),
+            u'networkInterfaces':
+                InstanceTemplateNetworkinterfacesArray(self.request.get(u'networkInterfaces', []), self.module).from_response(),
             u'scheduling': InstanceTemplateScheduling(self.request.get(u'scheduling', {}), self.module).from_response(),
-            u'serviceAccounts': InstanceTemplateServiceaccountsArray(self.request.get(u'serviceAccounts', []), self.module).from_response(),
+            u'serviceAccounts':
+                InstanceTemplateServiceaccountsArray(self.request.get(u'serviceAccounts', []), self.module).from_response(),
             u'tags': InstanceTemplateTags(self.request.get(u'tags', {}), self.module).from_response()
         })
 
@@ -1237,7 +1250,8 @@ class InstanceTemplateDisksArray(object):
             u'deviceName': item.get(u'deviceName'),
             u'diskEncryptionKey': InstanceTemplateDiskencryptionkey(item.get(u'diskEncryptionKey', {}), self.module).from_response(),
             u'index': item.get(u'index'),
-            u'initializeParams': InstanceTemplateInitializeparams(self.module.params.get('initialize_params', {}), self.module).to_request(),
+            u'initializeParams':
+                InstanceTemplateInitializeparams(self.module.params.get('initialize_params', {}), self.module).to_request(),
             u'interface': item.get(u'interface'),
             u'mode': item.get(u'mode'),
             u'source': item.get(u'source'),
@@ -1282,7 +1296,8 @@ class InstanceTemplateInitializeparams(object):
             u'diskSizeGb': self.request.get('disk_size_gb'),
             u'diskType': disk_type_selflink(self.request.get('disk_type'), self.module.params),
             u'sourceImage': self.request.get('source_image'),
-            u'sourceImageEncryptionKey': InstanceTemplateSourceimageencryptionkey(self.request.get('source_image_encryption_key', {}), self.module).to_request()
+            u'sourceImageEncryptionKey':
+                InstanceTemplateSourceimageencryptionkey(self.request.get('source_image_encryption_key', {}), self.module).to_request()
         })
 
     def from_response(self):

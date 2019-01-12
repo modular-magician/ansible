@@ -309,7 +309,10 @@ def main():
             access=dict(type='list', elements='dict', options=dict(
                 domain=dict(type='str'),
                 group_by_email=dict(type='str'),
-                role=dict(type='str', choices=['READER', 'WRITER', 'OWNER']),
+                role=dict(type='str',
+                          choices=['READER',
+                                   'WRITER',
+                                   'OWNER']),
                 special_group=dict(type='str'),
                 user_by_email=dict(type='str'),
                 view=dict(type='dict', options=dict(
