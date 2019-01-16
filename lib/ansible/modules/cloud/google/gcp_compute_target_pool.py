@@ -317,7 +317,6 @@ def resource_to_request(module):
         u'name': module.params.get('name'),
         u'sessionAffinity': module.params.get('session_affinity'),
     }
-    request = encode_request(request, module)
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -354,8 +353,6 @@ def return_if_object(module, response, kind, allow_not_found=False):
     except getattr(json.decoder, 'JSONDecodeError', ValueError) as inst:
         module.fail_json(msg="Invalid JSON response with error: %s" % inst)
 
-    result = decode_request(result, module)
-
     if navigate_hash(result, ['error', 'errors']):
         module.fail_json(msg=navigate_hash(result, ['error', 'errors']))
 
@@ -365,7 +362,6 @@ def return_if_object(module, response, kind, allow_not_found=False):
 def is_different(module, response):
     request = resource_to_request(module)
     response = response_to_hash(module, response)
-    request = decode_request(request, module)
 
     # Remove all output-only from response.
     response_vals = {}

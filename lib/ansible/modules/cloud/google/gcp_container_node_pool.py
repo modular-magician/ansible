@@ -525,7 +525,6 @@ def resource_to_request(module):
         u'autoscaling': NodePoolAutoscaling(module.params.get('autoscaling', {}), module).to_request(),
         u'management': NodePoolManagement(module.params.get('management', {}), module).to_request(),
     }
-    request = encode_request(request, module)
     return_vals = {}
     for k, v in request.items():
         if v or v is False:

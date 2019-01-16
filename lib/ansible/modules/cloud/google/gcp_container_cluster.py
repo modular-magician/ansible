@@ -698,7 +698,6 @@ def resource_to_request(module):
         u'subnetwork': module.params.get('subnetwork'),
         u'location': module.params.get('location'),
     }
-    request = encode_request(request, module)
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
