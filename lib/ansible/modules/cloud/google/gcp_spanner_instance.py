@@ -50,13 +50,12 @@ options:
   name:
     description:
     - A unique identifier for the instance, which cannot be changed after the instance
-      is created. Values are of the form projects/<project>/instances/[a-z][-a-z0-9]*[a-z0-9].
-      The final segment of the name must be between 6 and 30 characters in length.
+      is created. The name must be between 6 and 30 characters in length.
     required: false
   config:
     description:
     - A reference to the instance configuration.
-    required: false
+    required: true
   display_name:
     description:
     - The descriptive name for this instance as it appears in UIs. Must be unique
@@ -65,7 +64,7 @@ options:
   node_count:
     description:
     - The number of nodes allocated to this instance.
-    required: false
+    required: true
   labels:
     description:
     - Cloud Labels are a flexible and lightweight mechanism for organizing cloud resources
@@ -88,6 +87,9 @@ options:
     - 'Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.'
     required: false
 extends_documentation_fragment: gcp
+notes:
+- 'API Reference: U(https://cloud.google.com/spanner/docs/reference/rest/v1/projects.instances)'
+- 'Official Documentation: U(https://cloud.google.com/spanner/)'
 '''
 
 EXAMPLES = '''
@@ -109,8 +111,7 @@ RETURN = '''
 name:
   description:
   - A unique identifier for the instance, which cannot be changed after the instance
-    is created. Values are of the form projects/<project>/instances/[a-z][-a-z0-9]*[a-z0-9].
-    The final segment of the name must be between 6 and 30 characters in length.
+    is created. The name must be between 6 and 30 characters in length.
   returned: success
   type: str
 config:
@@ -159,6 +160,7 @@ labels:
 
 from ansible.module_utils.gcp_utils import navigate_hash, GcpSession, GcpModule, GcpRequest, replace_resource_dict
 import json
+import time
 
 ################################################################################
 # Main
@@ -172,9 +174,9 @@ def main():
         argument_spec=dict(
             state=dict(default='present', choices=['present', 'absent'], type='str'),
             name=dict(type='str'),
-            config=dict(type='str'),
+            config=dict(required=True, type='str'),
             display_name=dict(required=True, type='str'),
-            node_count=dict(type='int'),
+            node_count=dict(required=True, type='int'),
             labels=dict(type='dict'),
         )
     )
@@ -211,17 +213,17 @@ def main():
 
 def create(module, link):
     auth = GcpSession(module, 'spanner')
-    return return_if_object(module, auth.post(link, resource_to_create(module)))
+    return wait_for_operation(module, auth.post(link, resource_to_create(module)))
 
 
 def update(module, link):
     auth = GcpSession(module, 'spanner')
-    return return_if_object(module, auth.patch(link, resource_to_update(module)))
+    return wait_for_operation(module, auth.patch(link, resource_to_update(module)))
 
 
 def delete(module, link):
     auth = GcpSession(module, 'spanner')
-    return return_if_object(module, auth.delete(link))
+    return wait_for_operation(module, auth.delete(link))
 
 
 def resource_to_request(module):
@@ -305,6 +307,41 @@ def response_to_hash(module, response):
         u'nodeCount': response.get(u'nodeCount'),
         u'labels': response.get(u'labels'),
     }
+
+
+def async_op_url(module, extra_data=None):
+    if extra_data is None:
+        extra_data = {}
+    url = "https://spanner.googleapis.com/v1/projects/{project}/global/operations/{op_id}"
+    combined = extra_data.copy()
+    combined.update(module.params)
+    return url.format(**combined)
+
+
+def wait_for_operation(module, response):
+    op_result = return_if_object(module, response)
+    if op_result is None:
+        return {}
+    status = navigate_hash(op_result, ['status'])
+    wait_done = wait_for_completion(status, op_result, module)
+    return fetch_resource(module, navigate_hash(wait_done, ['targetLink']))
+
+
+def wait_for_completion(status, op_result, module):
+    op_id = navigate_hash(op_result, ['name'])
+    op_uri = async_op_url(module, {'op_id': op_id})
+    while status != 'DONE':
+        raise_if_errors(op_result, ['error', 'errors'], module)
+        time.sleep(1.0)
+        op_result = fetch_resource(module, op_uri)
+        status = navigate_hash(op_result, ['status'])
+    return op_result
+
+
+def raise_if_errors(response, err_path, module):
+    errors = navigate_hash(response, err_path)
+    if errors is not None:
+        module.fail_json(msg=errors)
 
 
 def resource_to_create(module):
