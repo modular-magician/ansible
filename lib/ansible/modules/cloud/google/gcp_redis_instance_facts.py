@@ -158,6 +158,11 @@ items:
         instance - STANDARD_HA: highly available primary/replica instances .'
       returned: success
       type: str
+    updateMask:
+      description:
+      - The update mask (internal only).
+      returned: success
+      type: str
     region:
       description:
       - The name of the Redis region of the instance.
