@@ -111,6 +111,10 @@ options:
         - The RFC 4648 base64 encoded SHA-256 hash of the customer-supplied encryption
           key that protects this resource.
         required: false
+      kms_key_name:
+        description:
+        - The name of the encryption key that is stored in Google Cloud KMS.
+        required: false
   labels:
     description:
     - Labels to apply to this Image.
@@ -177,6 +181,10 @@ options:
         description:
         - The RFC 4648 base64 encoded SHA-256 hash of the customer-supplied encryption
           key that protects this resource.
+        required: false
+      kms_key_name:
+        description:
+        - The name of the encryption key that is stored in Google Cloud KMS.
         required: false
   source_disk_id:
     description:
@@ -337,6 +345,11 @@ imageEncryptionKey:
         key that protects this resource.
       returned: success
       type: str
+    kmsKeyName:
+      description:
+      - The name of the encryption key that is stored in Google Cloud KMS.
+      returned: success
+      type: str
 labels:
   description:
   - Labels to apply to this Image.
@@ -414,6 +427,11 @@ sourceDiskEncryptionKey:
         key that protects this resource.
       returned: success
       type: str
+    kmsKeyName:
+      description:
+      - The name of the encryption key that is stored in Google Cloud KMS.
+      returned: success
+      type: str
 sourceDiskId:
   description:
   - The ID value of the disk used to create this image. This value may be used to
@@ -452,7 +470,7 @@ def main():
             disk_size_gb=dict(type='int'),
             family=dict(type='str'),
             guest_os_features=dict(type='list', elements='dict', options=dict(type=dict(type='str', choices=['VIRTIO_SCSI_MULTIQUEUE']))),
-            image_encryption_key=dict(type='dict', options=dict(raw_key=dict(type='str'), sha256=dict(type='str'))),
+            image_encryption_key=dict(type='dict', options=dict(raw_key=dict(type='str'), sha256=dict(type='str'), kms_key_name=dict(type='str'))),
             labels=dict(type='dict'),
             licenses=dict(type='list', elements='str'),
             name=dict(required=True, type='str'),
@@ -461,7 +479,7 @@ def main():
                 options=dict(container_type=dict(type='str', choices=['TAR']), sha1_checksum=dict(type='str'), source=dict(required=True, type='str')),
             ),
             source_disk=dict(),
-            source_disk_encryption_key=dict(type='dict', options=dict(raw_key=dict(type='str'), sha256=dict(type='str'))),
+            source_disk_encryption_key=dict(type='dict', options=dict(raw_key=dict(type='str'), sha256=dict(type='str'), kms_key_name=dict(type='str'))),
             source_disk_id=dict(type='str'),
             source_type=dict(type='str', choices=['RAW']),
         )

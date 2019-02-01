@@ -179,6 +179,11 @@ items:
             key that protects this resource.
           returned: success
           type: str
+        kmsKeyName:
+          description:
+          - The name of the encryption key that is stored in Google Cloud KMS.
+          returned: success
+          type: str
     sourceSnapshot:
       description:
       - The source snapshot used to create this disk. You can provide this as a partial
@@ -196,6 +201,11 @@ items:
           description:
           - Specifies a 256-bit customer-supplied encryption key, encoded in RFC 4648
             base64 to either encrypt or decrypt this resource.
+          returned: success
+          type: str
+        kmsKeyName:
+          description:
+          - The name of the encryption key that is stored in Google Cloud KMS.
           returned: success
           type: str
         sha256:
