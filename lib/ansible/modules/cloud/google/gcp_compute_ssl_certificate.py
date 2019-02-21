@@ -34,6 +34,7 @@ description:
 - An SslCertificate resource, used for HTTPS load balancing. This resource provides
   a mechanism to upload an SSL key and certificate to the load balancer to serve secure
   connections from the user.
+- For a certificate managed by Google, see the ManagedSslCertificate resource.
 short_description: Creates a GCP SslCertificate
 version_added: 2.6
 author: Google Inc. (@googlecloudplatform)
@@ -67,6 +68,7 @@ options:
       which means the first character must be a lowercase letter, and all following
       characters must be a dash, lowercase letter, or digit, except the last character,
       which cannot be a dash.
+    - These are in the same namespace as the managed SSL certificates.
     required: false
   private_key:
     description:
@@ -144,6 +146,7 @@ name:
     which means the first character must be a lowercase letter, and all following
     characters must be a dash, lowercase letter, or digit, except the last character,
     which cannot be a dash.
+  - These are in the same namespace as the managed SSL certificates.
   returned: success
   type: str
 privateKey:
