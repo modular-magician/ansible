@@ -122,22 +122,22 @@ notes:
 EXAMPLES = '''
 - name: create a topic
   gcp_pubsub_topic:
-      name: "topic-subscription"
-      project: "{{ gcp_project }}"
-      auth_kind: "{{ gcp_cred_kind }}"
-      service_account_file: "{{ gcp_cred_file }}"
-      state: present
+    name: topic-subscription
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_file: "{{ gcp_cred_file }}"
+    state: present
   register: topic
 
 - name: create a subscription
   gcp_pubsub_subscription:
-      name: "test_object"
-      topic: "{{ topic }}"
-      ack_deadline_seconds: 300
-      project: "test_project"
-      auth_kind: "serviceaccount"
-      service_account_file: "/tmp/auth.pem"
-      state: present
+    name: test_object
+    topic: "{{ topic }}"
+    ack_deadline_seconds: 300
+    project: test_project
+    auth_kind: serviceaccount
+    service_account_file: "/tmp/auth.pem"
+    state: present
 '''
 
 RETURN = '''
