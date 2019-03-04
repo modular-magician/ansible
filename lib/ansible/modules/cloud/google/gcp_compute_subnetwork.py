@@ -113,6 +113,7 @@ options:
           an alias IP range to a VM instance. The name must be 1-63 characters long,
           and comply with RFC1035. The name must be unique within the subnetwork.
         required: true
+        version_added: 2.8
       ip_cidr_range:
         description:
         - The range of IP addresses belonging to this subnetwork secondary range.
@@ -120,6 +121,7 @@ options:
         - Ranges must be unique and non-overlapping with all primary and secondary
           IP ranges within a network. Only IPv4 is supported.
         required: true
+        version_added: 2.8
   private_ip_google_access:
     description:
     - When enabled, VMs in this subnetwork without external IP addresses can access
