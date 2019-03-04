@@ -156,14 +156,17 @@ options:
           string Alternatively, you can add `register: name-of-resource` to a gcp_storage_bucket
           task and then set this bucket field to "{{ name-of-resource }}"'
         required: true
+        version_added: 2.7
       domain:
         description:
         - The domain associated with the entity.
         required: false
+        version_added: 2.7
       email:
         description:
         - The email address associated with the entity.
         required: false
+        version_added: 2.7
       entity:
         description:
         - 'The entity holding the permission, in one of the following forms: * user-{{userId}}
@@ -172,35 +175,43 @@ options:
           (such as "domain-example.com") * project-team-{{projectId}} * allUsers *
           allAuthenticatedUsers .'
         required: true
+        version_added: 2.7
       entity_id:
         description:
         - The ID for the entity.
         required: false
+        version_added: 2.7
       generation:
         description:
         - The content generation of the object, if applied to an object.
         required: false
+        version_added: 2.7
       id:
         description:
         - The ID of the access-control entry.
         required: false
+        version_added: 2.7
       object:
         description:
         - The name of the object, if applied to an object.
         required: false
+        version_added: 2.7
       project_team:
         description:
         - The project team associated with the entity.
         required: false
+        version_added: 2.7
         suboptions:
           project_number:
             description:
             - The project team associated with the entity.
             required: false
+            version_added: 2.7
           team:
             description:
             - The team.
             required: false
+            version_added: 2.7
             choices:
             - editors
             - owners
@@ -209,6 +220,7 @@ options:
         description:
         - The access permission for the entity.
         required: true
+        version_added: 2.7
         choices:
         - OWNER
         - READER

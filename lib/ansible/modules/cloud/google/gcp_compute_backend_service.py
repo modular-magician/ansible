@@ -221,18 +221,22 @@ options:
         - Enables IAP.
         required: false
         type: bool
+        version_added: 2.7
       oauth2_client_id:
         description:
         - OAuth2 Client ID for IAP.
         required: false
+        version_added: 2.7
       oauth2_client_secret:
         description:
         - OAuth2 Client Secret for IAP.
         required: false
+        version_added: 2.7
       oauth2_client_secret_sha256:
         description:
         - OAuth2 Client Secret SHA-256 for IAP.
         required: false
+        version_added: 2.7
   load_balancing_scheme:
     description:
     - Indicates whether the backend service will be used with internal or external

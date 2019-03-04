@@ -89,6 +89,7 @@ options:
           well known protocol strings (tcp, udp, icmp, esp, ah, sctp), or the IP protocol
           number.
         required: true
+        version_added: 2.8
       ports:
         description:
         - An optional list of ports to which this rule applies. This field is only
@@ -97,6 +98,7 @@ options:
           port.
         - 'Example inputs include: ["22"], ["80","443"], and ["12345-12349"].'
         required: false
+        version_added: 2.8
   description:
     description:
     - An optional description of this resource. Provide this property when you create
