@@ -101,6 +101,7 @@ options:
           routers will advertise routes with all subnetworks of this network, across
           regions.
         required: true
+        version_added: 2.8
         choices:
         - REGIONAL
         - GLOBAL
