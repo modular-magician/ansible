@@ -144,6 +144,11 @@ options:
       resource quota is sufficient for this number of instances. You must also have
       available firewall and routes quota.
     required: true
+  version:
+    description:
+    - The version of the Kubernetes of this node.
+    required: false
+    version_added: 2.8
   autoscaling:
     description:
     - Autoscaler configuration for this NodePool. Autoscaler is enabled only if a
@@ -452,6 +457,7 @@ def main():
                 ),
             ),
             initial_node_count=dict(required=True, type='int'),
+            version=dict(type='str'),
             autoscaling=dict(type='dict', options=dict(enabled=dict(type='bool'), min_node_count=dict(type='int'), max_node_count=dict(type='int'))),
             management=dict(
                 type='dict', options=dict(auto_upgrade=dict(type='bool'), auto_repair=dict(type='bool'), upgrade_options=dict(type='dict', options=dict()))
@@ -511,6 +517,7 @@ def resource_to_request(module):
         u'name': module.params.get('name'),
         u'config': NodePoolConfig(module.params.get('config', {}), module).to_request(),
         u'initialNodeCount': module.params.get('initial_node_count'),
+        u'version': module.params.get('version'),
         u'autoscaling': NodePoolAutoscaling(module.params.get('autoscaling', {}), module).to_request(),
         u'management': NodePoolManagement(module.params.get('management', {}), module).to_request(),
     }
@@ -589,7 +596,7 @@ def response_to_hash(module, response):
         u'name': response.get(u'name'),
         u'config': NodePoolConfig(response.get(u'config', {}), module).from_response(),
         u'initialNodeCount': module.params.get('initial_node_count'),
-        u'version': response.get(u'version'),
+        u'version': module.params.get('version'),
         u'autoscaling': NodePoolAutoscaling(response.get(u'autoscaling', {}), module).from_response(),
         u'management': NodePoolManagement(response.get(u'management', {}), module).from_response(),
     }
