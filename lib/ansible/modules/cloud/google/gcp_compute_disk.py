@@ -89,6 +89,15 @@ options:
       of sizeGb must not be less than the size of the sourceImage or the size of the
       snapshot.
     required: false
+  physical_block_size_bytes:
+    description:
+    - Physical block size of the persistent disk, in bytes. If not present in a request,
+      a default value is used. Currently supported sizes are 4096 and 16384, other
+      sizes may be added in the future.
+    - If an unsupported value is requested, the error message will list the supported
+      values for the caller's project.
+    required: false
+    version_added: 2.8
   type:
     description:
     - URL of the disk type resource describing which disk type to use to create the
@@ -262,6 +271,15 @@ users:
     .'
   returned: success
   type: list
+physicalBlockSizeBytes:
+  description:
+  - Physical block size of the persistent disk, in bytes. If not present in a request,
+    a default value is used. Currently supported sizes are 4096 and 16384, other sizes
+    may be added in the future.
+  - If an unsupported value is requested, the error message will list the supported
+    values for the caller's project.
+  returned: success
+  type: int
 type:
   description:
   - URL of the disk type resource describing which disk type to use to create the
@@ -417,6 +435,7 @@ def main():
             licenses=dict(type='list', elements='str'),
             name=dict(required=True, type='str'),
             size_gb=dict(type='int'),
+            physical_block_size_bytes=dict(type='int'),
             type=dict(type='str'),
             source_image=dict(type='str'),
             zone=dict(required=True, type='str'),
@@ -507,6 +526,7 @@ def resource_to_request(module):
         u'licenses': module.params.get('licenses'),
         u'name': module.params.get('name'),
         u'sizeGb': module.params.get('size_gb'),
+        u'physicalBlockSizeBytes': module.params.get('physical_block_size_bytes'),
         u'type': disk_type_selflink(module.params.get('type'), module.params),
         u'sourceImage': module.params.get('source_image'),
     }
@@ -585,6 +605,7 @@ def response_to_hash(module, response):
         u'name': module.params.get('name'),
         u'sizeGb': response.get(u'sizeGb'),
         u'users': response.get(u'users'),
+        u'physicalBlockSizeBytes': response.get(u'physicalBlockSizeBytes'),
         u'type': response.get(u'type'),
         u'sourceImage': module.params.get('source_image'),
     }
