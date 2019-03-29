@@ -208,7 +208,7 @@ items:
               type: list
     connectionDraining:
       description:
-      - Settings for connection draining.
+      - Settings for connection draining .
       returned: success
       type: complex
       contains:
@@ -221,6 +221,12 @@ items:
     creationTimestamp:
       description:
       - Creation timestamp in RFC3339 text format.
+      returned: success
+      type: str
+    fingerprint:
+      description:
+      - Fingerprint of this resource. A hash of the contents stored in this object.
+        This field is used in optimistic locking.
       returned: success
       type: str
     description:
@@ -261,17 +267,17 @@ items:
           type: bool
         oauth2ClientId:
           description:
-          - OAuth2 Client ID for IAP.
+          - OAuth2 Client ID for IAP .
           returned: success
           type: str
         oauth2ClientSecret:
           description:
-          - OAuth2 Client Secret for IAP.
+          - OAuth2 Client Secret for IAP .
           returned: success
           type: str
         oauth2ClientSecretSha256:
           description:
-          - OAuth2 Client Secret SHA-256 for IAP.
+          - OAuth2 Client Secret SHA-256 for IAP .
           returned: success
           type: str
     loadBalancingScheme:
@@ -306,10 +312,9 @@ items:
         default is TCP.
       returned: success
       type: str
-    region:
+    securityPolicy:
       description:
-      - The region where the regional backend service resides.
-      - This field is not applicable to global backend services.
+      - The security policy associated with this backend service.
       returned: success
       type: str
     sessionAffinity:

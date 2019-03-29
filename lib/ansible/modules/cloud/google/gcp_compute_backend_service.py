@@ -67,6 +67,7 @@ options:
           Valid values are UTILIZATION, RATE (for HTTP(S)) and CONNECTION (for TCP/SSL).
         - This cannot be used for internal load balancing.
         required: false
+        default: UTILIZATION
         choices:
         - UTILIZATION
         - RATE
@@ -81,6 +82,7 @@ options:
           [0.0,1.0].
         - This cannot be used for internal load balancing.
         required: false
+        default: '1.0'
       description:
         description:
         - An optional description of this resource.
@@ -140,6 +142,7 @@ options:
           target for the group. The default is 0.8. Valid range is [0.0, 1.0].
         - This cannot be used for internal load balancing.
         required: false
+        default: '0.8'
   cdn_policy:
     description:
     - Cloud CDN configuration for this BackendService.
@@ -184,7 +187,7 @@ options:
             required: false
   connection_draining:
     description:
-    - Settings for connection draining.
+    - Settings for connection draining .
     required: false
     suboptions:
       draining_timeout_sec:
@@ -192,6 +195,7 @@ options:
         - Time for which instance will be drained (not accept new connections, but
           still work to finish started).
         required: false
+        default: '300'
   description:
     description:
     - An optional description of this resource.
@@ -209,7 +213,7 @@ options:
       and a health check is required.
     - For internal load balancing, a URL to a HealthCheck resource must be specified
       instead.
-    required: false
+    required: true
   iap:
     description:
     - Settings for enabling Cloud Identity Aware Proxy.
@@ -223,12 +227,12 @@ options:
         type: bool
       oauth2_client_id:
         description:
-        - OAuth2 Client ID for IAP.
-        required: false
+        - OAuth2 Client ID for IAP .
+        required: true
       oauth2_client_secret:
         description:
-        - OAuth2 Client Secret for IAP.
-        required: false
+        - OAuth2 Client Secret for IAP .
+        required: true
   load_balancing_scheme:
     description:
     - Indicates whether the backend service will be used with internal or external
@@ -247,7 +251,7 @@ options:
       which means the first character must be a lowercase letter, and all following
       characters must be a dash, lowercase letter, or digit, except the last character,
       which cannot be a dash.
-    required: false
+    required: true
   port_name:
     description:
     - Name of backend port. The same name should appear in the instance groups referenced
@@ -266,11 +270,11 @@ options:
     - HTTPS
     - TCP
     - SSL
-  region:
+  security_policy:
     description:
-    - The region where the regional backend service resides.
-    - This field is not applicable to global backend services.
+    - The security policy associated with this backend service.
     required: false
+    version_added: 2.8
   session_affinity:
     description:
     - Type of session affinity to use. The default is NONE.
@@ -475,7 +479,7 @@ cdnPolicy:
           type: list
 connectionDraining:
   description:
-  - Settings for connection draining.
+  - Settings for connection draining .
   returned: success
   type: complex
   contains:
@@ -488,6 +492,12 @@ connectionDraining:
 creationTimestamp:
   description:
   - Creation timestamp in RFC3339 text format.
+  returned: success
+  type: str
+fingerprint:
+  description:
+  - Fingerprint of this resource. A hash of the contents stored in this object. This
+    field is used in optimistic locking.
   returned: success
   type: str
 description:
@@ -528,17 +538,17 @@ iap:
       type: bool
     oauth2ClientId:
       description:
-      - OAuth2 Client ID for IAP.
+      - OAuth2 Client ID for IAP .
       returned: success
       type: str
     oauth2ClientSecret:
       description:
-      - OAuth2 Client Secret for IAP.
+      - OAuth2 Client Secret for IAP .
       returned: success
       type: str
     oauth2ClientSecretSha256:
       description:
-      - OAuth2 Client Secret SHA-256 for IAP.
+      - OAuth2 Client Secret SHA-256 for IAP .
       returned: success
       type: str
 loadBalancingScheme:
@@ -573,10 +583,9 @@ protocol:
     is TCP.
   returned: success
   type: str
-region:
+securityPolicy:
   description:
-  - The region where the regional backend service resides.
-  - This field is not applicable to global backend services.
+  - The security policy associated with this backend service.
   returned: success
   type: str
 sessionAffinity:
@@ -602,7 +611,6 @@ timeoutSec:
 
 from ansible.module_utils.gcp_utils import navigate_hash, GcpSession, GcpModule, GcpRequest, remove_nones_from_dict, replace_resource_dict
 import json
-import re
 import time
 
 ################################################################################
@@ -621,15 +629,15 @@ def main():
                 type='list',
                 elements='dict',
                 options=dict(
-                    balancing_mode=dict(type='str', choices=['UTILIZATION', 'RATE', 'CONNECTION']),
-                    capacity_scaler=dict(type='str'),
+                    balancing_mode=dict(default='UTILIZATION', type='str', choices=['UTILIZATION', 'RATE', 'CONNECTION']),
+                    capacity_scaler=dict(default=1.0, type='str'),
                     description=dict(type='str'),
                     group=dict(),
                     max_connections=dict(type='int'),
                     max_connections_per_instance=dict(type='int'),
                     max_rate=dict(type='int'),
                     max_rate_per_instance=dict(type='str'),
-                    max_utilization=dict(type='str'),
+                    max_utilization=dict(default=0.8, type='str'),
                 ),
             ),
             cdn_policy=dict(
@@ -647,16 +655,19 @@ def main():
                     )
                 ),
             ),
-            connection_draining=dict(type='dict', options=dict(draining_timeout_sec=dict(type='int'))),
+            connection_draining=dict(type='dict', options=dict(draining_timeout_sec=dict(default=300, type='int'))),
             description=dict(type='str'),
             enable_cdn=dict(type='bool'),
-            health_checks=dict(type='list', elements='str'),
-            iap=dict(type='dict', options=dict(enabled=dict(type='bool'), oauth2_client_id=dict(type='str'), oauth2_client_secret=dict(type='str'))),
+            health_checks=dict(required=True, type='list', elements='str'),
+            iap=dict(
+                type='dict',
+                options=dict(enabled=dict(type='bool'), oauth2_client_id=dict(required=True, type='str'), oauth2_client_secret=dict(required=True, type='str')),
+            ),
             load_balancing_scheme=dict(type='str', choices=['INTERNAL', 'EXTERNAL']),
-            name=dict(type='str'),
+            name=dict(required=True, type='str'),
             port_name=dict(type='str'),
             protocol=dict(type='str', choices=['HTTP', 'HTTPS', 'TCP', 'SSL']),
-            region=dict(type='str'),
+            security_policy=dict(type='str'),
             session_affinity=dict(type='str', choices=['NONE', 'CLIENT_IP', 'GENERATED_COOKIE', 'CLIENT_IP_PROTO', 'CLIENT_IP_PORT_PROTO']),
             timeout_sec=dict(type='int', aliases=['timeout_seconds']),
         )
@@ -674,7 +685,7 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
-                update(module, self_link(module), kind)
+                update(module, self_link(module), kind, fetch)
                 fetch = fetch_resource(module, self_link(module), kind)
                 changed = True
         else:
@@ -698,9 +709,23 @@ def create(module, link, kind):
     return wait_for_operation(module, auth.post(link, resource_to_request(module)))
 
 
-def update(module, link, kind):
+def update(module, link, kind, fetch):
+    update_fields(module, resource_to_request(module), response_to_hash(module, fetch))
     auth = GcpSession(module, 'compute')
     return wait_for_operation(module, auth.put(link, resource_to_request(module)))
+
+
+def update_fields(module, request, response):
+    if response.get('securityPolicy') != request.get('securityPolicy'):
+        security_policy_update(module, request, response)
+
+
+def security_policy_update(module, request, response):
+    auth = GcpSession(module, 'compute')
+    auth.post(
+        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/global/backendServices/{name}/setSecurityPolicy"]).format(**module.params),
+        {u'securityPolicy': module.params.get('security_policy')},
+    )
 
 
 def delete(module, link, kind):
@@ -723,7 +748,7 @@ def resource_to_request(module):
         u'name': module.params.get('name'),
         u'portName': module.params.get('port_name'),
         u'protocol': module.params.get('protocol'),
-        u'region': region_selflink(module.params.get('region'), module.params),
+        u'securityPolicy': module.params.get('security_policy'),
         u'sessionAffinity': module.params.get('session_affinity'),
         u'timeoutSec': module.params.get('timeout_sec'),
     }
@@ -796,28 +821,20 @@ def response_to_hash(module, response):
         u'cdnPolicy': BackendServiceCdnpolicy(response.get(u'cdnPolicy', {}), module).from_response(),
         u'connectionDraining': BackendServiceConnectiondraining(response.get(u'connectionDraining', {}), module).from_response(),
         u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'fingerprint': response.get(u'fingerprint'),
         u'description': response.get(u'description'),
         u'enableCDN': response.get(u'enableCDN'),
         u'healthChecks': response.get(u'healthChecks'),
         u'id': response.get(u'id'),
         u'iap': BackendServiceIap(response.get(u'iap', {}), module).from_response(),
         u'loadBalancingScheme': response.get(u'loadBalancingScheme'),
-        u'name': response.get(u'name'),
+        u'name': module.params.get('name'),
         u'portName': response.get(u'portName'),
         u'protocol': response.get(u'protocol'),
-        u'region': response.get(u'region'),
+        u'securityPolicy': response.get(u'securityPolicy'),
         u'sessionAffinity': response.get(u'sessionAffinity'),
         u'timeoutSec': response.get(u'timeoutSec'),
     }
-
-
-def region_selflink(name, params):
-    if name is None:
-        return
-    url = r"https://www.googleapis.com/compute/v1/projects/.*/regions/[a-z1-9\-]*"
-    if not re.match(url, name):
-        name = "https://www.googleapis.com/compute/v1/projects/{project}/regions/%s".format(**params) % name
-    return name
 
 
 def async_op_url(module, extra_data=None):
