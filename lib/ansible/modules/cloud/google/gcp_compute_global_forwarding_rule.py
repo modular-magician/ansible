@@ -142,6 +142,16 @@ options:
       to a gcp_compute_network task and then set this network field to "{{ name-of-resource
       }}"'
     required: false
+  network_tier:
+    description:
+    - 'The networking tier used for configuring this address. This field can take
+      the following values: PREMIUM or STANDARD. If this field is not specified, it
+      is assumed to be PREMIUM.'
+    required: false
+    version_added: 2.8
+    choices:
+    - PREMIUM
+    - STANDARD
   port_range:
     description:
     - This field is used along with the target field for TargetHttpProxy, TargetHttpsProxy,
@@ -184,6 +194,26 @@ options:
       must be of a type appropriate to the target object.
     - 'Valid types: HTTP_PROXY, HTTPS_PROXY, SSL_PROXY, TCP_PROXY .'
     required: false
+  all_ports:
+    description:
+    - When the load balancing scheme is INTERNAL and protocol is TCP/UDP, omit `port`/`port_range`
+      and specify this field as `true` to allow packets addressed to any ports to
+      be forwarded to the backends configured with this forwarding rule.
+    required: false
+    type: bool
+    version_added: 2.8
+  service_label:
+    description:
+    - An optional prefix to the service name for this Forwarding Rule.
+    - If specified, will be the first label of the fully qualified service name.
+    - The label must be 1-63 characters long, and comply with RFC1035.
+    - Specifically, the label must be 1-63 characters long and match the regular expression
+      `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase
+      letter, and all following characters must be a dash, lowercase letter, or digit,
+      except the last character, which cannot be a dash.
+    - This field is only used for internal load balancing.
+    required: false
+    version_added: 2.8
 extends_documentation_fragment: gcp
 '''
 
@@ -354,6 +384,13 @@ network:
   - This field is not used for external load balancing.
   returned: success
   type: dict
+networkTier:
+  description:
+  - 'The networking tier used for configuring this address. This field can take the
+    following values: PREMIUM or STANDARD. If this field is not specified, it is assumed
+    to be PREMIUM.'
+  returned: success
+  type: str
 portRange:
   description:
   - This field is used along with the target field for TargetHttpProxy, TargetHttpsProxy,
@@ -387,17 +424,36 @@ subnetwork:
   - This field is not used for external load balancing.
   returned: success
   type: dict
-region:
-  description:
-  - A reference to the region where the regional forwarding rule resides.
-  - This field is not applicable to global forwarding rules.
-  returned: success
-  type: str
 target:
   description:
   - This target must be a global load balancing resource. The forwarded traffic must
     be of a type appropriate to the target object.
   - 'Valid types: HTTP_PROXY, HTTPS_PROXY, SSL_PROXY, TCP_PROXY .'
+  returned: success
+  type: str
+allPorts:
+  description:
+  - When the load balancing scheme is INTERNAL and protocol is TCP/UDP, omit `port`/`port_range`
+    and specify this field as `true` to allow packets addressed to any ports to be
+    forwarded to the backends configured with this forwarding rule.
+  returned: success
+  type: bool
+serviceLabel:
+  description:
+  - An optional prefix to the service name for this Forwarding Rule.
+  - If specified, will be the first label of the fully qualified service name.
+  - The label must be 1-63 characters long, and comply with RFC1035.
+  - Specifically, the label must be 1-63 characters long and match the regular expression
+    `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase
+    letter, and all following characters must be a dash, lowercase letter, or digit,
+    except the last character, which cannot be a dash.
+  - This field is only used for internal load balancing.
+  returned: success
+  type: str
+serviceName:
+  description:
+  - The internal fully qualified service name for this Forwarding Rule.
+  - This field is only used for internal load balancing.
   returned: success
   type: str
 '''
@@ -429,10 +485,13 @@ def main():
             load_balancing_scheme=dict(type='str', choices=['INTERNAL', 'EXTERNAL']),
             name=dict(required=True, type='str'),
             network=dict(type='dict'),
+            network_tier=dict(type='str', choices=['PREMIUM', 'STANDARD']),
             port_range=dict(type='str'),
             ports=dict(type='list', elements='str'),
             subnetwork=dict(type='dict'),
             target=dict(type='str'),
+            all_ports=dict(type='bool'),
+            service_label=dict(type='str'),
         )
     )
 
@@ -448,7 +507,7 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
-                update(module, self_link(module), kind)
+                update(module, self_link(module), kind, fetch)
                 fetch = fetch_resource(module, self_link(module), kind)
                 changed = True
         else:
@@ -472,9 +531,22 @@ def create(module, link, kind):
     return wait_for_operation(module, auth.post(link, resource_to_request(module)))
 
 
-def update(module, link, kind):
+def update(module, link, kind, fetch):
+    update_fields(module, resource_to_request(module), response_to_hash(module, fetch))
+    return fetch_resource(module, self_link(module), kind)
+
+
+def update_fields(module, request, response):
+    if response.get('target') != request.get('target'):
+        target_update(module, request, response)
+
+
+def target_update(module, request, response):
     auth = GcpSession(module, 'compute')
-    return wait_for_operation(module, auth.put(link, resource_to_request(module)))
+    auth.post(
+        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/global/forwardingRules/{name}/setTarget"]).format(**module.params),
+        {u'target': module.params.get('target')},
+    )
 
 
 def delete(module, link, kind):
@@ -493,10 +565,13 @@ def resource_to_request(module):
         u'loadBalancingScheme': module.params.get('load_balancing_scheme'),
         u'name': module.params.get('name'),
         u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
+        u'networkTier': module.params.get('network_tier'),
         u'portRange': module.params.get('port_range'),
         u'ports': module.params.get('ports'),
         u'subnetwork': replace_resource_dict(module.params.get(u'subnetwork', {}), 'selfLink'),
         u'target': module.params.get('target'),
+        u'allPorts': module.params.get('all_ports'),
+        u'serviceLabel': module.params.get('service_label'),
     }
     return_vals = {}
     for k, v in request.items():
@@ -572,11 +647,14 @@ def response_to_hash(module, response):
         u'loadBalancingScheme': response.get(u'loadBalancingScheme'),
         u'name': response.get(u'name'),
         u'network': response.get(u'network'),
+        u'networkTier': module.params.get('network_tier'),
         u'portRange': response.get(u'portRange'),
         u'ports': response.get(u'ports'),
         u'subnetwork': response.get(u'subnetwork'),
-        u'region': response.get(u'region'),
         u'target': response.get(u'target'),
+        u'allPorts': response.get(u'allPorts'),
+        u'serviceLabel': response.get(u'serviceLabel'),
+        u'serviceName': response.get(u'serviceName'),
     }
 
 
