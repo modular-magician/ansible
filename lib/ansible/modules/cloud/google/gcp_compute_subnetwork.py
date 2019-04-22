@@ -331,8 +331,8 @@ def update(module, link, kind, fetch):
 def update_fields(module, request, response):
     if response.get('ipCidrRange') != request.get('ipCidrRange'):
         ip_cidr_range_update(module, request, response)
-    if response.get('enableFlowLogs') != request.get('enableFlowLogs') or response.get('secondaryIpRanges') != request.get('secondaryIpRanges'):
-        enable_flow_logs_update(module, request, response)
+    if response.get('secondaryIpRanges') != request.get('secondaryIpRanges'):
+        fingerprint_update(module, request, response)
     if response.get('privateIpGoogleAccess') != request.get('privateIpGoogleAccess'):
         private_ip_google_access_update(module, request, response)
 
@@ -345,12 +345,11 @@ def ip_cidr_range_update(module, request, response):
     )
 
 
-def enable_flow_logs_update(module, request, response):
+def fingerprint_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.patch(
         ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/regions/{region}/subnetworks/{name}"]).format(**module.params),
         {
-            u'enableFlowLogs': module.params.get('enable_flow_logs'),
             u'fingerprint': response.get('fingerprint'),
             u'secondaryIpRanges': SubnetworkSecondaryiprangesArray(module.params.get('secondary_ip_ranges', []), module).to_request(),
         },
