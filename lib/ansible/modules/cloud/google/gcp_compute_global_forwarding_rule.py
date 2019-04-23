@@ -51,6 +51,17 @@ options:
     - present
     - absent
     default: present
+  backend_service:
+    description:
+    - A reference to a BackendService to receive the matched traffic.
+    - This is used for internal load balancing.
+    - "(not used for external load balancing) ."
+    - 'This field represents a link to a BackendService resource in GCP. It can be
+      specified in two ways. First, you can place a dictionary with key ''selfLink''
+      and value of your resource''s selfLink Alternatively, you can add `register:
+      name-of-resource` to a gcp_compute_backend_service task and then set this backend_service
+      field to "{{ name-of-resource }}"'
+    required: false
   description:
     description:
     - An optional description of this resource. Provide this property when you create
@@ -91,17 +102,6 @@ options:
     - AH
     - SCTP
     - ICMP
-  backend_service:
-    description:
-    - A reference to a BackendService to receive the matched traffic.
-    - This is used for internal load balancing.
-    - "(not used for external load balancing) ."
-    - 'This field represents a link to a BackendService resource in GCP. It can be
-      specified in two ways. First, you can place a dictionary with key ''selfLink''
-      and value of your resource''s selfLink Alternatively, you can add `register:
-      name-of-resource` to a gcp_compute_backend_service task and then set this backend_service
-      field to "{{ name-of-resource }}"'
-    required: false
   ip_version:
     description:
     - The IP Version that will be used by this forwarding rule. Valid options are
@@ -268,6 +268,13 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
+backendService:
+  description:
+  - A reference to a BackendService to receive the matched traffic.
+  - This is used for internal load balancing.
+  - "(not used for external load balancing) ."
+  returned: success
+  type: dict
 creationTimestamp:
   description:
   - Creation timestamp in RFC3339 text format.
@@ -314,13 +321,6 @@ IPProtocol:
   - When the load balancing scheme is INTERNAL, only TCP and UDP are valid.
   returned: success
   type: str
-backendService:
-  description:
-  - A reference to a BackendService to receive the matched traffic.
-  - This is used for internal load balancing.
-  - "(not used for external load balancing) ."
-  returned: success
-  type: dict
 ipVersion:
   description:
   - The IP Version that will be used by this forwarding rule. Valid options are IPV4
@@ -387,12 +387,6 @@ subnetwork:
   - This field is not used for external load balancing.
   returned: success
   type: dict
-region:
-  description:
-  - A reference to the region where the regional forwarding rule resides.
-  - This field is not applicable to global forwarding rules.
-  returned: success
-  type: str
 target:
   description:
   - This target must be a global load balancing resource. The forwarded traffic must
@@ -421,10 +415,10 @@ def main():
     module = GcpModule(
         argument_spec=dict(
             state=dict(default='present', choices=['present', 'absent'], type='str'),
+            backend_service=dict(type='dict'),
             description=dict(type='str'),
             ip_address=dict(type='str'),
             ip_protocol=dict(type='str', choices=['TCP', 'UDP', 'ESP', 'AH', 'SCTP', 'ICMP']),
-            backend_service=dict(type='dict'),
             ip_version=dict(type='str', choices=['IPV4', 'IPV6']),
             load_balancing_scheme=dict(type='str', choices=['INTERNAL', 'EXTERNAL']),
             name=dict(required=True, type='str'),
@@ -473,8 +467,8 @@ def create(module, link, kind):
 
 
 def update(module, link, kind):
-    auth = GcpSession(module, 'compute')
-    return wait_for_operation(module, auth.put(link, resource_to_request(module)))
+    delete(module, self_link(module), kind)
+    create(module, collection(module), kind)
 
 
 def delete(module, link, kind):
@@ -485,10 +479,10 @@ def delete(module, link, kind):
 def resource_to_request(module):
     request = {
         u'kind': 'compute#forwardingRule',
+        u'backendService': replace_resource_dict(module.params.get(u'backend_service', {}), 'selfLink'),
         u'description': module.params.get('description'),
         u'IPAddress': module.params.get('ip_address'),
         u'IPProtocol': module.params.get('ip_protocol'),
-        u'backendService': replace_resource_dict(module.params.get(u'backend_service', {}), 'selfLink'),
         u'ipVersion': module.params.get('ip_version'),
         u'loadBalancingScheme': module.params.get('load_balancing_scheme'),
         u'name': module.params.get('name'),
@@ -562,12 +556,12 @@ def is_different(module, response):
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
     return {
+        u'backendService': response.get(u'backendService'),
         u'creationTimestamp': response.get(u'creationTimestamp'),
         u'description': response.get(u'description'),
         u'id': response.get(u'id'),
         u'IPAddress': response.get(u'IPAddress'),
         u'IPProtocol': response.get(u'IPProtocol'),
-        u'backendService': response.get(u'backendService'),
         u'ipVersion': response.get(u'ipVersion'),
         u'loadBalancingScheme': response.get(u'loadBalancingScheme'),
         u'name': response.get(u'name'),
@@ -575,7 +569,6 @@ def response_to_hash(module, response):
         u'portRange': response.get(u'portRange'),
         u'ports': response.get(u'ports'),
         u'subnetwork': response.get(u'subnetwork'),
-        u'region': response.get(u'region'),
         u'target': response.get(u'target'),
     }
 
