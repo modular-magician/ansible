@@ -65,6 +65,12 @@ items:
   returned: always
   type: complex
   contains:
+    backendService:
+      description:
+      - A reference to a BackendService to receive the matched traffic.
+      - This is used for internal load balancing only.
+      returned: success
+      type: dict
     creationTimestamp:
       description:
       - Creation timestamp in RFC3339 text format.
@@ -111,13 +117,6 @@ items:
       - When the load balancing scheme is INTERNAL, only TCP and UDP are valid.
       returned: success
       type: str
-    backendService:
-      description:
-      - A reference to a BackendService to receive the matched traffic.
-      - This is used for internal load balancing.
-      - "(not used for external load balancing) ."
-      returned: success
-      type: dict
     ipVersion:
       description:
       - The IP Version that will be used by this forwarding rule. Valid options are
@@ -186,12 +185,6 @@ items:
       - This field is not used for external load balancing.
       returned: success
       type: dict
-    region:
-      description:
-      - A reference to the region where the regional forwarding rule resides.
-      - This field is not applicable to global forwarding rules.
-      returned: success
-      type: str
     target:
       description:
       - This target must be a global load balancing resource. The forwarded traffic
