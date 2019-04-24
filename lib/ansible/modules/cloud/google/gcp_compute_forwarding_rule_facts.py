@@ -124,12 +124,6 @@ items:
       - "(not used for external load balancing) ."
       returned: success
       type: dict
-    ipVersion:
-      description:
-      - The IP Version that will be used by this forwarding rule. Valid options are
-        IPV4 or IPV6. This can only be specified for a global forwarding rule.
-      returned: success
-      type: str
     loadBalancingScheme:
       description:
       - 'This signifies what the ForwardingRule will be used for and can only take
