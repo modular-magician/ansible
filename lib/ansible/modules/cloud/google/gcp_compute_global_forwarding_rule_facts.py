@@ -65,6 +65,13 @@ items:
   returned: always
   type: complex
   contains:
+    backendService:
+      description:
+      - For internal load balancing, this field identifies the BackendService resource
+        to receive the matched traffic. This field is only used for INTERNAL load
+        balancing.
+      returned: success
+      type: dict
     creationTimestamp:
       description:
       - Creation timestamp in RFC3339 text format.
@@ -111,13 +118,6 @@ items:
       - When the load balancing scheme is INTERNAL, only TCP and UDP are valid.
       returned: success
       type: str
-    backendService:
-      description:
-      - A reference to a BackendService to receive the matched traffic.
-      - This is used for internal load balancing.
-      - "(not used for external load balancing) ."
-      returned: success
-      type: dict
     ipVersion:
       description:
       - The IP Version that will be used by this forwarding rule. Valid options are
@@ -126,11 +126,12 @@ items:
       type: str
     loadBalancingScheme:
       description:
-      - 'This signifies what the ForwardingRule will be used for and can only take
-        the following values: INTERNAL, EXTERNAL The value of INTERNAL means that
-        this will be used for Internal Network Load Balancing (TCP, UDP). The value
-        of EXTERNAL means that this will be used for External Load Balancing (HTTP(S)
-        LB, External TCP/UDP LB, SSL Proxy) .'
+      - This signifies what the GlobalForwardingRule will be used for.
+      - The value of INTERNAL means that this will be used for Internal Network Load
+        Balancing (TCP, UDP). The value of INTERNAL_SELF_MANAGED means that this will
+        be used for Internal Global HTTP(S) LB.
+      - The value of EXTERNAL means that this will be used for External Load Balancing
+        (HTTP(S) LB, External TCP/UDP LB, SSL Proxy) .
       returned: success
       type: str
     name:
@@ -145,10 +146,10 @@ items:
       type: str
     network:
       description:
-      - For internal load balancing, this field identifies the network that the load
-        balanced IP should belong to for this Forwarding Rule. If this field is not
-        specified, the default network will be used.
       - This field is not used for external load balancing.
+      - For INTERNAL and INTERNAL_SELF_MANAGED load balancing, this field identifies
+        the network that the load balanced IP should belong to for this Forwarding
+        Rule. If this field is not specified, the default network will be used.
       returned: success
       type: dict
     portRange:
@@ -186,17 +187,10 @@ items:
       - This field is not used for external load balancing.
       returned: success
       type: dict
-    region:
-      description:
-      - A reference to the region where the regional forwarding rule resides.
-      - This field is not applicable to global forwarding rules.
-      returned: success
-      type: str
     target:
       description:
-      - This target must be a global load balancing resource. The forwarded traffic
-        must be of a type appropriate to the target object.
-      - 'Valid types: HTTP_PROXY, HTTPS_PROXY, SSL_PROXY, TCP_PROXY .'
+      - The URL of the target resource to receive the matched traffic.
+      - The forwarded traffic must be of a type appropriate to the target object.
       returned: success
       type: str
 '''
