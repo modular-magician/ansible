@@ -100,14 +100,6 @@ options:
       name-of-resource` to a gcp_compute_backend_service task and then set this backend_service
       field to "{{ name-of-resource }}"'
     required: false
-  ip_version:
-    description:
-    - The IP Version that will be used by this forwarding rule. Valid options are
-      IPV4 or IPV6. This can only be specified for a global forwarding rule.
-    required: false
-    choices:
-    - IPV4
-    - IPV6
   load_balancing_scheme:
     description:
     - 'This signifies what the ForwardingRule will be used for and can only take the
@@ -321,12 +313,6 @@ backendService:
   - "(not used for external load balancing) ."
   returned: success
   type: dict
-ipVersion:
-  description:
-  - The IP Version that will be used by this forwarding rule. Valid options are IPV4
-    or IPV6. This can only be specified for a global forwarding rule.
-  returned: success
-  type: str
 loadBalancingScheme:
   description:
   - 'This signifies what the ForwardingRule will be used for and can only take the
@@ -460,7 +446,6 @@ def main():
             ip_address=dict(type='str'),
             ip_protocol=dict(type='str', choices=['TCP', 'UDP', 'ESP', 'AH', 'SCTP', 'ICMP']),
             backend_service=dict(type='dict'),
-            ip_version=dict(type='str', choices=['IPV4', 'IPV6']),
             load_balancing_scheme=dict(type='str', choices=['INTERNAL', 'EXTERNAL']),
             name=dict(required=True, type='str'),
             network=dict(type='dict'),
@@ -541,7 +526,6 @@ def resource_to_request(module):
         u'IPAddress': module.params.get('ip_address'),
         u'IPProtocol': module.params.get('ip_protocol'),
         u'backendService': replace_resource_dict(module.params.get(u'backend_service', {}), 'selfLink'),
-        u'ipVersion': module.params.get('ip_version'),
         u'loadBalancingScheme': module.params.get('load_balancing_scheme'),
         u'name': module.params.get('name'),
         u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
@@ -623,7 +607,6 @@ def response_to_hash(module, response):
         u'IPAddress': response.get(u'IPAddress'),
         u'IPProtocol': response.get(u'IPProtocol'),
         u'backendService': response.get(u'backendService'),
-        u'ipVersion': response.get(u'ipVersion'),
         u'loadBalancingScheme': response.get(u'loadBalancingScheme'),
         u'name': response.get(u'name'),
         u'network': response.get(u'network'),

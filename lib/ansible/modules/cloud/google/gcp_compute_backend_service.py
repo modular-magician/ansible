@@ -863,7 +863,7 @@ def response_to_hash(module, response):
         u'healthChecks': response.get(u'healthChecks'),
         u'id': response.get(u'id'),
         u'iap': BackendServiceIap(response.get(u'iap', {}), module).from_response(),
-        u'loadBalancingScheme': response.get(u'loadBalancingScheme'),
+        u'loadBalancingScheme': module.params.get('load_balancing_scheme'),
         u'name': module.params.get('name'),
         u'portName': response.get(u'portName'),
         u'protocol': response.get(u'protocol'),
