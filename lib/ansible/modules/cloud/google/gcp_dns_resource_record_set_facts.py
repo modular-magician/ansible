@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -107,7 +108,8 @@ import json
 
 
 def main():
-    module = GcpModule(argument_spec=dict(managed_zone=dict(required=True, type='dict')))
+    module = GcpModule(
+            argument_spec=dict(managed_zone=dict(required=True, type='dict'))    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/ndev.clouddns.readwrite']
@@ -117,13 +119,19 @@ def main():
         items = items.get('rrsets')
     else:
         items = []
-    return_value = {'resources': items}
+    return_value = {
+        'resources': items
+    }
     module.exit_json(**return_value)
 
 
 def collection(module):
-    res = {'project': module.params['project'], 'managed_zone': replace_resource_dict(module.params['managed_zone'], 'name')}
-    return "https://www.googleapis.com/dns/v1/projects/{project}/managedZones/{managed_zone}/changes".format(**res)
+    res = {
+        'project': module.params['project'],
+        'managed_zone': replace_resource_dict(module.params['managed_zone'], 'name')
+    }
+    return "https://www.googleapis.com/dns/v1/projects/{project}/managedZones/{managed_zone}/changes
+    ".format(**res)
 
 
 def fetch_list(module, link):
