@@ -142,8 +142,8 @@ def create(module, link):
 
 
 def update(module, link):
-    delete(module, self_link(module))
-    create(module, self_link(module))
+    auth = GcpSession(module, 'pubsub')
+    return return_if_object(module, auth.put(link, resource_to_request(module)))
 
 
 def delete(module, link):
@@ -220,7 +220,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {u'name': response.get(u'name'), u'labels': response.get(u'labels')}
+    return {u'name': module.params.get('name'), u'labels': response.get(u'labels')}
 
 
 def decode_request(response, module):
