@@ -249,7 +249,6 @@ nextHopNetwork:
 
 from ansible.module_utils.gcp_utils import navigate_hash, GcpSession, GcpModule, GcpRequest, replace_resource_dict
 import json
-import time
 
 ################################################################################
 # Main
@@ -308,7 +307,7 @@ def main():
 
 def create(module, link, kind):
     auth = GcpSession(module, 'compute')
-    return wait_for_operation(module, auth.post(link, resource_to_request(module)))
+    return return_if_object(module, auth.post(link, resource_to_request(module)), kind)
 
 
 def update(module, link, kind):
@@ -318,7 +317,7 @@ def update(module, link, kind):
 
 def delete(module, link, kind):
     auth = GcpSession(module, 'compute')
-    return wait_for_operation(module, auth.delete(link))
+    return return_if_object(module, auth.delete(link), kind)
 
 
 def resource_to_request(module):
@@ -411,41 +410,6 @@ def response_to_hash(module, response):
         u'nextHopVpnTunnel': replace_resource_dict(module.params.get(u'next_hop_vpn_tunnel', {}), 'selfLink'),
         u'nextHopNetwork': response.get(u'nextHopNetwork'),
     }
-
-
-def async_op_url(module, extra_data=None):
-    if extra_data is None:
-        extra_data = {}
-    url = "https://www.googleapis.com/compute/v1/projects/{project}/global/operations/{op_id}"
-    combined = extra_data.copy()
-    combined.update(module.params)
-    return url.format(**combined)
-
-
-def wait_for_operation(module, response):
-    op_result = return_if_object(module, response, 'compute#operation')
-    if op_result is None:
-        return {}
-    status = navigate_hash(op_result, ['status'])
-    wait_done = wait_for_completion(status, op_result, module)
-    return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#route')
-
-
-def wait_for_completion(status, op_result, module):
-    op_id = navigate_hash(op_result, ['name'])
-    op_uri = async_op_url(module, {'op_id': op_id})
-    while status != 'DONE':
-        raise_if_errors(op_result, ['error', 'errors'], module)
-        time.sleep(1.0)
-        op_result = fetch_resource(module, op_uri, 'compute#operation', False)
-        status = navigate_hash(op_result, ['status'])
-    return op_result
-
-
-def raise_if_errors(response, err_path, module):
-    errors = navigate_hash(response, err_path)
-    if errors is not None:
-        module.fail_json(msg=errors)
 
 
 if __name__ == '__main__':
