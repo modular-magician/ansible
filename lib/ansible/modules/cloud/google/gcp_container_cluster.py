@@ -259,6 +259,20 @@ options:
     description:
     - The name of the Google Compute Engine subnetwork to which the cluster is connected.
     required: false
+  initial_cluster_version:
+    description:
+    - The software version of the master endpoint and kubelets used in the cluster
+      when it was first created. The version can be upgraded over time.
+    required: false
+    aliases:
+    - cluster_version
+    version_added: 2.9
+  resource_labels:
+    description:
+    - The resource labels for the cluster to use to annotate any related Google Compute
+      Engine resources.
+    required: false
+    version_added: 2.9
   location:
     description:
     - The location where the cluster is deployed.
@@ -602,6 +616,18 @@ expireTime:
   - The time the cluster will be automatically deleted in RFC3339 text format.
   returned: success
   type: str
+resourceLabels:
+  description:
+  - The resource labels for the cluster to use to annotate any related Google Compute
+    Engine resources.
+  returned: success
+  type: dict
+labelFingerprint:
+  description:
+  - The fingerprint used for optimistic locking of this resource. Used internally
+    during updates.
+  returned: success
+  type: str
 location:
   description:
   - The location where the cluster is deployed.
@@ -663,6 +689,8 @@ def main():
                 ),
             ),
             subnetwork=dict(type='str'),
+            initial_cluster_version=dict(type='str', aliases=['cluster_version']),
+            resource_labels=dict(type='dict'),
             location=dict(required=True, type='str', aliases=['zone']),
         )
     )
@@ -678,7 +706,7 @@ def main():
     if fetch:
         if state == 'present':
             if is_different(module, fetch):
-                update(module, self_link(module))
+                update(module, self_link(module), fetch)
                 fetch = fetch_resource(module, self_link(module))
                 changed = True
         else:
@@ -702,9 +730,23 @@ def create(module, link):
     return wait_for_operation(module, auth.post(link, resource_to_request(module)))
 
 
-def update(module, link):
+def update(module, link, fetch):
+    update_fields(module, resource_to_request(module), response_to_hash(module, fetch))
     auth = GcpSession(module, 'container')
     return wait_for_operation(module, auth.put(link, resource_to_request(module)))
+
+
+def update_fields(module, request, response):
+    if response.get('resourceLabels') != request.get('resourceLabels'):
+        resource_labels_update(module, request, response)
+
+
+def resource_labels_update(module, request, response):
+    auth = GcpSession(module, 'container')
+    auth.post(
+        ''.join(["https://container.googleapis.com/v1/", "projects/{project}/locations/{location}/clusters/{name}/setResourceLabels"]).format(**module.params),
+        {u'resourceLabels': module.params.get('resource_labels'), u'labelFingerprint': response.get('labelFingerprint')},
+    )
 
 
 def delete(module, link):
@@ -726,6 +768,8 @@ def resource_to_request(module):
         u'clusterIpv4Cidr': module.params.get('cluster_ipv4_cidr'),
         u'addonsConfig': ClusterAddonsconfig(module.params.get('addons_config', {}), module).to_request(),
         u'subnetwork': module.params.get('subnetwork'),
+        u'initialClusterVersion': module.params.get('initial_cluster_version'),
+        u'resourceLabels': module.params.get('resource_labels'),
     }
     request = encode_request(request, module)
     return_vals = {}
@@ -813,6 +857,8 @@ def response_to_hash(module, response):
         u'servicesIpv4Cidr': response.get(u'servicesIpv4Cidr'),
         u'currentNodeCount': response.get(u'currentNodeCount'),
         u'expireTime': response.get(u'expireTime'),
+        u'resourceLabels': response.get(u'resourceLabels'),
+        u'labelFingerprint': response.get(u'labelFingerprint'),
     }
 
 

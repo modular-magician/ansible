@@ -382,6 +382,18 @@ resources:
       - The time the cluster will be automatically deleted in RFC3339 text format.
       returned: success
       type: str
+    resourceLabels:
+      description:
+      - The resource labels for the cluster to use to annotate any related Google
+        Compute Engine resources.
+      returned: success
+      type: dict
+    labelFingerprint:
+      description:
+      - The fingerprint used for optimistic locking of this resource. Used internally
+        during updates.
+      returned: success
+      type: str
     location:
       description:
       - The location where the cluster is deployed.
