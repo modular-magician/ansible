@@ -109,8 +109,8 @@ def main():
         module.params['scopes'] = ['https://www.googleapis.com/auth/iam']
 
     items = fetch_list(module, collection(module))
-    if items.get('roles'):
-        items = items.get('roles')
+    if items.get('Roles'):
+        items = items.get('Roles')
     else:
         items = []
     return_value = {'resources': items}

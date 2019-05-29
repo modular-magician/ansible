@@ -209,8 +209,8 @@ def main():
         module.params['scopes'] = ['https://www.googleapis.com/auth/ndev.clouddns.readwrite']
 
     items = fetch_list(module, collection(module), module.params['dns_name'])
-    if items.get('managedZones'):
-        items = items.get('managedZones')
+    if items.get('ManagedZones'):
+        items = items.get('ManagedZones')
     else:
         items = []
     return_value = {'resources': items}

@@ -107,8 +107,8 @@ def main():
         module.params['scopes'] = ['https://www.googleapis.com/auth/spanner.admin']
 
     items = fetch_list(module, collection(module))
-    if items.get('databases'):
-        items = items.get('databases')
+    if items.get('Databases'):
+        items = items.get('Databases')
     else:
         items = []
     return_value = {'resources': items}

@@ -519,8 +519,8 @@ def main():
         module.params['scopes'] = ['https://www.googleapis.com/auth/bigquery']
 
     items = fetch_list(module, collection(module))
-    if items.get('tables'):
-        items = items.get('tables')
+    if items.get('Tables'):
+        items = items.get('Tables')
     else:
         items = []
     return_value = {'resources': items}

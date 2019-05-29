@@ -110,8 +110,8 @@ def main():
         module.params['scopes'] = ['https://www.googleapis.com/auth/sqlservice.admin']
 
     items = fetch_list(module, collection(module))
-    if items.get('items'):
-        items = items.get('items')
+    if items.get('Users'):
+        items = items.get('Users')
     else:
         items = []
     return_value = {'resources': items}

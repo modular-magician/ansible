@@ -135,8 +135,8 @@ def main():
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
 
     items = fetch_list(module, collection(module))
-    if items.get('projects'):
-        items = items.get('projects')
+    if items.get('Projects'):
+        items = items.get('Projects')
     else:
         items = []
     return_value = {'resources': items}

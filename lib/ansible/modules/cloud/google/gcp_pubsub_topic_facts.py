@@ -88,8 +88,8 @@ def main():
         module.params['scopes'] = ['https://www.googleapis.com/auth/pubsub']
 
     items = fetch_list(module, collection(module))
-    if items.get('topics'):
-        items = items.get('topics')
+    if items.get('Topics'):
+        items = items.get('Topics')
     else:
         items = []
     return_value = {'resources': items}

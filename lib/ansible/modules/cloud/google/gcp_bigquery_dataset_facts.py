@@ -205,8 +205,8 @@ def main():
         module.params['scopes'] = ['https://www.googleapis.com/auth/bigquery']
 
     items = fetch_list(module, collection(module))
-    if items.get('datasets'):
-        items = items.get('datasets')
+    if items.get('Datasets'):
+        items = items.get('Datasets')
     else:
         items = []
     return_value = {'resources': items}

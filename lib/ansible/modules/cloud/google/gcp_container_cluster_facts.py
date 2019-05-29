@@ -407,8 +407,8 @@ def main():
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
 
     items = fetch_list(module, collection(module))
-    if items.get('clusters'):
-        items = items.get('clusters')
+    if items.get('Clusters'):
+        items = items.get('Clusters')
     else:
         items = []
     return_value = {'resources': items}
