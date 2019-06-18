@@ -136,6 +136,15 @@ resources:
             must be set.
           returned: success
           type: int
+        maxConnectionsPerEndpoint:
+          description:
+          - The max number of simultaneous connections that a single backend network
+            endpoint can handle. This is used to calculate the capacity of the group.
+            Can be used in either CONNECTION or UTILIZATION balancing modes.
+          - For CONNECTION mode, either maxConnections or maxConnectionsPerEndpoint
+            must be set.
+          returned: success
+          type: int
         maxRate:
           description:
           - The max requests per second (RPS) of the group.
@@ -150,6 +159,14 @@ resources:
             This is used to calculate the capacity of the group. Can be used in either
             balancing mode. For RATE mode, either maxRate or maxRatePerInstance must
             be set.
+          returned: success
+          type: str
+        maxRatePerEndpoint:
+          description:
+          - The max requests per second (RPS) that a single backend network endpoint
+            can handle. This is used to calculate the capacity of the group. Can be
+            used in either balancing mode. For RATE mode, either maxRate or maxRatePerEndpoint
+            must be set.
           returned: success
           type: str
         maxUtilization:
