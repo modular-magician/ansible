@@ -55,7 +55,7 @@ options:
   overwrite:
     description:
     - "'Overwrite the file on the bucket/local machine. If overwrite is false and
-      a difference exists between GCS + local, module will fail with error' ."
+      a difference exists between GCS + local, module will fail with error'."
     required: false
     type: bool
   src:
@@ -95,7 +95,7 @@ action:
 overwrite:
   description:
   - "'Overwrite the file on the bucket/local machine. If overwrite is false and a
-    difference exists between GCS + local, module will fail with error' ."
+    difference exists between GCS + local, module will fail with error'."
   returned: success
   type: bool
 src:

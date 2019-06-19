@@ -44,7 +44,7 @@ options:
     description:
     - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
     - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+      and filter2).
 extends_documentation_fragment: gcp
 '''
 
@@ -97,7 +97,7 @@ resources:
           description:
           - The list of host patterns to match. They must be valid hostnames, except
             * will match any string of ([a-z0-9-.]*). In that case, * must be the
-            first character and must be followed in the pattern by either - or .
+            first character and must be followed in the pattern by either - or ..
           returned: success
           type: list
         pathMatcher:

@@ -102,7 +102,7 @@ options:
               key (ZSK). Key signing keys have the Secure Entry Point flag set and,
               when active, will only be used to sign resource record sets of type
               DNSKEY. Zone signing keys do not have the Secure Entry Point flag set
-              and will be used to sign all other types of resource record sets. .
+              and will be used to sign all other types of resource record sets.
             - 'Some valid choices include: "keySigning", "zoneSigning"'
             required: false
           kind:
@@ -150,8 +150,7 @@ options:
           network_url:
             description:
             - The fully qualified URL of the VPC network to bind to.
-            - This should be formatted like `U(https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`)
-              .
+            - This should be formatted like `U(https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`).
             required: false
 extends_documentation_fragment: gcp
 notes:
@@ -229,7 +228,7 @@ dnssecConfig:
             (ZSK). Key signing keys have the Secure Entry Point flag set and, when
             active, will only be used to sign resource record sets of type DNSKEY.
             Zone signing keys do not have the Secure Entry Point flag set and will
-            be used to sign all other types of resource record sets. .
+            be used to sign all other types of resource record sets.
           returned: success
           type: str
         kind:
@@ -250,8 +249,7 @@ name:
   type: str
 nameServers:
   description:
-  - Delegate your managed_zone to these virtual name servers; defined by the server
-    .
+  - Delegate your managed_zone to these virtual name servers; defined by the server.
   returned: success
   type: list
 nameServerSet:
@@ -295,8 +293,7 @@ privateVisibilityConfig:
         networkUrl:
           description:
           - The fully qualified URL of the VPC network to bind to.
-          - This should be formatted like `U(https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`)
-            .
+          - This should be formatted like `U(https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}`).
           returned: success
           type: str
 '''

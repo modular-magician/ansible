@@ -72,7 +72,7 @@ resources:
         domain:
           description:
           - A domain to grant access to. Any users signed in with the domain specified
-            will be granted the specified access .
+            will be granted the specified access.
           returned: success
           type: str
         groupByEmail:
@@ -83,7 +83,7 @@ resources:
         role:
           description:
           - Describes the rights granted to the user specified by the other member
-            of the access object .
+            of the access object.
           returned: success
           type: str
         specialGroup:
@@ -93,8 +93,7 @@ resources:
           type: str
         userByEmail:
           description:
-          - 'An email address of a user to grant access to. For example: fred@example.com
-            .'
+          - 'An email address of a user to grant access to. For example: fred@example.com.'
           returned: success
           type: str
         view:
@@ -147,7 +146,7 @@ resources:
           type: str
     defaultTableExpirationMs:
       description:
-      - The default lifetime of all tables in the dataset, in milliseconds .
+      - The default lifetime of all tables in the dataset, in milliseconds.
       returned: success
       type: int
     description:
@@ -163,14 +162,13 @@ resources:
     id:
       description:
       - The fully-qualified unique name of the dataset in the format projectId:datasetId.
-        The dataset name without the project name is given in the datasetId field
-        .
+        The dataset name without the project name is given in the datasetId field.
       returned: success
       type: str
     labels:
       description:
       - The labels associated with this dataset. You can use these to organize and
-        group your datasets .
+        group your datasets.
       returned: success
       type: dict
     lastModifiedTime:

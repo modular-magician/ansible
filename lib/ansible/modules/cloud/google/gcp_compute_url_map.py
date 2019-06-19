@@ -76,7 +76,7 @@ options:
         description:
         - The list of host patterns to match. They must be valid hostnames, except
           * will match any string of ([a-z0-9-.]*). In that case, * must be the first
-          character and must be followed in the pattern by either - or .
+          character and must be followed in the pattern by either - or ..
         required: true
       path_matcher:
         description:
@@ -248,7 +248,7 @@ hostRules:
       description:
       - The list of host patterns to match. They must be valid hostnames, except *
         will match any string of ([a-z0-9-.]*). In that case, * must be the first
-        character and must be followed in the pattern by either - or .
+        character and must be followed in the pattern by either - or ..
       returned: success
       type: list
     pathMatcher:

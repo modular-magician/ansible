@@ -31,7 +31,7 @@ DOCUMENTATION = '''
 ---
 module: gcp_bigquery_table
 description:
-- A Table that belongs to a Dataset .
+- A Table that belongs to a Dataset.
 short_description: Creates a GCP Table
 version_added: 2.8
 author: Google Inc. (@googlecloudplatform)
@@ -75,7 +75,7 @@ options:
   labels:
     description:
     - The labels associated with this dataset. You can use these to organize and group
-      your datasets .
+      your datasets.
     required: false
   name:
     description:
@@ -88,7 +88,7 @@ options:
     suboptions:
       use_legacy_sql:
         description:
-        - Specifies whether to use BigQuery's legacy SQL for this view .
+        - Specifies whether to use BigQuery's legacy SQL for this view.
         required: false
         type: bool
       user_defined_function_resources:
@@ -190,13 +190,13 @@ options:
       ignore_unknown_values:
         description:
         - Indicates if BigQuery should allow extra values that are not represented
-          in the table schema .
+          in the table schema.
         required: false
         type: bool
       max_bad_records:
         description:
         - The maximum number of bad records that BigQuery can ignore when reading
-          data .
+          data.
         required: false
         default: '0'
       source_format:
@@ -233,7 +233,7 @@ options:
               fields:
                 description:
                 - Describes the nested schema fields if the type property is set to
-                  RECORD .
+                  RECORD.
                 required: false
               mode:
                 description:
@@ -269,13 +269,13 @@ options:
           allow_jagged_rows:
             description:
             - Indicates if BigQuery should accept rows that are missing trailing optional
-              columns .
+              columns.
             required: false
             type: bool
           allow_quoted_newlines:
             description:
             - Indicates if BigQuery should allow quoted data sections that contain
-              newline characters in a CSV file .
+              newline characters in a CSV file.
             required: false
             type: bool
           encoding:
@@ -305,7 +305,7 @@ options:
           ignore_unspecified_column_families:
             description:
             - If field is true, then the column families that are not specified in
-              columnFamilies list are not exposed in the table schema .
+              columnFamilies list are not exposed in the table schema.
             required: false
             type: bool
           read_rowkey_as_string:
@@ -340,7 +340,7 @@ options:
                   only_read_latest:
                     description:
                     - If this is set, only the latest version of value in this column
-                      are exposed .
+                      are exposed.
                     required: false
                     type: bool
                   qualifier_string:
@@ -365,7 +365,7 @@ options:
               only_read_latest:
                 description:
                 - If this is set only the latest version of value are exposed for
-                  all columns in this column family .
+                  all columns in this column family.
                 required: false
                 type: bool
               type:
@@ -452,7 +452,7 @@ id:
 labels:
   description:
   - The labels associated with this dataset. You can use these to organize and group
-    your datasets .
+    your datasets.
   returned: success
   type: dict
 lastModifiedTime:
@@ -500,7 +500,7 @@ view:
   contains:
     useLegacySql:
       description:
-      - Specifies whether to use BigQuery's legacy SQL for this view .
+      - Specifies whether to use BigQuery's legacy SQL for this view.
       returned: success
       type: bool
     userDefinedFunctionResources:
@@ -639,13 +639,12 @@ externalDataConfiguration:
     ignoreUnknownValues:
       description:
       - Indicates if BigQuery should allow extra values that are not represented in
-        the table schema .
+        the table schema.
       returned: success
       type: bool
     maxBadRecords:
       description:
-      - The maximum number of bad records that BigQuery can ignore when reading data
-        .
+      - The maximum number of bad records that BigQuery can ignore when reading data.
       returned: success
       type: int
     sourceFormat:
@@ -684,7 +683,7 @@ externalDataConfiguration:
             fields:
               description:
               - Describes the nested schema fields if the type property is set to
-                RECORD .
+                RECORD.
               returned: success
               type: list
             mode:
@@ -723,13 +722,13 @@ externalDataConfiguration:
         allowJaggedRows:
           description:
           - Indicates if BigQuery should accept rows that are missing trailing optional
-            columns .
+            columns.
           returned: success
           type: bool
         allowQuotedNewlines:
           description:
           - Indicates if BigQuery should allow quoted data sections that contain newline
-            characters in a CSV file .
+            characters in a CSV file.
           returned: success
           type: bool
         encoding:
@@ -762,7 +761,7 @@ externalDataConfiguration:
         ignoreUnspecifiedColumnFamilies:
           description:
           - If field is true, then the column families that are not specified in columnFamilies
-            list are not exposed in the table schema .
+            list are not exposed in the table schema.
           returned: success
           type: bool
         readRowkeyAsString:
@@ -800,7 +799,7 @@ externalDataConfiguration:
                 onlyReadLatest:
                   description:
                   - If this is set, only the latest version of value in this column
-                    are exposed .
+                    are exposed.
                   returned: success
                   type: bool
                 qualifierString:
@@ -826,7 +825,7 @@ externalDataConfiguration:
             onlyReadLatest:
               description:
               - If this is set only the latest version of value are exposed for all
-                columns in this column family .
+                columns in this column family.
               returned: success
               type: bool
             type:

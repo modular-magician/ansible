@@ -108,15 +108,13 @@ options:
     - URL to a gateway that should handle matching packets.
     - 'Currently, you can only specify the internet gateway, using a full or partial
       valid URL: * U(https://www.googleapis.com/compute/v1/projects/project/global/gateways/default-internet-gateway)
-      * projects/project/global/gateways/default-internet-gateway * global/gateways/default-internet-gateway
-      .'
+      * projects/project/global/gateways/default-internet-gateway * global/gateways/default-internet-gateway.'
     required: false
   next_hop_instance:
     description:
     - URL to an instance that should handle matching packets.
     - 'You can specify this as a full or partial URL. For example: * U(https://www.googleapis.com/compute/v1/projects/project/zones/zone/)
-      instances/instance * projects/project/zones/zone/instances/instance * zones/zone/instances/instance
-      .'
+      instances/instance * projects/project/zones/zone/instances/instance * zones/zone/instances/instance.'
     - 'This field represents a link to a Instance resource in GCP. It can be specified
       in two ways. First, you can place a dictionary with key ''selfLink'' and value
       of your resource''s selfLink Alternatively, you can add `register: name-of-resource`
@@ -214,16 +212,14 @@ nextHopGateway:
   - URL to a gateway that should handle matching packets.
   - 'Currently, you can only specify the internet gateway, using a full or partial
     valid URL: * U(https://www.googleapis.com/compute/v1/projects/project/global/gateways/default-internet-gateway)
-    * projects/project/global/gateways/default-internet-gateway * global/gateways/default-internet-gateway
-    .'
+    * projects/project/global/gateways/default-internet-gateway * global/gateways/default-internet-gateway.'
   returned: success
   type: str
 nextHopInstance:
   description:
   - URL to an instance that should handle matching packets.
   - 'You can specify this as a full or partial URL. For example: * U(https://www.googleapis.com/compute/v1/projects/project/zones/zone/)
-    instances/instance * projects/project/zones/zone/instances/instance * zones/zone/instances/instance
-    .'
+    instances/instance * projects/project/zones/zone/instances/instance * zones/zone/instances/instance.'
   returned: success
   type: dict
 nextHopIp:

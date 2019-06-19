@@ -44,7 +44,7 @@ options:
     description:
     - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
     - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+      and filter2).
 extends_documentation_fragment: gcp
 '''
 
@@ -86,7 +86,7 @@ resources:
       description:
       - If this field is specified, a deprecated legacy network is created.
       - You will no longer be able to create a legacy network on Feb 1, 2020.
-      - See the [legacy network docs](U(https://cloud.google.com/vpc/docs/legacy))
+      - See the L(legacy network docs,U(https://cloud.google.com/vpc/docs/legacy))
         for more details.
       - The range of internal addresses that are legal on this legacy network.
       - 'This range is a CIDR specification, for example: `192.168.0.0/16`.'

@@ -155,13 +155,13 @@ options:
       disk_type:
         description:
         - Type of the disk attached to each node (e.g. 'pd-standard' or 'pd-ssd')
-          If unspecified, the default disk type is 'pd-standard' .
+          If unspecified, the default disk type is 'pd-standard'.
         required: false
         version_added: 2.9
       min_cpu_platform:
         description:
         - Minimum CPU platform to be used by this instance. The instance may be scheduled
-          on the specified or newer CPU platform .
+          on the specified or newer CPU platform.
         required: false
         version_added: 2.9
       taints:
@@ -423,13 +423,13 @@ config:
     diskType:
       description:
       - Type of the disk attached to each node (e.g. 'pd-standard' or 'pd-ssd') If
-        unspecified, the default disk type is 'pd-standard' .
+        unspecified, the default disk type is 'pd-standard'.
       returned: success
       type: str
     minCpuPlatform:
       description:
       - Minimum CPU platform to be used by this instance. The instance may be scheduled
-        on the specified or newer CPU platform .
+        on the specified or newer CPU platform.
       returned: success
       type: str
     taints:

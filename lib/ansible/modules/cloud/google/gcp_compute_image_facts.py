@@ -44,7 +44,7 @@ options:
     description:
     - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
     - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+      and filter2).
 extends_documentation_fragment: gcp
 '''
 
@@ -170,8 +170,7 @@ resources:
       description:
       - Encrypts the image using a customer-supplied encryption key.
       - After you encrypt an image with a customer-supplied key, you must provide
-        the same key if you use the image later (e.g. to create a disk from the image)
-        .
+        the same key if you use the image later (e.g. to create a disk from the image).
       returned: success
       type: complex
       contains:
@@ -274,7 +273,7 @@ resources:
     sourceType:
       description:
       - The type of the image used to create this disk. The default and only value
-        is RAW .
+        is RAW.
       returned: success
       type: str
 '''
