@@ -41,10 +41,7 @@ requirements:
 - google-auth >= 1.3.0
 options:
   filters:
-    description:
-    - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
-    - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+    description: []
   region:
     description:
     - A reference to the region where the disk resides.
@@ -126,16 +123,14 @@ resources:
       description:
       - Size of the persistent disk, specified in GB. You can specify this field when
         creating a persistent disk using the sourceImage or sourceSnapshot parameter,
-        or specify it alone to create an empty persistent disk.
-      - If you specify this field along with sourceImage or sourceSnapshot, the value
-        of sizeGb must not be less than the size of the sourceImage or the size of
-        the snapshot.
+        or specify it alone to create an empty persistent disk. If you specify this
+        field along with sourceImage or sourceSnapshot, the value of sizeGb must not
+        be less than the size of the sourceImage or the size of the snapshot.
       returned: success
       type: int
     users:
       description:
-      - 'Links to the users of the disk (attached instances) in form: project/zones/zone/instances/instance
-        .'
+      - 'Links to the users of the disk (attached instances) in form: project/zones/zone/instances/instance.'
       returned: success
       type: list
     physicalBlockSizeBytes:
@@ -165,15 +160,13 @@ resources:
       type: str
     diskEncryptionKey:
       description:
-      - Encrypts the disk using a customer-supplied encryption key.
-      - After you encrypt a disk with a customer-supplied key, you must provide the
-        same key if you use the disk later (e.g. to create a disk snapshot or an image,
-        or to attach the disk to a virtual machine).
-      - Customer-supplied encryption keys do not protect access to metadata of the
-        disk.
-      - If you do not provide an encryption key when creating the disk, then the disk
-        will be encrypted using an automatically generated key and you do not need
-        to provide a key to use the disk later.
+      - Encrypts the disk using a customer-supplied encryption key. After you encrypt
+        a disk with a customer-supplied key, you must provide the same key if you
+        use the disk later (e.g. to create a disk snapshot or an image, or to attach
+        the disk to a virtual machine). Customer-supplied encryption keys do not protect
+        access to metadata of the disk. If you do not provide an encryption key when
+        creating the disk, then the disk will be encrypted using an automatically
+        generated key and you do not need to provide a key to use the disk later.
       returned: success
       type: complex
       contains:

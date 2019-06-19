@@ -41,10 +41,7 @@ requirements:
 - google-auth >= 1.3.0
 options:
   filters:
-    description:
-    - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
-    - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+    description: []
 extends_documentation_fragment: gcp
 '''
 
@@ -86,9 +83,9 @@ resources:
       description:
       - If this field is specified, a deprecated legacy network is created.
       - You will no longer be able to create a legacy network on Feb 1, 2020.
-      - See the [legacy network docs](U(https://cloud.google.com/vpc/docs/legacy))
-        for more details.
-      - The range of internal addresses that are legal on this legacy network.
+      - See the L(legacy network docs,U(https://cloud.google.com/vpc/docs/legacy))
+        for more details. The range of internal addresses that are legal on this legacy
+        network.
       - 'This range is a CIDR specification, for example: `192.168.0.0/16`.'
       - The resource must be recreated to modify this field.
       returned: success
@@ -112,9 +109,8 @@ resources:
       description:
       - When set to `true`, the network is created in "auto subnet mode" and it will
         create a subnet for each region automatically across the `10.128.0.0/9` address
-        range.
-      - When set to `false`, the network is created in "custom subnet mode" so the
-        user can explicitly connect subnetwork resources.
+        range. When set to `false`, the network is created in "custom subnet mode"
+        so the user can explicitly connect subnetwork resources.
       returned: success
       type: bool
     creationTimestamp:

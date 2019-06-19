@@ -41,10 +41,7 @@ requirements:
 - google-auth >= 1.3.0
 options:
   filters:
-    description:
-    - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
-    - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+    description: []
 extends_documentation_fragment: gcp
 '''
 
@@ -82,11 +79,10 @@ resources:
           type: str
         ports:
           description:
-          - An optional list of ports to which this rule applies. This field is only
+          - 'An optional list of ports to which this rule applies. This field is only
             applicable for UDP or TCP protocol. Each entry must be either an integer
             or a range. If not specified, this rule applies to connections through
-            any port.
-          - 'Example inputs include: ["22"], ["80","443"], and ["12345-12349"].'
+            any port. Example inputs include: ["22"], ["80","443"], and ["12345-12349"].'
           returned: success
           type: list
     creationTimestamp:
@@ -111,11 +107,10 @@ resources:
           type: str
         ports:
           description:
-          - An optional list of ports to which this rule applies. This field is only
+          - 'An optional list of ports to which this rule applies. This field is only
             applicable for UDP or TCP protocol. Each entry must be either an integer
             or a range. If not specified, this rule applies to connections through
-            any port.
-          - 'Example inputs include: ["22"], ["80","443"], and ["12345-12349"].'
+            any port. Example inputs include: ["22"], ["80","443"], and ["12345-12349"].'
           returned: success
           type: list
     description:
@@ -167,8 +162,7 @@ resources:
         creating a firewall rule, the default network is used: global/networks/default
         If you choose to specify this property, you can specify the network as a full
         or partial URL. For example, the following are all valid URLs: U(https://www.googleapis.com/compute/v1/projects/myproject/global/)
-        networks/my-network projects/myproject/global/networks/my-network global/networks/default
-        .'
+        networks/my-network projects/myproject/global/networks/my-network global/networks/default.'
       returned: success
       type: dict
     priority:

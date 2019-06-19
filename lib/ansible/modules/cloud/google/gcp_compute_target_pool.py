@@ -49,17 +49,16 @@ options:
     default: present
   backup_pool:
     description:
-    - This field is applicable only when the containing target pool is serving a forwarding
-      rule as the primary pool, and its failoverRatio field is properly set to a value
-      between [0, 1].
-    - 'backupPool and failoverRatio together define the fallback behavior of the primary
-      target pool: if the ratio of the healthy instances in the primary pool is at
-      or below failoverRatio, traffic arriving at the load-balanced IP will be directed
-      to the backup pool.'
-    - In case where failoverRatio and backupPool are not set, or all the instances
-      in the backup pool are unhealthy, the traffic will be directed back to the primary
-      pool in the "force" mode, where traffic will be spread to the healthy instances
-      with the best effort, or to all instances when no instance is healthy.
+    - 'This field is applicable only when the containing target pool is serving a
+      forwarding rule as the primary pool, and its failoverRatio field is properly
+      set to a value between [0, 1]. backupPool and failoverRatio together define
+      the fallback behavior of the primary target pool: if the ratio of the healthy
+      instances in the primary pool is at or below failoverRatio, traffic arriving
+      at the load-balanced IP will be directed to the backup pool. In case where failoverRatio
+      and backupPool are not set, or all the instances in the backup pool are unhealthy,
+      the traffic will be directed back to the primary pool in the "force" mode, where
+      traffic will be spread to the healthy instances with the best effort, or to
+      all instances when no instance is healthy.'
     - 'This field represents a link to a TargetPool resource in GCP. It can be specified
       in two ways. First, you can place a dictionary with key ''selfLink'' and value
       of your resource''s selfLink Alternatively, you can add `register: name-of-resource`
@@ -72,24 +71,22 @@ options:
     required: false
   failover_ratio:
     description:
-    - This field is applicable only when the containing target pool is serving a forwarding
-      rule as the primary pool (i.e., not as a backup pool to some other target pool).
-      The value of the field must be in [0, 1].
-    - 'If set, backupPool must also be set. They together define the fallback behavior
-      of the primary target pool: if the ratio of the healthy instances in the primary
-      pool is at or below this number, traffic arriving at the load-balanced IP will
-      be directed to the backup pool.'
-    - In case where failoverRatio is not set or all the instances in the backup pool
-      are unhealthy, the traffic will be directed back to the primary pool in the
-      "force" mode, where traffic will be spread to the healthy instances with the
-      best effort, or to all instances when no instance is healthy.
+    - 'This field is applicable only when the containing target pool is serving a
+      forwarding rule as the primary pool (i.e., not as a backup pool to some other
+      target pool). The value of the field must be in [0, 1]. If set, backupPool must
+      also be set. They together define the fallback behavior of the primary target
+      pool: if the ratio of the healthy instances in the primary pool is at or below
+      this number, traffic arriving at the load-balanced IP will be directed to the
+      backup pool. In case where failoverRatio is not set or all the instances in
+      the backup pool are unhealthy, the traffic will be directed back to the primary
+      pool in the "force" mode, where traffic will be spread to the healthy instances
+      with the best effort, or to all instances when no instance is healthy.'
     required: false
   health_check:
     description:
-    - A reference to a HttpHealthCheck resource.
-    - A member instance in this pool is considered healthy if and only if the health
-      checks pass. If not specified it means all member instances will be considered
-      healthy at all times.
+    - A reference to a HttpHealthCheck resource. A member instance in this pool is
+      considered healthy if and only if the health checks pass. If not specified it
+      means all member instances will be considered healthy at all times.
     - 'This field represents a link to a HttpHealthCheck resource in GCP. It can be
       specified in two ways. First, you can place a dictionary with key ''selfLink''
       and value of your resource''s selfLink Alternatively, you can add `register:
@@ -98,8 +95,8 @@ options:
     required: false
   instances:
     description:
-    - A list of virtual machine instances serving this pool.
-    - They must live in zones contained in the same region as this pool.
+    - A list of virtual machine instances serving this pool. They must live in zones
+      contained in the same region as this pool.
     required: false
   name:
     description:
@@ -144,17 +141,16 @@ EXAMPLES = '''
 RETURN = '''
 backupPool:
   description:
-  - This field is applicable only when the containing target pool is serving a forwarding
+  - 'This field is applicable only when the containing target pool is serving a forwarding
     rule as the primary pool, and its failoverRatio field is properly set to a value
-    between [0, 1].
-  - 'backupPool and failoverRatio together define the fallback behavior of the primary
-    target pool: if the ratio of the healthy instances in the primary pool is at or
-    below failoverRatio, traffic arriving at the load-balanced IP will be directed
-    to the backup pool.'
-  - In case where failoverRatio and backupPool are not set, or all the instances in
-    the backup pool are unhealthy, the traffic will be directed back to the primary
-    pool in the "force" mode, where traffic will be spread to the healthy instances
-    with the best effort, or to all instances when no instance is healthy.
+    between [0, 1]. backupPool and failoverRatio together define the fallback behavior
+    of the primary target pool: if the ratio of the healthy instances in the primary
+    pool is at or below failoverRatio, traffic arriving at the load-balanced IP will
+    be directed to the backup pool. In case where failoverRatio and backupPool are
+    not set, or all the instances in the backup pool are unhealthy, the traffic will
+    be directed back to the primary pool in the "force" mode, where traffic will be
+    spread to the healthy instances with the best effort, or to all instances when
+    no instance is healthy.'
   returned: success
   type: dict
 creationTimestamp:
@@ -169,25 +165,23 @@ description:
   type: str
 failoverRatio:
   description:
-  - This field is applicable only when the containing target pool is serving a forwarding
+  - 'This field is applicable only when the containing target pool is serving a forwarding
     rule as the primary pool (i.e., not as a backup pool to some other target pool).
-    The value of the field must be in [0, 1].
-  - 'If set, backupPool must also be set. They together define the fallback behavior
-    of the primary target pool: if the ratio of the healthy instances in the primary
-    pool is at or below this number, traffic arriving at the load-balanced IP will
-    be directed to the backup pool.'
-  - In case where failoverRatio is not set or all the instances in the backup pool
+    The value of the field must be in [0, 1]. If set, backupPool must also be set.
+    They together define the fallback behavior of the primary target pool: if the
+    ratio of the healthy instances in the primary pool is at or below this number,
+    traffic arriving at the load-balanced IP will be directed to the backup pool.
+    In case where failoverRatio is not set or all the instances in the backup pool
     are unhealthy, the traffic will be directed back to the primary pool in the "force"
     mode, where traffic will be spread to the healthy instances with the best effort,
-    or to all instances when no instance is healthy.
+    or to all instances when no instance is healthy.'
   returned: success
   type: str
 healthCheck:
   description:
-  - A reference to a HttpHealthCheck resource.
-  - A member instance in this pool is considered healthy if and only if the health
-    checks pass. If not specified it means all member instances will be considered
-    healthy at all times.
+  - A reference to a HttpHealthCheck resource. A member instance in this pool is considered
+    healthy if and only if the health checks pass. If not specified it means all member
+    instances will be considered healthy at all times.
   returned: success
   type: dict
 id:
@@ -197,8 +191,8 @@ id:
   type: int
 instances:
   description:
-  - A list of virtual machine instances serving this pool.
-  - They must live in zones contained in the same region as this pool.
+  - A list of virtual machine instances serving this pool. They must live in zones
+    contained in the same region as this pool.
   returned: success
   type: list
 name:

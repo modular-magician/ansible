@@ -41,10 +41,7 @@ requirements:
 - google-auth >= 1.3.0
 options:
   filters:
-    description:
-    - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
-    - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+    description: []
 extends_documentation_fragment: gcp
 '''
 
@@ -95,10 +92,9 @@ resources:
     priority:
       description:
       - The priority of this route. Priority is used to break ties in cases where
-        there is more than one matching route of equal prefix length.
-      - In the case of two routes with equal prefix length, the one with the lowest-numbered
-        priority value wins.
-      - Default value is 1000. Valid range is 0 through 65535.
+        there is more than one matching route of equal prefix length. In the case
+        of two routes with equal prefix length, the one with the lowest-numbered priority
+        value wins. Default value is 1000. Valid range is 0 through 65535.
       returned: success
       type: int
     tags:
@@ -108,19 +104,16 @@ resources:
       type: list
     nextHopGateway:
       description:
-      - URL to a gateway that should handle matching packets.
-      - 'Currently, you can only specify the internet gateway, using a full or partial
-        valid URL: * U(https://www.googleapis.com/compute/v1/projects/project/global/gateways/default-internet-gateway)
-        * projects/project/global/gateways/default-internet-gateway * global/gateways/default-internet-gateway
-        .'
+      - 'URL to a gateway that should handle matching packets. Currently, you can
+        only specify the internet gateway, using a full or partial valid URL: * U(https://www.googleapis.com/compute/v1/projects/project/global/gateways/default-internet-gateway)
+        * projects/project/global/gateways/default-internet-gateway * global/gateways/default-internet-gateway.'
       returned: success
       type: str
     nextHopInstance:
       description:
       - URL to an instance that should handle matching packets.
       - 'You can specify this as a full or partial URL. For example: * U(https://www.googleapis.com/compute/v1/projects/project/zones/zone/)
-        instances/instance * projects/project/zones/zone/instances/instance * zones/zone/instances/instance
-        .'
+        instances/instance * projects/project/zones/zone/instances/instance * zones/zone/instances/instance.'
       returned: success
       type: dict
     nextHopIp:

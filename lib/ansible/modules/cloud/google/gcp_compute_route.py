@@ -31,22 +31,20 @@ DOCUMENTATION = '''
 ---
 module: gcp_compute_route
 description:
-- Represents a Route resource.
-- A route is a rule that specifies how certain packets should be handled by the virtual
-  network. Routes are associated with virtual machines by tag, and the set of routes
-  for a particular virtual machine is called its routing table. For each packet leaving
-  a virtual machine, the system searches that virtual machine's routing table for
-  a single best matching route.
-- Routes match packets by destination IP address, preferring smaller or more specific
-  ranges over larger ones. If there is a tie, the system selects the route with the
-  smallest priority value. If there is still a tie, it uses the layer three and four
-  packet headers to select just one of the remaining matching routes. The packet is
-  then forwarded as specified by the next_hop field of the winning route -- either
-  to another virtual machine destination, a virtual machine gateway or a Compute Engine-operated
-  gateway. Packets that do not match any route in the sending virtual machine's routing
-  table will be dropped.
-- A Route resource must have exactly one specification of either nextHopGateway, nextHopInstance,
-  nextHopIp, or nextHopVpnTunnel.
+- Represents a Route resource. A route is a rule that specifies how certain packets
+  should be handled by the virtual network. Routes are associated with virtual machines
+  by tag, and the set of routes for a particular virtual machine is called its routing
+  table. For each packet leaving a virtual machine, the system searches that virtual
+  machine's routing table for a single best matching route. Routes match packets by
+  destination IP address, preferring smaller or more specific ranges over larger ones.
+  If there is a tie, the system selects the route with the smallest priority value.
+  If there is still a tie, it uses the layer three and four packet headers to select
+  just one of the remaining matching routes. The packet is then forwarded as specified
+  by the next_hop field of the winning route -- either to another virtual machine
+  destination, a virtual machine gateway or a Compute Engine-operated gateway. Packets
+  that do not match any route in the sending virtual machine's routing table will
+  be dropped. A Route resource must have exactly one specification of either nextHopGateway,
+  nextHopInstance, nextHopIp, or nextHopVpnTunnel.
 short_description: Creates a GCP Route
 version_added: 2.6
 author: Google Inc. (@googlecloudplatform)
@@ -94,10 +92,9 @@ options:
   priority:
     description:
     - The priority of this route. Priority is used to break ties in cases where there
-      is more than one matching route of equal prefix length.
-    - In the case of two routes with equal prefix length, the one with the lowest-numbered
-      priority value wins.
-    - Default value is 1000. Valid range is 0 through 65535.
+      is more than one matching route of equal prefix length. In the case of two routes
+      with equal prefix length, the one with the lowest-numbered priority value wins.
+      Default value is 1000. Valid range is 0 through 65535.
     required: false
   tags:
     description:
@@ -105,18 +102,15 @@ options:
     required: false
   next_hop_gateway:
     description:
-    - URL to a gateway that should handle matching packets.
-    - 'Currently, you can only specify the internet gateway, using a full or partial
-      valid URL: * U(https://www.googleapis.com/compute/v1/projects/project/global/gateways/default-internet-gateway)
-      * projects/project/global/gateways/default-internet-gateway * global/gateways/default-internet-gateway
-      .'
+    - 'URL to a gateway that should handle matching packets. Currently, you can only
+      specify the internet gateway, using a full or partial valid URL: * U(https://www.googleapis.com/compute/v1/projects/project/global/gateways/default-internet-gateway)
+      * projects/project/global/gateways/default-internet-gateway * global/gateways/default-internet-gateway.'
     required: false
   next_hop_instance:
     description:
     - URL to an instance that should handle matching packets.
     - 'You can specify this as a full or partial URL. For example: * U(https://www.googleapis.com/compute/v1/projects/project/zones/zone/)
-      instances/instance * projects/project/zones/zone/instances/instance * zones/zone/instances/instance
-      .'
+      instances/instance * projects/project/zones/zone/instances/instance * zones/zone/instances/instance.'
     - 'This field represents a link to a Instance resource in GCP. It can be specified
       in two ways. First, you can place a dictionary with key ''selfLink'' and value
       of your resource''s selfLink Alternatively, you can add `register: name-of-resource`
@@ -198,10 +192,9 @@ network:
 priority:
   description:
   - The priority of this route. Priority is used to break ties in cases where there
-    is more than one matching route of equal prefix length.
-  - In the case of two routes with equal prefix length, the one with the lowest-numbered
-    priority value wins.
-  - Default value is 1000. Valid range is 0 through 65535.
+    is more than one matching route of equal prefix length. In the case of two routes
+    with equal prefix length, the one with the lowest-numbered priority value wins.
+    Default value is 1000. Valid range is 0 through 65535.
   returned: success
   type: int
 tags:
@@ -211,19 +204,16 @@ tags:
   type: list
 nextHopGateway:
   description:
-  - URL to a gateway that should handle matching packets.
-  - 'Currently, you can only specify the internet gateway, using a full or partial
-    valid URL: * U(https://www.googleapis.com/compute/v1/projects/project/global/gateways/default-internet-gateway)
-    * projects/project/global/gateways/default-internet-gateway * global/gateways/default-internet-gateway
-    .'
+  - 'URL to a gateway that should handle matching packets. Currently, you can only
+    specify the internet gateway, using a full or partial valid URL: * U(https://www.googleapis.com/compute/v1/projects/project/global/gateways/default-internet-gateway)
+    * projects/project/global/gateways/default-internet-gateway * global/gateways/default-internet-gateway.'
   returned: success
   type: str
 nextHopInstance:
   description:
   - URL to an instance that should handle matching packets.
   - 'You can specify this as a full or partial URL. For example: * U(https://www.googleapis.com/compute/v1/projects/project/zones/zone/)
-    instances/instance * projects/project/zones/zone/instances/instance * zones/zone/instances/instance
-    .'
+    instances/instance * projects/project/zones/zone/instances/instance * zones/zone/instances/instance.'
   returned: success
   type: dict
 nextHopIp:

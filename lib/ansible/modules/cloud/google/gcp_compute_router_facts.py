@@ -41,10 +41,7 @@ requirements:
 - google-auth >= 1.3.0
 options:
   filters:
-    description:
-    - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
-    - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+    description: []
   region:
     description:
     - Region where the router resides.
@@ -114,18 +111,17 @@ resources:
           type: int
         advertiseMode:
           description:
-          - User-specified flag to indicate which mode to use for advertisement.
-          - 'Valid values of this enum field are: DEFAULT, CUSTOM .'
+          - 'User-specified flag to indicate which mode to use for advertisement.
+            Valid values of this enum field are: DEFAULT, CUSTOM.'
           returned: success
           type: str
         advertisedGroups:
           description:
           - User-specified list of prefix groups to advertise in custom mode.
-          - This field can only be populated if advertiseMode is CUSTOM and is advertised
+          - 'This field can only be populated if advertiseMode is CUSTOM and is advertised
             to all peers of the router. These groups will be advertised in addition
             to any specified prefixes. Leave this field blank to advertise no custom
-            groups.
-          - 'This enum field has the one valid value: ALL_SUBNETS .'
+            groups. This enum field has the one valid value: ALL_SUBNETS.'
           returned: success
           type: list
         advertisedIpRanges:

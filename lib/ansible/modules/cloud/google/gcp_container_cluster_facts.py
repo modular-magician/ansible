@@ -86,19 +86,18 @@ resources:
         also have available firewall and routes quota. For requests, this field should
         only be used in lieu of a "nodePool" object, since this configuration (along
         with the "nodeConfig") will be used to create a "NodePool" object with an
-        auto-generated name. Do not use this and a nodePool at the same time.
-      - This field has been deprecated. Please use nodePool.initial_node_count instead.
+        auto-generated name. Do not use this and a nodePool at the same time. This
+        field has been deprecated. Please use nodePool.initial_node_count instead.
       returned: success
       type: int
     nodeConfig:
       description:
-      - Parameters used in creating the cluster's nodes.
-      - For requests, this field should only be used in lieu of a "nodePool" object,
-        since this configuration (along with the "initialNodeCount") will be used
-        to create a "NodePool" object with an auto-generated name. Do not use this
-        and a nodePool at the same time. For responses, this field will be populated
-        with the node configuration of the first node pool. If unspecified, the defaults
-        are used.
+      - Parameters used in creating the cluster's nodes. For requests, this field
+        should only be used in lieu of a "nodePool" object, since this configuration
+        (along with the "initialNodeCount") will be used to create a "NodePool" object
+        with an auto-generated name. Do not use this and a nodePool at the same time.
+        For responses, this field will be populated with the node configuration of
+        the first node pool. If unspecified, the defaults are used.
       returned: success
       type: complex
       contains:
@@ -116,15 +115,14 @@ resources:
           type: int
         oauthScopes:
           description:
-          - The set of Google API scopes to be made available on all of the node VMs
-            under the "default" service account.
-          - 'The following scopes are recommended, but not required, and by default
-            are not included: U(https://www.googleapis.com/auth/compute) is required
-            for mounting persistent storage on your nodes.'
+          - 'The set of Google API scopes to be made available on all of the node
+            VMs under the "default" service account. The following scopes are recommended,
+            but not required, and by default are not included: U(https://www.googleapis.com/auth/compute)
+            is required for mounting persistent storage on your nodes.'
           - U(https://www.googleapis.com/auth/devstorage.read_only) is required for
-            communicating with gcr.io (the Google Container Registry).
-          - If unspecified, no scopes are added, unless Cloud Logging or Cloud Monitoring
-            are enabled, in which case their required scopes will be added.
+            communicating with gcr.io (the Google Container Registry). If unspecified,
+            no scopes are added, unless Cloud Logging or Cloud Monitoring are enabled,
+            in which case their required scopes will be added.
           returned: success
           type: list
         serviceAccount:
@@ -135,17 +133,16 @@ resources:
           type: str
         metadata:
           description:
-          - The metadata key/value pairs assigned to instances in the cluster.
-          - 'Keys must conform to the regexp [a-zA-Z0-9-_]+ and be less than 128 bytes
-            in length. These are reflected as part of a URL in the metadata server.
-            Additionally, to avoid ambiguity, keys must not conflict with any other
-            metadata keys for the project or be one of the four reserved keys: "instance-template",
+          - 'The metadata key/value pairs assigned to instances in the cluster. Keys
+            must conform to the regexp [a-zA-Z0-9-_]+ and be less than 128 bytes in
+            length. These are reflected as part of a URL in the metadata server. Additionally,
+            to avoid ambiguity, keys must not conflict with any other metadata keys
+            for the project or be one of the four reserved keys: "instance-template",
             "kube-env", "startup-script", and "user-data" Values are free-form strings,
             and only have meaning as interpreted by the image running in the instance.
             The only restriction placed on them is that each value''s size must be
-            less than or equal to 32 KB.'
-          - The total size of all keys and values must be less than 512 KB.
-          - 'An object containing a list of "key": value pairs.'
+            less than or equal to 32 KB. The total size of all keys and values must
+            be less than 512 KB. An object containing a list of "key": value pairs.'
           - 'Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.'
           returned: success
           type: dict
@@ -169,9 +166,9 @@ resources:
           type: dict
         localSsdCount:
           description:
-          - The number of local SSD disks to be attached to the node.
-          - 'The limit for this value is dependant upon the maximum number of disks
-            available on a machine per zone. See: U(https://cloud.google.com/compute/docs/disks/local-ssd#local_ssd_limits)
+          - 'The number of local SSD disks to be attached to the node. The limit for
+            this value is dependant upon the maximum number of disks available on
+            a machine per zone. See: U(https://cloud.google.com/compute/docs/disks/local-ssd#local_ssd_limits)
             for more information.'
           returned: success
           type: int
@@ -209,7 +206,7 @@ resources:
         diskType:
           description:
           - Type of the disk attached to each node (e.g. 'pd-standard' or 'pd-ssd')
-            If unspecified, the default disk type is 'pd-standard' .
+            If unspecified, the default disk type is 'pd-standard'.
           returned: success
           type: str
         minCpuPlatform:
@@ -221,8 +218,7 @@ resources:
         taints:
           description:
           - List of kubernetes taints to be applied to each node.
-          - 'For more information, including usage and the valid values, see: U(https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)
-            .'
+          - 'For more information, including usage and the valid values, see: U(https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/).'
           returned: success
           type: complex
           contains:
@@ -293,8 +289,8 @@ resources:
       description:
       - 'The logging service the cluster should use to write logs. Currently available
         options: logging.googleapis.com - the Google Cloud Logging service.'
-      - none - no logs will be exported from the cluster.
-      - if left as an empty string,logging.googleapis.com will be used.
+      - none - no logs will be exported from the cluster. if left as an empty string,logging.googleapis.com
+        will be used.
       returned: success
       type: str
     monitoringService:
@@ -302,8 +298,8 @@ resources:
       - The monitoring service the cluster should use to write metrics.
       - 'Currently available options: monitoring.googleapis.com - the Google Cloud
         Monitoring service.'
-      - none - no metrics will be exported from the cluster.
-      - if left as an empty string, monitoring.googleapis.com will be used.
+      - none - no metrics will be exported from the cluster. if left as an empty string,
+        monitoring.googleapis.com will be used.
       returned: success
       type: str
     network:
@@ -470,9 +466,9 @@ resources:
           type: str
     endpoint:
       description:
-      - The IP address of this cluster's master endpoint.
-      - The endpoint can be accessed from the internet at https://username:password@endpoint/
-        See the masterAuth property of this resource for username and password information.
+      - The IP address of this cluster's master endpoint. The endpoint can be accessed
+        from the internet at https://username:password@endpoint/ See the masterAuth
+        property of this resource for username and password information.
       returned: success
       type: str
     initialClusterVersion:

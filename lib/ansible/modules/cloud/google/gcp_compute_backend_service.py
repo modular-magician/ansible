@@ -34,8 +34,8 @@ description:
 - A Backend Service defines a group of virtual machines that will serve traffic for
   load balancing. This resource is a global backend service, appropriate for external
   load balancing or self-managed internal load balancing.
-- For managed internal load balancing, use a regional backend service instead.
-- Currently self-managed internal load balancing is only available in beta.
+- For managed internal load balancing, use a regional backend service instead. Currently
+  self-managed internal load balancing is only available in beta.
 short_description: Creates a GCP BackendService
 version_added: 2.6
 author: Google Inc. (@googlecloudplatform)
@@ -55,8 +55,8 @@ options:
     description:
     - Lifetime of cookies in seconds if session_affinity is GENERATED_COOKIE. If set
       to 0, the cookie is non-persistent and lasts only until the end of the browser
-      session (or equivalent). The maximum allowed value for TTL is one day.
-    - When the load balancing scheme is INTERNAL, this field is not used.
+      session (or equivalent). The maximum allowed value for TTL is one day. When
+      the load balancing scheme is INTERNAL, this field is not used.
     required: false
   backends:
     description:
@@ -65,20 +65,19 @@ options:
     suboptions:
       balancing_mode:
         description:
-        - Specifies the balancing mode for this backend.
-        - For global HTTP(S) or TCP/SSL load balancing, the default is UTILIZATION.
-          Valid values are UTILIZATION, RATE (for HTTP(S)) and CONNECTION (for TCP/SSL).
+        - Specifies the balancing mode for this backend. For global HTTP(S) or TCP/SSL
+          load balancing, the default is UTILIZATION. Valid values are UTILIZATION,
+          RATE (for HTTP(S)) and CONNECTION (for TCP/SSL).
         - 'Some valid choices include: "UTILIZATION", "RATE", "CONNECTION"'
         required: false
         default: UTILIZATION
       capacity_scaler:
         description:
         - A multiplier applied to the group's maximum servicing capacity (based on
-          UTILIZATION, RATE or CONNECTION).
-        - Default value is 1, which means the group will serve up to 100% of its configured
-          capacity (depending on balancingMode). A setting of 0 means the group is
-          completely drained, offering 0% of its available Capacity. Valid range is
-          [0.0,1.0].
+          UTILIZATION, RATE or CONNECTION). Default value is 1, which means the group
+          will serve up to 100% of its configured capacity (depending on balancingMode).
+          A setting of 0 means the group is completely drained, offering 0% of its
+          available Capacity. Valid range is [0.0,1.0].
         required: false
         default: '1.0'
       description:
@@ -92,36 +91,32 @@ options:
           In case of instance group this defines the list of instances that serve
           traffic. Member virtual machine instances from each instance group must
           live in the same zone as the instance group itself. No two backends in a
-          backend service are allowed to use same Instance Group resource.
-        - For Network Endpoint Groups this defines list of endpoints. All endpoints
-          of Network Endpoint Group must be hosted on instances located in the same
-          zone as the Network Endpoint Group.
-        - Backend service can not contain mix of Instance Group and Network Endpoint
-          Group backends.
-        - Note that you must specify an Instance Group or Network Endpoint Group resource
-          using the fully-qualified URL, rather than a partial URL.
+          backend service are allowed to use same Instance Group resource. For Network
+          Endpoint Groups this defines list of endpoints. All endpoints of Network
+          Endpoint Group must be hosted on instances located in the same zone as the
+          Network Endpoint Group. Backend service can not contain mix of Instance
+          Group and Network Endpoint Group backends. Note that you must specify an
+          Instance Group or Network Endpoint Group resource using the fully-qualified
+          URL, rather than a partial URL.
         required: false
       max_connections:
         description:
         - The max number of simultaneous connections for the group. Can be used with
-          either CONNECTION or UTILIZATION balancing modes.
-        - For CONNECTION mode, either maxConnections or maxConnectionsPerInstance
-          must be set.
+          either CONNECTION or UTILIZATION balancing modes. For CONNECTION mode, either
+          maxConnections or maxConnectionsPerInstance must be set.
         required: false
       max_connections_per_instance:
         description:
         - The max number of simultaneous connections that a single backend instance
           can handle. This is used to calculate the capacity of the group. Can be
-          used in either CONNECTION or UTILIZATION balancing modes.
-        - For CONNECTION mode, either maxConnections or maxConnectionsPerInstance
-          must be set.
+          used in either CONNECTION or UTILIZATION balancing modes. For CONNECTION
+          mode, either maxConnections or maxConnectionsPerInstance must be set.
         required: false
       max_rate:
         description:
-        - The max requests per second (RPS) of the group.
-        - Can be used with either RATE or UTILIZATION balancing modes, but required
-          if RATE mode. For RATE mode, either maxRate or maxRatePerInstance must be
-          set.
+        - The max requests per second (RPS) of the group. Can be used with either
+          RATE or UTILIZATION balancing modes, but required if RATE mode. For RATE
+          mode, either maxRate or maxRatePerInstance must be set.
         required: false
       max_rate_per_instance:
         description:
@@ -160,39 +155,39 @@ options:
             description:
             - If true, include query string parameters in the cache key according
               to query_string_whitelist and query_string_blacklist. If neither is
-              set, the entire query string will be included.
-            - If false, the query string will be excluded from the cache key entirely.
+              set, the entire query string will be included. If false, the query string
+              will be excluded from the cache key entirely.
             required: false
             type: bool
           query_string_blacklist:
             description:
-            - Names of query string parameters to exclude in cache keys.
-            - All other parameters will be included. Either specify query_string_whitelist
-              or query_string_blacklist, not both.
+            - Names of query string parameters to exclude in cache keys. All other
+              parameters will be included. Either specify query_string_whitelist or
+              query_string_blacklist, not both.
             - "'&' and '=' will be percent encoded and not treated as delimiters."
             required: false
           query_string_whitelist:
             description:
-            - Names of query string parameters to include in cache keys.
-            - All other parameters will be excluded. Either specify query_string_whitelist
-              or query_string_blacklist, not both.
+            - Names of query string parameters to include in cache keys. All other
+              parameters will be excluded. Either specify query_string_whitelist or
+              query_string_blacklist, not both.
             - "'&' and '=' will be percent encoded and not treated as delimiters."
             required: false
       signed_url_cache_max_age_sec:
         description:
-        - Maximum number of seconds the response to a signed URL request will be considered
-          fresh, defaults to 1hr (3600s). After this time period, the response will
-          be revalidated before being served.
-        - 'When serving responses to signed URL requests, Cloud CDN will internally
-          behave as though all responses from this backend had a "Cache-Control: public,
-          max-age=[TTL]" header, regardless of any existing Cache-Control header.
-          The actual headers served in responses will not be altered.'
+        - 'Maximum number of seconds the response to a signed URL request will be
+          considered fresh, defaults to 1hr (3600s). After this time period, the response
+          will be revalidated before being served. When serving responses to signed
+          URL requests, Cloud CDN will internally behave as though all responses from
+          this backend had a "Cache-Control: public, max-age=[TTL]" header, regardless
+          of any existing Cache-Control header. The actual headers served in responses
+          will not be altered.'
         required: false
         default: '3600'
         version_added: 2.8
   connection_draining:
     description:
-    - Settings for connection draining .
+    - Settings for connection draining.
     required: false
     suboptions:
       draining_timeout_sec:
@@ -214,9 +209,8 @@ options:
     description:
     - The list of URLs to the HttpHealthCheck or HttpsHealthCheck resource for health
       checking this BackendService. Currently at most one health check can be specified,
-      and a health check is required.
-    - For internal load balancing, a URL to a HealthCheck resource must be specified
-      instead.
+      and a health check is required. For internal load balancing, a URL to a HealthCheck
+      resource must be specified instead.
     required: true
   iap:
     description:
@@ -231,11 +225,11 @@ options:
         type: bool
       oauth2_client_id:
         description:
-        - OAuth2 Client ID for IAP .
+        - OAuth2 Client ID for IAP.
         required: true
       oauth2_client_secret:
         description:
-        - OAuth2 Client Secret for IAP .
+        - OAuth2 Client Secret for IAP.
         required: true
   load_balancing_scheme:
     description:
@@ -276,9 +270,9 @@ options:
     version_added: 2.8
   session_affinity:
     description:
-    - Type of session affinity to use. The default is NONE.
-    - When the load balancing scheme is EXTERNAL, can be NONE, CLIENT_IP, or GENERATED_COOKIE.
-    - When the protocol is UDP, this field is not used.
+    - Type of session affinity to use. The default is NONE. When the load balancing
+      scheme is EXTERNAL, can be NONE, CLIENT_IP, or GENERATED_COOKIE. When the protocol
+      is UDP, this field is not used.
     - 'Some valid choices include: "NONE", "CLIENT_IP", "GENERATED_COOKIE"'
     required: false
   timeout_sec:
@@ -337,8 +331,8 @@ affinityCookieTtlSec:
   description:
   - Lifetime of cookies in seconds if session_affinity is GENERATED_COOKIE. If set
     to 0, the cookie is non-persistent and lasts only until the end of the browser
-    session (or equivalent). The maximum allowed value for TTL is one day.
-  - When the load balancing scheme is INTERNAL, this field is not used.
+    session (or equivalent). The maximum allowed value for TTL is one day. When the
+    load balancing scheme is INTERNAL, this field is not used.
   returned: success
   type: int
 backends:
@@ -349,18 +343,18 @@ backends:
   contains:
     balancingMode:
       description:
-      - Specifies the balancing mode for this backend.
-      - For global HTTP(S) or TCP/SSL load balancing, the default is UTILIZATION.
-        Valid values are UTILIZATION, RATE (for HTTP(S)) and CONNECTION (for TCP/SSL).
+      - Specifies the balancing mode for this backend. For global HTTP(S) or TCP/SSL
+        load balancing, the default is UTILIZATION. Valid values are UTILIZATION,
+        RATE (for HTTP(S)) and CONNECTION (for TCP/SSL).
       returned: success
       type: str
     capacityScaler:
       description:
       - A multiplier applied to the group's maximum servicing capacity (based on UTILIZATION,
-        RATE or CONNECTION).
-      - Default value is 1, which means the group will serve up to 100% of its configured
-        capacity (depending on balancingMode). A setting of 0 means the group is completely
-        drained, offering 0% of its available Capacity. Valid range is [0.0,1.0].
+        RATE or CONNECTION). Default value is 1, which means the group will serve
+        up to 100% of its configured capacity (depending on balancingMode). A setting
+        of 0 means the group is completely drained, offering 0% of its available Capacity.
+        Valid range is [0.0,1.0].
       returned: success
       type: str
     description:
@@ -375,39 +369,34 @@ backends:
         In case of instance group this defines the list of instances that serve traffic.
         Member virtual machine instances from each instance group must live in the
         same zone as the instance group itself. No two backends in a backend service
-        are allowed to use same Instance Group resource.
-      - For Network Endpoint Groups this defines list of endpoints. All endpoints
-        of Network Endpoint Group must be hosted on instances located in the same
-        zone as the Network Endpoint Group.
-      - Backend service can not contain mix of Instance Group and Network Endpoint
-        Group backends.
-      - Note that you must specify an Instance Group or Network Endpoint Group resource
-        using the fully-qualified URL, rather than a partial URL.
+        are allowed to use same Instance Group resource. For Network Endpoint Groups
+        this defines list of endpoints. All endpoints of Network Endpoint Group must
+        be hosted on instances located in the same zone as the Network Endpoint Group.
+        Backend service can not contain mix of Instance Group and Network Endpoint
+        Group backends. Note that you must specify an Instance Group or Network Endpoint
+        Group resource using the fully-qualified URL, rather than a partial URL.
       returned: success
       type: str
     maxConnections:
       description:
       - The max number of simultaneous connections for the group. Can be used with
-        either CONNECTION or UTILIZATION balancing modes.
-      - For CONNECTION mode, either maxConnections or maxConnectionsPerInstance must
-        be set.
+        either CONNECTION or UTILIZATION balancing modes. For CONNECTION mode, either
+        maxConnections or maxConnectionsPerInstance must be set.
       returned: success
       type: int
     maxConnectionsPerInstance:
       description:
       - The max number of simultaneous connections that a single backend instance
         can handle. This is used to calculate the capacity of the group. Can be used
-        in either CONNECTION or UTILIZATION balancing modes.
-      - For CONNECTION mode, either maxConnections or maxConnectionsPerInstance must
-        be set.
+        in either CONNECTION or UTILIZATION balancing modes. For CONNECTION mode,
+        either maxConnections or maxConnectionsPerInstance must be set.
       returned: success
       type: int
     maxRate:
       description:
-      - The max requests per second (RPS) of the group.
-      - Can be used with either RATE or UTILIZATION balancing modes, but required
-        if RATE mode. For RATE mode, either maxRate or maxRatePerInstance must be
-        set.
+      - The max requests per second (RPS) of the group. Can be used with either RATE
+        or UTILIZATION balancing modes, but required if RATE mode. For RATE mode,
+        either maxRate or maxRatePerInstance must be set.
       returned: success
       type: int
     maxRatePerInstance:
@@ -450,40 +439,39 @@ cdnPolicy:
           description:
           - If true, include query string parameters in the cache key according to
             query_string_whitelist and query_string_blacklist. If neither is set,
-            the entire query string will be included.
-          - If false, the query string will be excluded from the cache key entirely.
+            the entire query string will be included. If false, the query string will
+            be excluded from the cache key entirely.
           returned: success
           type: bool
         queryStringBlacklist:
           description:
-          - Names of query string parameters to exclude in cache keys.
-          - All other parameters will be included. Either specify query_string_whitelist
-            or query_string_blacklist, not both.
+          - Names of query string parameters to exclude in cache keys. All other parameters
+            will be included. Either specify query_string_whitelist or query_string_blacklist,
+            not both.
           - "'&' and '=' will be percent encoded and not treated as delimiters."
           returned: success
           type: list
         queryStringWhitelist:
           description:
-          - Names of query string parameters to include in cache keys.
-          - All other parameters will be excluded. Either specify query_string_whitelist
-            or query_string_blacklist, not both.
+          - Names of query string parameters to include in cache keys. All other parameters
+            will be excluded. Either specify query_string_whitelist or query_string_blacklist,
+            not both.
           - "'&' and '=' will be percent encoded and not treated as delimiters."
           returned: success
           type: list
     signedUrlCacheMaxAgeSec:
       description:
-      - Maximum number of seconds the response to a signed URL request will be considered
+      - 'Maximum number of seconds the response to a signed URL request will be considered
         fresh, defaults to 1hr (3600s). After this time period, the response will
-        be revalidated before being served.
-      - 'When serving responses to signed URL requests, Cloud CDN will internally
-        behave as though all responses from this backend had a "Cache-Control: public,
-        max-age=[TTL]" header, regardless of any existing Cache-Control header. The
-        actual headers served in responses will not be altered.'
+        be revalidated before being served. When serving responses to signed URL requests,
+        Cloud CDN will internally behave as though all responses from this backend
+        had a "Cache-Control: public, max-age=[TTL]" header, regardless of any existing
+        Cache-Control header. The actual headers served in responses will not be altered.'
       returned: success
       type: int
 connectionDraining:
   description:
-  - Settings for connection draining .
+  - Settings for connection draining.
   returned: success
   type: complex
   contains:
@@ -518,9 +506,8 @@ healthChecks:
   description:
   - The list of URLs to the HttpHealthCheck or HttpsHealthCheck resource for health
     checking this BackendService. Currently at most one health check can be specified,
-    and a health check is required.
-  - For internal load balancing, a URL to a HealthCheck resource must be specified
-    instead.
+    and a health check is required. For internal load balancing, a URL to a HealthCheck
+    resource must be specified instead.
   returned: success
   type: list
 id:
@@ -541,17 +528,17 @@ iap:
       type: bool
     oauth2ClientId:
       description:
-      - OAuth2 Client ID for IAP .
+      - OAuth2 Client ID for IAP.
       returned: success
       type: str
     oauth2ClientSecret:
       description:
-      - OAuth2 Client Secret for IAP .
+      - OAuth2 Client Secret for IAP.
       returned: success
       type: str
     oauth2ClientSecretSha256:
       description:
-      - OAuth2 Client Secret SHA-256 for IAP .
+      - OAuth2 Client Secret SHA-256 for IAP.
       returned: success
       type: str
 loadBalancingScheme:
@@ -593,9 +580,9 @@ securityPolicy:
   type: str
 sessionAffinity:
   description:
-  - Type of session affinity to use. The default is NONE.
-  - When the load balancing scheme is EXTERNAL, can be NONE, CLIENT_IP, or GENERATED_COOKIE.
-  - When the protocol is UDP, this field is not used.
+  - Type of session affinity to use. The default is NONE. When the load balancing
+    scheme is EXTERNAL, can be NONE, CLIENT_IP, or GENERATED_COOKIE. When the protocol
+    is UDP, this field is not used.
   returned: success
   type: str
 timeoutSec:

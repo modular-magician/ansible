@@ -31,13 +31,13 @@ DOCUMENTATION = '''
 ---
 module: gcp_compute_instance_template
 description:
-- Defines an Instance Template resource that provides configuration settings for your
-  virtual machine instances. Instance templates are not tied to the lifetime of an
-  instance and can be used and reused as to deploy virtual machines. You can also
-  use different templates to create different virtual machine configurations. Instance
-  templates are required when you create a managed instance group.
-- 'Tip: Disks should be set to autoDelete=true so that leftover disks are not left
-  behind on machine deletion.'
+- 'Defines an Instance Template resource that provides configuration settings for
+  your virtual machine instances. Instance templates are not tied to the lifetime
+  of an instance and can be used and reused as to deploy virtual machines. You can
+  also use different templates to create different virtual machine configurations.
+  Instance templates are required when you create a managed instance group. Tip: Disks
+  should be set to autoDelete=true so that leftover disks are not left behind on machine
+  deletion.'
 short_description: Creates a GCP InstanceTemplate
 version_added: 2.6
 author: Google Inc. (@googlecloudplatform)
@@ -89,10 +89,10 @@ options:
         suboptions:
           auto_delete:
             description:
-            - Specifies whether the disk will be auto-deleted when the instance is
-              deleted (but not when the disk is detached from the instance).
-            - 'Tip: Disks should be set to autoDelete=true so that leftover disks
-              are not left behind on machine deletion.'
+            - 'Specifies whether the disk will be auto-deleted when the instance is
+              deleted (but not when the disk is detached from the instance). Tip:
+              Disks should be set to autoDelete=true so that leftover disks are not
+              left behind on machine deletion.'
             required: false
             type: bool
           boot:
@@ -163,10 +163,9 @@ options:
                 description:
                 - The customer-supplied encryption key of the source image. Required
                   if the source image is protected by a customer-supplied encryption
-                  key.
-                - Instance templates do not store customer-supplied encryption keys,
-                  so you cannot create disks for instances in a managed instance group
-                  if the source images are encrypted with your own keys.
+                  key. Instance templates do not store customer-supplied encryption
+                  keys, so you cannot create disks for instances in a managed instance
+                  group if the source images are encrypted with your own keys.
                 required: false
                 suboptions:
                   raw_key:
@@ -191,11 +190,10 @@ options:
           source:
             description:
             - Reference to a disk. When creating a new instance, one of initializeParams.sourceImage
-              or disks.source is required.
-            - If desired, you can also attach existing non-root persistent disks using
-              this property. This field is only applicable for persistent disks.
-            - Note that for InstanceTemplate, specify the disk name, not the URL for
-              the disk.
+              or disks.source is required. If desired, you can also attach existing
+              non-root persistent disks using this property. This field is only applicable
+              for persistent disks. Note that for InstanceTemplate, specify the disk
+              name, not the URL for the disk.
             - 'This field represents a link to a Disk resource in GCP. It can be specified
               in two ways. First, you can place a dictionary with key ''name'' and
               value of your resource''s name Alternatively, you can add `register:
@@ -215,7 +213,7 @@ options:
       min_cpu_platform:
         description:
         - Specifies a minimum CPU platform for the VM instance. Applicable values
-          are the friendly names of CPU platforms .
+          are the friendly names of CPU platforms.
         required: false
       metadata:
         description:
@@ -225,8 +223,7 @@ options:
         required: false
       guest_accelerators:
         description:
-        - List of the type and count of accelerator cards attached to the instance
-          .
+        - List of the type and count of accelerator cards attached to the instance.
         required: false
         suboptions:
           accelerator_count:
@@ -487,10 +484,10 @@ properties:
       contains:
         autoDelete:
           description:
-          - Specifies whether the disk will be auto-deleted when the instance is deleted
-            (but not when the disk is detached from the instance).
-          - 'Tip: Disks should be set to autoDelete=true so that leftover disks are
-            not left behind on machine deletion.'
+          - 'Specifies whether the disk will be auto-deleted when the instance is
+            deleted (but not when the disk is detached from the instance). Tip: Disks
+            should be set to autoDelete=true so that leftover disks are not left behind
+            on machine deletion.'
           returned: success
           type: bool
         boot:
@@ -577,10 +574,9 @@ properties:
               description:
               - The customer-supplied encryption key of the source image. Required
                 if the source image is protected by a customer-supplied encryption
-                key.
-              - Instance templates do not store customer-supplied encryption keys,
-                so you cannot create disks for instances in a managed instance group
-                if the source images are encrypted with your own keys.
+                key. Instance templates do not store customer-supplied encryption
+                keys, so you cannot create disks for instances in a managed instance
+                group if the source images are encrypted with your own keys.
               returned: success
               type: complex
               contains:
@@ -613,11 +609,10 @@ properties:
         source:
           description:
           - Reference to a disk. When creating a new instance, one of initializeParams.sourceImage
-            or disks.source is required.
-          - If desired, you can also attach existing non-root persistent disks using
-            this property. This field is only applicable for persistent disks.
-          - Note that for InstanceTemplate, specify the disk name, not the URL for
-            the disk.
+            or disks.source is required. If desired, you can also attach existing
+            non-root persistent disks using this property. This field is only applicable
+            for persistent disks. Note that for InstanceTemplate, specify the disk
+            name, not the URL for the disk.
           returned: success
           type: dict
         type:
@@ -634,7 +629,7 @@ properties:
     minCpuPlatform:
       description:
       - Specifies a minimum CPU platform for the VM instance. Applicable values are
-        the friendly names of CPU platforms .
+        the friendly names of CPU platforms.
       returned: success
       type: str
     metadata:
@@ -645,7 +640,7 @@ properties:
       type: dict
     guestAccelerators:
       description:
-      - List of the type and count of accelerator cards attached to the instance .
+      - List of the type and count of accelerator cards attached to the instance.
       returned: success
       type: complex
       contains:
@@ -724,7 +719,7 @@ properties:
         name:
           description:
           - The name of the network interface, generated by the server. For network
-            devices, these are eth0, eth1, etc .
+            devices, these are eth0, eth1, etc.
           returned: success
           type: str
         network:

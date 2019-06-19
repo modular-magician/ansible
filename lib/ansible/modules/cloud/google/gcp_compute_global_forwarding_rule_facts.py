@@ -41,10 +41,7 @@ requirements:
 - google-auth >= 1.3.0
 options:
   filters:
-    description:
-    - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
-    - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+    description: []
 extends_documentation_fragment: gcp
 '''
 
@@ -83,25 +80,23 @@ resources:
       type: int
     IPAddress:
       description:
-      - The IP address that this forwarding rule is serving on behalf of.
-      - Addresses are restricted based on the forwarding rule's load balancing scheme
-        (EXTERNAL or INTERNAL) and scope (global or regional).
-      - When the load balancing scheme is EXTERNAL, for global forwarding rules, the
-        address must be a global IP, and for regional forwarding rules, the address
-        must live in the same region as the forwarding rule. If this field is empty,
-        an ephemeral IPv4 address from the same scope (global or regional) will be
-        assigned. A regional forwarding rule supports IPv4 only. A global forwarding
-        rule supports either IPv4 or IPv6.
-      - When the load balancing scheme is INTERNAL, this can only be an RFC 1918 IP
-        address belonging to the network/subnet configured for the forwarding rule.
-        By default, if this field is empty, an ephemeral internal IP address will
-        be automatically allocated from the IP range of the subnet or network configured
-        for this forwarding rule.
-      - 'An address can be specified either by a literal IP address or a URL reference
-        to an existing Address resource. The following examples are all valid: * 100.1.2.3
-        * U(https://www.googleapis.com/compute/v1/projects/project/regions/region/addresses/address)
+      - 'The IP address that this forwarding rule is serving on behalf of. Addresses
+        are restricted based on the forwarding rule''s load balancing scheme (EXTERNAL
+        or INTERNAL) and scope (global or regional). When the load balancing scheme
+        is EXTERNAL, for global forwarding rules, the address must be a global IP,
+        and for regional forwarding rules, the address must live in the same region
+        as the forwarding rule. If this field is empty, an ephemeral IPv4 address
+        from the same scope (global or regional) will be assigned. A regional forwarding
+        rule supports IPv4 only. A global forwarding rule supports either IPv4 or
+        IPv6. When the load balancing scheme is INTERNAL, this can only be an RFC
+        1918 IP address belonging to the network/subnet configured for the forwarding
+        rule. By default, if this field is empty, an ephemeral internal IP address
+        will be automatically allocated from the IP range of the subnet or network
+        configured for this forwarding rule. An address can be specified either by
+        a literal IP address or a URL reference to an existing Address resource. The
+        following examples are all valid: * 100.1.2.3 * U(https://www.googleapis.com/compute/v1/projects/project/regions/region/addresses/address)
         * projects/project/regions/region/addresses/address * regions/region/addresses/address
-        * global/addresses/address * address .'
+        * global/addresses/address * address.'
       returned: success
       type: str
     IPProtocol:
@@ -148,15 +143,14 @@ resources:
       description:
       - This field is used along with the target field for TargetHttpProxy, TargetHttpsProxy,
         TargetSslProxy, TargetTcpProxy, TargetVpnGateway, TargetPool, TargetInstance.
-      - Applicable only when IPProtocol is TCP, UDP, or SCTP, only packets addressed
+        Applicable only when IPProtocol is TCP, UDP, or SCTP, only packets addressed
         to ports in the specified range will be forwarded to target.
-      - Forwarding rules with the same [IPAddress, IPProtocol] pair must have disjoint
-        port ranges.
-      - 'Some types of forwarding target have constraints on the acceptable ports:
-        * TargetHttpProxy: 80, 8080 * TargetHttpsProxy: 443 * TargetTcpProxy: 25,
-        43, 110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetSslProxy:
+      - 'Forwarding rules with the same [IPAddress, IPProtocol] pair must have disjoint
+        port ranges. Some types of forwarding target have constraints on the acceptable
+        ports: * TargetHttpProxy: 80, 8080 * TargetHttpsProxy: 443 * TargetTcpProxy:
+        25, 43, 110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetSslProxy:
         25, 43, 110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetVpnGateway:
-        500, 4500 .'
+        500, 4500.'
       returned: success
       type: str
     target:

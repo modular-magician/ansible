@@ -85,7 +85,7 @@ resources:
       type: int
     target:
       description:
-      - As defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1) .
+      - As defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1).
       returned: success
       type: list
     managed_zone:

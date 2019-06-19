@@ -41,10 +41,7 @@ requirements:
 - google-auth >= 1.3.0
 options:
   filters:
-    description:
-    - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
-    - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+    description: []
   zone:
     description:
     - The zone the managed instance group resides.
@@ -102,7 +99,7 @@ resources:
           - The number of instances in the managed instance group that are scheduled
             to be created or are currently being created. If the group fails to create
             any of these instances, it tries again until it creates the instance successfully.
-          - If you have disabled creation retries, this field will not be populated;
+            If you have disabled creation retries, this field will not be populated;
             instead, the creatingWithoutRetries field will be populated.
           returned: success
           type: int

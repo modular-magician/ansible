@@ -75,14 +75,13 @@ options:
   prefix_length:
     description:
     - The prefix length of the IP range. If not present, it means the address field
-      is a single IP address.
-    - This field is not applicable to addresses with addressType=EXTERNAL.
+      is a single IP address. This field is not applicable to addresses with addressType=EXTERNAL.
     required: false
     version_added: 2.9
   address_type:
     description:
-    - The type of the address to reserve, default is EXTERNAL.
-    - "* EXTERNAL indicates public/external single IP address."
+    - The type of the address to reserve, default is EXTERNAL. * EXTERNAL indicates
+      public/external single IP address.
     - "* INTERNAL indicates internal IP ranges belonging to some network."
     - 'Some valid choices include: "EXTERNAL", "INTERNAL"'
     required: false
@@ -99,8 +98,7 @@ options:
     description:
     - The URL of the network in which to reserve the IP range. The IP range must be
       in RFC1918 space. The network cannot be deleted if there are any reserved IP
-      ranges referring to it.
-    - This should only be set when using an Internal address.
+      ranges referring to it. This should only be set when using an Internal address.
     - 'This field represents a link to a Network resource in GCP. It can be specified
       in two ways. First, you can place a dictionary with key ''selfLink'' and value
       of your resource''s selfLink Alternatively, you can add `register: name-of-resource`
@@ -169,14 +167,13 @@ region:
 prefixLength:
   description:
   - The prefix length of the IP range. If not present, it means the address field
-    is a single IP address.
-  - This field is not applicable to addresses with addressType=EXTERNAL.
+    is a single IP address. This field is not applicable to addresses with addressType=EXTERNAL.
   returned: success
   type: int
 addressType:
   description:
-  - The type of the address to reserve, default is EXTERNAL.
-  - "* EXTERNAL indicates public/external single IP address."
+  - The type of the address to reserve, default is EXTERNAL. * EXTERNAL indicates
+    public/external single IP address.
   - "* INTERNAL indicates internal IP ranges belonging to some network."
   returned: success
   type: str
@@ -190,8 +187,7 @@ network:
   description:
   - The URL of the network in which to reserve the IP range. The IP range must be
     in RFC1918 space. The network cannot be deleted if there are any reserved IP ranges
-    referring to it.
-  - This should only be set when using an Internal address.
+    referring to it. This should only be set when using an Internal address.
   returned: success
   type: dict
 '''

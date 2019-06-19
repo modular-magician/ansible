@@ -107,7 +107,7 @@ resources:
     labels:
       description:
       - The labels associated with this dataset. You can use these to organize and
-        group your datasets .
+        group your datasets.
       returned: success
       type: dict
     lastModifiedTime:
@@ -155,7 +155,7 @@ resources:
       contains:
         useLegacySql:
           description:
-          - Specifies whether to use BigQuery's legacy SQL for this view .
+          - Specifies whether to use BigQuery's legacy SQL for this view.
           returned: success
           type: bool
         userDefinedFunctionResources:
@@ -298,13 +298,13 @@ resources:
         ignoreUnknownValues:
           description:
           - Indicates if BigQuery should allow extra values that are not represented
-            in the table schema .
+            in the table schema.
           returned: success
           type: bool
         maxBadRecords:
           description:
           - The maximum number of bad records that BigQuery can ignore when reading
-            data .
+            data.
           returned: success
           type: int
         sourceFormat:
@@ -344,7 +344,7 @@ resources:
                 fields:
                   description:
                   - Describes the nested schema fields if the type property is set
-                    to RECORD .
+                    to RECORD.
                   returned: success
                   type: list
                 mode:
@@ -383,13 +383,13 @@ resources:
             allowJaggedRows:
               description:
               - Indicates if BigQuery should accept rows that are missing trailing
-                optional columns .
+                optional columns.
               returned: success
               type: bool
             allowQuotedNewlines:
               description:
               - Indicates if BigQuery should allow quoted data sections that contain
-                newline characters in a CSV file .
+                newline characters in a CSV file.
               returned: success
               type: bool
             encoding:
@@ -422,7 +422,7 @@ resources:
             ignoreUnspecifiedColumnFamilies:
               description:
               - If field is true, then the column families that are not specified
-                in columnFamilies list are not exposed in the table schema .
+                in columnFamilies list are not exposed in the table schema.
               returned: success
               type: bool
             readRowkeyAsString:
@@ -460,7 +460,7 @@ resources:
                     onlyReadLatest:
                       description:
                       - If this is set, only the latest version of value in this column
-                        are exposed .
+                        are exposed.
                       returned: success
                       type: bool
                     qualifierString:
@@ -486,7 +486,7 @@ resources:
                 onlyReadLatest:
                   description:
                   - If this is set only the latest version of value are exposed for
-                    all columns in this column family .
+                    all columns in this column family.
                   returned: success
                   type: bool
                 type:

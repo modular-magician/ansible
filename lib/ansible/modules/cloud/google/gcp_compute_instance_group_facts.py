@@ -41,10 +41,7 @@ requirements:
 - google-auth >= 1.3.0
 options:
   filters:
-    description:
-    - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
-    - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+    description: []
   zone:
     description:
     - A reference to the zone where the instance group resides.
@@ -95,11 +92,10 @@ resources:
     namedPorts:
       description:
       - Assigns a name to a port number.
-      - 'For example: {name: "http", port: 80}.'
-      - This allows the system to reference ports by the assigned name instead of
-        a port number. Named ports can also contain multiple ports.
-      - 'For example: [{name: "http", port: 80},{name: "http", port: 8080}] Named
-        ports apply to all instances in this instance group.'
+      - 'For example: {name: "http", port: 80}. This allows the system to reference
+        ports by the assigned name instead of a port number. Named ports can also
+        contain multiple ports. For example: [{name: "http", port: 80},{name: "http",
+        port: 8080}] Named ports apply to all instances in this instance group.'
       returned: success
       type: complex
       contains:

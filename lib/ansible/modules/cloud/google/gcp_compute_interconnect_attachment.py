@@ -167,7 +167,7 @@ pairingKey:
   description:
   - '[Output only for type PARTNER. Not present for DEDICATED]. The opaque identifier
     of an PARTNER attachment used to initiate provisioning with a selected partner.
-    Of the form "XXXXX/region/domain" .'
+    Of the form "XXXXX/region/domain".'
   returned: success
   type: str
 partnerAsn:

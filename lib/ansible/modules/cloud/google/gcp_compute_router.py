@@ -81,19 +81,18 @@ options:
         required: true
       advertise_mode:
         description:
-        - User-specified flag to indicate which mode to use for advertisement.
-        - 'Valid values of this enum field are: DEFAULT, CUSTOM .'
+        - 'User-specified flag to indicate which mode to use for advertisement. Valid
+          values of this enum field are: DEFAULT, CUSTOM.'
         - 'Some valid choices include: "DEFAULT", "CUSTOM"'
         required: false
         default: DEFAULT
       advertised_groups:
         description:
         - User-specified list of prefix groups to advertise in custom mode.
-        - This field can only be populated if advertiseMode is CUSTOM and is advertised
+        - 'This field can only be populated if advertiseMode is CUSTOM and is advertised
           to all peers of the router. These groups will be advertised in addition
           to any specified prefixes. Leave this field blank to advertise no custom
-          groups.
-        - 'This enum field has the one valid value: ALL_SUBNETS .'
+          groups. This enum field has the one valid value: ALL_SUBNETS.'
         required: false
       advertised_ip_ranges:
         description:
@@ -196,17 +195,17 @@ bgp:
       type: int
     advertiseMode:
       description:
-      - User-specified flag to indicate which mode to use for advertisement.
-      - 'Valid values of this enum field are: DEFAULT, CUSTOM .'
+      - 'User-specified flag to indicate which mode to use for advertisement. Valid
+        values of this enum field are: DEFAULT, CUSTOM.'
       returned: success
       type: str
     advertisedGroups:
       description:
       - User-specified list of prefix groups to advertise in custom mode.
-      - This field can only be populated if advertiseMode is CUSTOM and is advertised
+      - 'This field can only be populated if advertiseMode is CUSTOM and is advertised
         to all peers of the router. These groups will be advertised in addition to
         any specified prefixes. Leave this field blank to advertise no custom groups.
-      - 'This enum field has the one valid value: ALL_SUBNETS .'
+        This enum field has the one valid value: ALL_SUBNETS.'
       returned: success
       type: list
     advertisedIpRanges:

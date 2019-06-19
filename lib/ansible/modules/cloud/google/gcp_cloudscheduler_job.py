@@ -32,10 +32,9 @@ DOCUMENTATION = '''
 module: gcp_cloudscheduler_job
 description:
 - A scheduled job that can publish a pubsub message or a http request every X interval
-  of time, using crontab format string.
-- To use Cloud Scheduler your project must contain an App Engine app that is located
-  in one of the supported regions. If your project does not have an App Engine app,
-  you must create one.
+  of time, using crontab format string. To use Cloud Scheduler your project must contain
+  an App Engine app that is located in one of the supported regions. If your project
+  does not have an App Engine app, you must create one.
 short_description: Creates a GCP Job
 version_added: 2.9
 author: Google Inc. (@googlecloudplatform)
@@ -74,7 +73,7 @@ options:
     description:
     - By default, if a job does not complete successfully, meaning that an acknowledgement
       is not received from the handler, then it will be retried with exponential backoff
-      according to the settings .
+      according to the settings.
     required: false
     suboptions:
       retry_count:
@@ -110,7 +109,7 @@ options:
   pubsub_target:
     description:
     - Pub/Sub target If the job providers a Pub/Sub target the cron will publish a
-      message to the provided topic .
+      message to the provided topic.
     required: false
     suboptions:
       topic_name:
@@ -133,7 +132,7 @@ options:
     description:
     - App Engine HTTP target.
     - If the job providers a App Engine HTTP target the cron will send a request to
-      the service instance .
+      the service instance.
     required: false
     suboptions:
       http_method:
@@ -183,7 +182,7 @@ options:
     description:
     - HTTP target.
     - If the job providers a http_target the cron will send a request to the targeted
-      url .
+      url.
     required: false
     suboptions:
       uri:
@@ -207,7 +206,7 @@ options:
         required: false
   region:
     description:
-    - Region where the scheduler job resides .
+    - Region where the scheduler job resides.
     required: true
 extends_documentation_fragment: gcp
 notes:
@@ -263,7 +262,7 @@ retryConfig:
   description:
   - By default, if a job does not complete successfully, meaning that an acknowledgement
     is not received from the handler, then it will be retried with exponential backoff
-    according to the settings .
+    according to the settings.
   returned: success
   type: complex
   contains:
@@ -305,7 +304,7 @@ retryConfig:
 pubsubTarget:
   description:
   - Pub/Sub target If the job providers a Pub/Sub target the cron will publish a message
-    to the provided topic .
+    to the provided topic.
   returned: success
   type: complex
   contains:
@@ -332,7 +331,7 @@ appEngineHttpTarget:
   description:
   - App Engine HTTP target.
   - If the job providers a App Engine HTTP target the cron will send a request to
-    the service instance .
+    the service instance.
   returned: success
   type: complex
   contains:
@@ -391,7 +390,7 @@ httpTarget:
   description:
   - HTTP target.
   - If the job providers a http_target the cron will send a request to the targeted
-    url .
+    url.
   returned: success
   type: complex
   contains:
@@ -419,7 +418,7 @@ httpTarget:
       type: dict
 region:
   description:
-  - Region where the scheduler job resides .
+  - Region where the scheduler job resides.
   returned: success
   type: str
 '''

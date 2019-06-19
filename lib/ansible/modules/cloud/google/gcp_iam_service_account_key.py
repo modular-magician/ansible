@@ -69,8 +69,8 @@ options:
   path:
     description:
     - The full name of the file that will hold the service account private key. The
-      management of this file will depend on the value of sync_file parameter.
-    - File path must be absolute.
+      management of this file will depend on the value of sync_file parameter. File
+      path must be absolute.
     required: false
 extends_documentation_fragment: gcp
 '''
@@ -141,8 +141,8 @@ serviceAccount:
 path:
   description:
   - The full name of the file that will hold the service account private key. The
-    management of this file will depend on the value of sync_file parameter.
-  - File path must be absolute.
+    management of this file will depend on the value of sync_file parameter. File
+    path must be absolute.
   returned: success
   type: str
 '''

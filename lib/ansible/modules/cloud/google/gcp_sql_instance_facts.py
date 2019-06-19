@@ -60,9 +60,9 @@ resources:
   contains:
     backendType:
       description:
-      - "* FIRST_GEN: First Generation instance. MySQL only."
-      - "* SECOND_GEN: Second Generation instance or PostgreSQL instance."
-      - "* EXTERNAL: A database server that is not managed by Google."
+      - 'FIRST_GEN: First Generation instance. MySQL only., SECOND_GEN: Second Generation
+        instance or PostgreSQL instance., EXTERNAL: A database server that is not
+        managed by Google.'
       returned: success
       type: str
     connectionName:
@@ -173,9 +173,8 @@ resources:
           - Specifies if the replica is the failover target. If the field is set to
             true the replica will be designated as a failover replica.
           - In case the master instance fails, the replica instance will be promoted
-            as the new master instance.
-          - Only one replica can be specified as failover target, and the replica
-            has to be in different zone with the master instance.
+            as the new master instance. Only one replica can be specified as failover
+            target, and the replica has to be in different zone with the master instance.
           returned: success
           type: bool
         mysqlReplicaConfiguration:
@@ -195,7 +194,7 @@ resources:
               type: str
             clientCertificate:
               description:
-              - PEM representation of the slave's x509 certificate .
+              - PEM representation of the slave's x509 certificate.
               returned: success
               type: str
             clientKey:
@@ -357,7 +356,7 @@ resources:
               type: bool
             startTime:
               description:
-              - Define the backup start time in UTC (HH:MM) .
+              - Define the backup start time in UTC (HH:MM).
               returned: success
               type: str
         settingsVersion:

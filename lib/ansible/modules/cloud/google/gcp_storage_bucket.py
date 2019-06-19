@@ -33,10 +33,10 @@ module: gcp_storage_bucket
 description:
 - The Buckets resource represents a bucket in Google Cloud Storage. There is a single
   global namespace shared by all buckets. For more information, see Bucket Name Requirements.
-- Buckets contain objects which can be accessed by their own methods. In addition
+  Buckets contain objects which can be accessed by their own methods. In addition
   to the acl property, buckets contain bucketAccessControls, for use in fine-grained
-  manipulation of an existing bucket's access controls.
-- A bucket is always owned by the project team owners group.
+  manipulation of an existing bucket's access controls. A bucket is always owned by
+  the project team owners group.
 short_description: Creates a GCP Bucket
 version_added: 2.6
 author: Google Inc. (@googlecloudplatform)
@@ -146,7 +146,7 @@ options:
           * user-{{email}} (such as "user-liz@example.com") * group-{{groupId}} *
           group-{{email}} (such as "group-example@googlegroups.com") * domain-{{domain}}
           (such as "domain-example.com") * project-team-{{projectId}} * allUsers *
-          allAuthenticatedUsers .'
+          allAuthenticatedUsers.'
         required: true
       object:
         description:
@@ -159,8 +159,8 @@ options:
         required: true
   lifecycle:
     description:
-    - The bucket's lifecycle configuration.
-    - See U(https://developers.google.com/storage/docs/lifecycle) for more information.
+    - The bucket's lifecycle configuration. See U(https://developers.google.com/storage/docs/lifecycle)
+      for more information.
     required: false
     suboptions:
       rule:
@@ -303,9 +303,9 @@ options:
     required: false
   predefined_default_object_acl:
     description:
-    - Apply a predefined set of default object access controls to this bucket.
-    - 'Acceptable values are: - "authenticatedRead": Object owner gets OWNER access,
-      and allAuthenticatedUsers get READER access.'
+    - 'Apply a predefined set of default object access controls to this bucket. Acceptable
+      values are: - "authenticatedRead": Object owner gets OWNER access, and allAuthenticatedUsers
+      get READER access.'
     - '- "bucketOwnerFullControl": Object owner gets OWNER access, and project team
       owners get OWNER access.'
     - '- "bucketOwnerRead": Object owner gets OWNER access, and project team owners
@@ -451,7 +451,7 @@ defaultObjectAcl:
       - 'The entity holding the permission, in one of the following forms: * user-{{userId}}
         * user-{{email}} (such as "user-liz@example.com") * group-{{groupId}} * group-{{email}}
         (such as "group-example@googlegroups.com") * domain-{{domain}} (such as "domain-example.com")
-        * project-team-{{projectId}} * allUsers * allAuthenticatedUsers .'
+        * project-team-{{projectId}} * allUsers * allAuthenticatedUsers.'
       returned: success
       type: str
     entityId:
@@ -502,8 +502,8 @@ id:
   type: str
 lifecycle:
   description:
-  - The bucket's lifecycle configuration.
-  - See U(https://developers.google.com/storage/docs/lifecycle) for more information.
+  - The bucket's lifecycle configuration. See U(https://developers.google.com/storage/docs/lifecycle)
+    for more information.
   returned: success
   type: complex
   contains:
@@ -685,9 +685,9 @@ project:
   type: str
 predefinedDefaultObjectAcl:
   description:
-  - Apply a predefined set of default object access controls to this bucket.
-  - 'Acceptable values are: - "authenticatedRead": Object owner gets OWNER access,
-    and allAuthenticatedUsers get READER access.'
+  - 'Apply a predefined set of default object access controls to this bucket. Acceptable
+    values are: - "authenticatedRead": Object owner gets OWNER access, and allAuthenticatedUsers
+    get READER access.'
   - '- "bucketOwnerFullControl": Object owner gets OWNER access, and project team
     owners get OWNER access.'
   - '- "bucketOwnerRead": Object owner gets OWNER access, and project team owners

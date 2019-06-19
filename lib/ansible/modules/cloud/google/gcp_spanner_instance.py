@@ -58,8 +58,8 @@ options:
       a region) which defines defines the geographic placement and replication of
       your databases in this instance. It determines where your data is stored. Values
       are typically of the form `regional-europe-west1` , `us-central` etc.
-    - In order to obtain a valid list please consult the [Configuration section of
-      the docs](U(https://cloud.google.com/spanner/docs/instances)).
+    - In order to obtain a valid list please consult the L(Configuration section of
+      the docs,U(https://cloud.google.com/spanner/docs/instances)).
     required: true
   display_name:
     description:
@@ -110,8 +110,8 @@ config:
     region) which defines defines the geographic placement and replication of your
     databases in this instance. It determines where your data is stored. Values are
     typically of the form `regional-europe-west1` , `us-central` etc.
-  - In order to obtain a valid list please consult the [Configuration section of the
-    docs](U(https://cloud.google.com/spanner/docs/instances)).
+  - In order to obtain a valid list please consult the L(Configuration section of
+    the docs,U(https://cloud.google.com/spanner/docs/instances)).
   returned: success
   type: str
 displayName:

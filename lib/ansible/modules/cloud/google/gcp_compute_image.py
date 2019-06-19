@@ -31,17 +31,15 @@ DOCUMENTATION = '''
 ---
 module: gcp_compute_image
 description:
-- Represents an Image resource.
-- Google Compute Engine uses operating system images to create the root persistent
-  disks for your instances. You specify an image when you create an instance. Images
-  contain a boot loader, an operating system, and a root file system. Linux operating
-  system images are also capable of running containers on Compute Engine.
-- Images can be either public or custom.
-- Public images are provided and maintained by Google, open-source communities, and
-  third-party vendors. By default, all projects have access to these images and can
-  use them to create instances. Custom images are available only to your project.
-  You can create a custom image from root persistent disks and other images. Then,
-  use the custom image to create an instance.
+- Represents an Image resource. Google Compute Engine uses operating system images
+  to create the root persistent disks for your instances. You specify an image when
+  you create an instance. Images contain a boot loader, an operating system, and a
+  root file system. Linux operating system images are also capable of running containers
+  on Compute Engine. Images can be either public or custom. Public images are provided
+  and maintained by Google, open-source communities, and third-party vendors. By default,
+  all projects have access to these images and can use them to create instances. Custom
+  images are available only to your project. You can create a custom image from root
+  persistent disks and other images. Then, use the custom image to create an instance.
 short_description: Creates a GCP Image
 version_added: 2.6
 author: Google Inc. (@googlecloudplatform)
@@ -80,7 +78,7 @@ options:
       allows each virtual CPU to have its own queue. For Windows images, you can only
       enable VIRTIO_SCSI_MULTIQUEUE on images with driver version 1.2.0.1621 or higher.
       Linux images with kernel versions 3.17 and higher will support VIRTIO_SCSI_MULTIQUEUE.
-    - For new Windows images, the server might also populate this field with the value
+      For new Windows images, the server might also populate this field with the value
       WINDOWS, to indicate that this is a Windows image.
     - This value is purely informational and does not enable or disable any features.
     required: false
@@ -95,9 +93,9 @@ options:
         required: false
   image_encryption_key:
     description:
-    - Encrypts the image using a customer-supplied encryption key.
-    - After you encrypt an image with a customer-supplied key, you must provide the
-      same key if you use the image later (e.g. to create a disk from the image) .
+    - Encrypts the image using a customer-supplied encryption key. After you encrypt
+      an image with a customer-supplied key, you must provide the same key if you
+      use the image later (e.g. to create a disk from the image).
     required: false
     suboptions:
       raw_key:
@@ -176,7 +174,7 @@ options:
   source_type:
     description:
     - The type of the image used to create this disk. The default and only value is
-      RAW .
+      RAW.
     - 'Some valid choices include: "RAW"'
     required: false
 extends_documentation_fragment: gcp
@@ -286,7 +284,7 @@ guestOsFeatures:
     each virtual CPU to have its own queue. For Windows images, you can only enable
     VIRTIO_SCSI_MULTIQUEUE on images with driver version 1.2.0.1621 or higher. Linux
     images with kernel versions 3.17 and higher will support VIRTIO_SCSI_MULTIQUEUE.
-  - For new Windows images, the server might also populate this field with the value
+    For new Windows images, the server might also populate this field with the value
     WINDOWS, to indicate that this is a Windows image.
   - This value is purely informational and does not enable or disable any features.
   returned: success
@@ -307,9 +305,9 @@ id:
   type: int
 imageEncryptionKey:
   description:
-  - Encrypts the image using a customer-supplied encryption key.
-  - After you encrypt an image with a customer-supplied key, you must provide the
-    same key if you use the image later (e.g. to create a disk from the image) .
+  - Encrypts the image using a customer-supplied encryption key. After you encrypt
+    an image with a customer-supplied key, you must provide the same key if you use
+    the image later (e.g. to create a disk from the image).
   returned: success
   type: complex
   contains:
@@ -412,7 +410,7 @@ sourceDiskId:
 sourceType:
   description:
   - The type of the image used to create this disk. The default and only value is
-    RAW .
+    RAW.
   returned: success
   type: str
 '''

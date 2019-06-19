@@ -63,11 +63,10 @@ options:
   named_ports:
     description:
     - Assigns a name to a port number.
-    - 'For example: {name: "http", port: 80}.'
-    - This allows the system to reference ports by the assigned name instead of a
-      port number. Named ports can also contain multiple ports.
-    - 'For example: [{name: "http", port: 80},{name: "http", port: 8080}] Named ports
-      apply to all instances in this instance group.'
+    - 'For example: {name: "http", port: 80}. This allows the system to reference
+      ports by the assigned name instead of a port number. Named ports can also contain
+      multiple ports. For example: [{name: "http", port: 80},{name: "http", port:
+      8080}] Named ports apply to all instances in this instance group.'
     required: false
     suboptions:
       name:
@@ -167,11 +166,10 @@ name:
 namedPorts:
   description:
   - Assigns a name to a port number.
-  - 'For example: {name: "http", port: 80}.'
-  - This allows the system to reference ports by the assigned name instead of a port
-    number. Named ports can also contain multiple ports.
-  - 'For example: [{name: "http", port: 80},{name: "http", port: 8080}] Named ports
-    apply to all instances in this instance group.'
+  - 'For example: {name: "http", port: 80}. This allows the system to reference ports
+    by the assigned name instead of a port number. Named ports can also contain multiple
+    ports. For example: [{name: "http", port: 80},{name: "http", port: 8080}] Named
+    ports apply to all instances in this instance group.'
   returned: success
   type: complex
   contains:

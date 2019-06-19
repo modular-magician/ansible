@@ -41,10 +41,7 @@ requirements:
 - google-auth >= 1.3.0
 options:
   filters:
-    description:
-    - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
-    - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+    description: []
 extends_documentation_fragment: gcp
 '''
 
@@ -144,9 +141,8 @@ resources:
         which allows each virtual CPU to have its own queue. For Windows images, you
         can only enable VIRTIO_SCSI_MULTIQUEUE on images with driver version 1.2.0.1621
         or higher. Linux images with kernel versions 3.17 and higher will support
-        VIRTIO_SCSI_MULTIQUEUE.
-      - For new Windows images, the server might also populate this field with the
-        value WINDOWS, to indicate that this is a Windows image.
+        VIRTIO_SCSI_MULTIQUEUE. For new Windows images, the server might also populate
+        this field with the value WINDOWS, to indicate that this is a Windows image.
       - This value is purely informational and does not enable or disable any features.
       returned: success
       type: complex
@@ -168,10 +164,9 @@ resources:
       type: int
     imageEncryptionKey:
       description:
-      - Encrypts the image using a customer-supplied encryption key.
-      - After you encrypt an image with a customer-supplied key, you must provide
-        the same key if you use the image later (e.g. to create a disk from the image)
-        .
+      - Encrypts the image using a customer-supplied encryption key. After you encrypt
+        an image with a customer-supplied key, you must provide the same key if you
+        use the image later (e.g. to create a disk from the image).
       returned: success
       type: complex
       contains:
@@ -274,7 +269,7 @@ resources:
     sourceType:
       description:
       - The type of the image used to create this disk. The default and only value
-        is RAW .
+        is RAW.
       returned: success
       type: str
 '''

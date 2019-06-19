@@ -32,13 +32,12 @@ DOCUMENTATION = '''
 module: gcp_compute_firewall
 description:
 - Each network has its own firewall controlling access to and from the instances.
-- All traffic to instances, even from other instances, is blocked by the firewall
-  unless firewall rules are created to allow it.
-- The default network has automatically created firewall rules that are shown in default
-  firewall rules. No manually created network has automatically created firewall rules
-  except for a default "allow" rule for outgoing traffic and a default "deny" for
-  incoming traffic. For all networks except the default network, you must create any
-  firewall rules you need.
+  All traffic to instances, even from other instances, is blocked by the firewall
+  unless firewall rules are created to allow it. The default network has automatically
+  created firewall rules that are shown in default firewall rules. No manually created
+  network has automatically created firewall rules except for a default "allow" rule
+  for outgoing traffic and a default "deny" for incoming traffic. For all networks
+  except the default network, you must create any firewall rules you need.
 short_description: Creates a GCP Firewall
 version_added: 2.6
 author: Google Inc. (@googlecloudplatform)
@@ -69,11 +68,10 @@ options:
         required: true
       ports:
         description:
-        - An optional list of ports to which this rule applies. This field is only
+        - 'An optional list of ports to which this rule applies. This field is only
           applicable for UDP or TCP protocol. Each entry must be either an integer
           or a range. If not specified, this rule applies to connections through any
-          port.
-        - 'Example inputs include: ["22"], ["80","443"], and ["12345-12349"].'
+          port. Example inputs include: ["22"], ["80","443"], and ["12345-12349"].'
         required: false
   denied:
     description:
@@ -91,11 +89,10 @@ options:
         required: true
       ports:
         description:
-        - An optional list of ports to which this rule applies. This field is only
+        - 'An optional list of ports to which this rule applies. This field is only
           applicable for UDP or TCP protocol. Each entry must be either an integer
           or a range. If not specified, this rule applies to connections through any
-          port.
-        - 'Example inputs include: ["22"], ["80","443"], and ["12345-12349"].'
+          port. Example inputs include: ["22"], ["80","443"], and ["12345-12349"].'
         required: false
   description:
     description:
@@ -141,8 +138,7 @@ options:
       a firewall rule, the default network is used: global/networks/default If you
       choose to specify this property, you can specify the network as a full or partial
       URL. For example, the following are all valid URLs: U(https://www.googleapis.com/compute/v1/projects/myproject/global/)
-      networks/my-network projects/myproject/global/networks/my-network global/networks/default
-      .'
+      networks/my-network projects/myproject/global/networks/my-network global/networks/default.'
     - 'This field represents a link to a Network resource in GCP. It can be specified
       in two ways. First, you can place a dictionary with key ''selfLink'' and value
       of your resource''s selfLink Alternatively, you can add `register: name-of-resource`
@@ -254,10 +250,10 @@ allowed:
       type: str
     ports:
       description:
-      - An optional list of ports to which this rule applies. This field is only applicable
-        for UDP or TCP protocol. Each entry must be either an integer or a range.
-        If not specified, this rule applies to connections through any port.
-      - 'Example inputs include: ["22"], ["80","443"], and ["12345-12349"].'
+      - 'An optional list of ports to which this rule applies. This field is only
+        applicable for UDP or TCP protocol. Each entry must be either an integer or
+        a range. If not specified, this rule applies to connections through any port.
+        Example inputs include: ["22"], ["80","443"], and ["12345-12349"].'
       returned: success
       type: list
 creationTimestamp:
@@ -282,10 +278,10 @@ denied:
       type: str
     ports:
       description:
-      - An optional list of ports to which this rule applies. This field is only applicable
-        for UDP or TCP protocol. Each entry must be either an integer or a range.
-        If not specified, this rule applies to connections through any port.
-      - 'Example inputs include: ["22"], ["80","443"], and ["12345-12349"].'
+      - 'An optional list of ports to which this rule applies. This field is only
+        applicable for UDP or TCP protocol. Each entry must be either an integer or
+        a range. If not specified, this rule applies to connections through any port.
+        Example inputs include: ["22"], ["80","443"], and ["12345-12349"].'
       returned: success
       type: list
 description:
@@ -337,8 +333,7 @@ network:
     a firewall rule, the default network is used: global/networks/default If you choose
     to specify this property, you can specify the network as a full or partial URL.
     For example, the following are all valid URLs: U(https://www.googleapis.com/compute/v1/projects/myproject/global/)
-    networks/my-network projects/myproject/global/networks/my-network global/networks/default
-    .'
+    networks/my-network projects/myproject/global/networks/my-network global/networks/default.'
   returned: success
   type: dict
 priority:

@@ -56,31 +56,29 @@ options:
     required: false
   ip_address:
     description:
-    - The IP address that this forwarding rule is serving on behalf of.
-    - Addresses are restricted based on the forwarding rule's load balancing scheme
-      (EXTERNAL or INTERNAL) and scope (global or regional).
-    - When the load balancing scheme is EXTERNAL, for global forwarding rules, the
-      address must be a global IP, and for regional forwarding rules, the address
-      must live in the same region as the forwarding rule. If this field is empty,
-      an ephemeral IPv4 address from the same scope (global or regional) will be assigned.
-      A regional forwarding rule supports IPv4 only. A global forwarding rule supports
-      either IPv4 or IPv6.
-    - When the load balancing scheme is INTERNAL, this can only be an RFC 1918 IP
-      address belonging to the network/subnet configured for the forwarding rule.
-      By default, if this field is empty, an ephemeral internal IP address will be
-      automatically allocated from the IP range of the subnet or network configured
-      for this forwarding rule.
-    - 'An address can be specified either by a literal IP address or a URL reference
+    - 'The IP address that this forwarding rule is serving on behalf of. Addresses
+      are restricted based on the forwarding rule''s load balancing scheme (EXTERNAL
+      or INTERNAL) and scope (global or regional). When the load balancing scheme
+      is EXTERNAL, for global forwarding rules, the address must be a global IP, and
+      for regional forwarding rules, the address must live in the same region as the
+      forwarding rule. If this field is empty, an ephemeral IPv4 address from the
+      same scope (global or regional) will be assigned. A regional forwarding rule
+      supports IPv4 only. A global forwarding rule supports either IPv4 or IPv6. When
+      the load balancing scheme is INTERNAL, this can only be an RFC 1918 IP address
+      belonging to the network/subnet configured for the forwarding rule. By default,
+      if this field is empty, an ephemeral internal IP address will be automatically
+      allocated from the IP range of the subnet or network configured for this forwarding
+      rule. An address can be specified either by a literal IP address or a URL reference
       to an existing Address resource. The following examples are all valid: * 100.1.2.3
       * U(https://www.googleapis.com/compute/v1/projects/project/regions/region/addresses/address)
       * projects/project/regions/region/addresses/address * regions/region/addresses/address
-      * global/addresses/address * address .'
+      * global/addresses/address * address.'
     required: false
   ip_protocol:
     description:
     - The IP protocol to which this rule applies. Valid options are TCP, UDP, ESP,
-      AH, SCTP or ICMP.
-    - When the load balancing scheme is INTERNAL, only TCP and UDP are valid.
+      AH, SCTP or ICMP. When the load balancing scheme is INTERNAL, only TCP and UDP
+      are valid.
     - 'Some valid choices include: "TCP", "UDP", "ESP", "AH", "SCTP", "ICMP"'
     required: false
   backend_service:
@@ -104,7 +102,7 @@ options:
       following values: INTERNAL, EXTERNAL The value of INTERNAL means that this will
       be used for Internal Network Load Balancing (TCP, UDP). The value of EXTERNAL
       means that this will be used for External Load Balancing (HTTP(S) LB, External
-      TCP/UDP LB, SSL Proxy) .'
+      TCP/UDP LB, SSL Proxy).'
     - 'Some valid choices include: "INTERNAL", "EXTERNAL"'
     required: false
   name:
@@ -132,30 +130,29 @@ options:
     description:
     - This field is used along with the target field for TargetHttpProxy, TargetHttpsProxy,
       TargetSslProxy, TargetTcpProxy, TargetVpnGateway, TargetPool, TargetInstance.
-    - Applicable only when IPProtocol is TCP, UDP, or SCTP, only packets addressed
+      Applicable only when IPProtocol is TCP, UDP, or SCTP, only packets addressed
       to ports in the specified range will be forwarded to target.
-    - Forwarding rules with the same [IPAddress, IPProtocol] pair must have disjoint
-      port ranges.
-    - 'Some types of forwarding target have constraints on the acceptable ports: *
-      TargetHttpProxy: 80, 8080 * TargetHttpsProxy: 443 * TargetTcpProxy: 25, 43,
-      110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetSslProxy: 25,
-      43, 110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetVpnGateway:
-      500, 4500 .'
+    - 'Forwarding rules with the same [IPAddress, IPProtocol] pair must have disjoint
+      port ranges. Some types of forwarding target have constraints on the acceptable
+      ports: * TargetHttpProxy: 80, 8080 * TargetHttpsProxy: 443 * TargetTcpProxy:
+      25, 43, 110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetSslProxy:
+      25, 43, 110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetVpnGateway:
+      500, 4500.'
     required: false
   ports:
     description:
     - This field is used along with the backend_service field for internal load balancing.
-    - When the load balancing scheme is INTERNAL, a single port or a comma separated
+      When the load balancing scheme is INTERNAL, a single port or a comma separated
       list of ports can be configured. Only packets addressed to these ports will
-      be forwarded to the backends configured with this forwarding rule.
-    - You may specify a maximum of up to 5 ports.
+      be forwarded to the backends configured with this forwarding rule. You may specify
+      a maximum of up to 5 ports.
     required: false
   subnetwork:
     description:
     - The subnetwork that the load balanced IP should belong to for this Forwarding
-      Rule. This field is only used for INTERNAL load balancing.
-    - If the network specified is in auto subnet mode, this field is optional. However,
-      if the network is in custom subnet mode, a subnetwork must be specified.
+      Rule. This field is only used for INTERNAL load balancing. If the network specified
+      is in auto subnet mode, this field is optional. However, if the network is in
+      custom subnet mode, a subnetwork must be specified.
     - 'This field represents a link to a Subnetwork resource in GCP. It can be specified
       in two ways. First, you can place a dictionary with key ''selfLink'' and value
       of your resource''s selfLink Alternatively, you can add `register: name-of-resource`
@@ -195,13 +192,13 @@ options:
   service_label:
     description:
     - An optional prefix to the service name for this Forwarding Rule.
-    - If specified, will be the first label of the fully qualified service name.
-    - The label must be 1-63 characters long, and comply with RFC1035.
+    - If specified, will be the first label of the fully qualified service name. The
+      label must be 1-63 characters long, and comply with RFC1035.
     - Specifically, the label must be 1-63 characters long and match the regular expression
       `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase
       letter, and all following characters must be a dash, lowercase letter, or digit,
-      except the last character, which cannot be a dash.
-    - This field is only used for INTERNAL load balancing.
+      except the last character, which cannot be a dash. This field is only used for
+      INTERNAL load balancing.
     required: false
     version_added: 2.8
   region:
@@ -269,32 +266,29 @@ id:
   type: int
 IPAddress:
   description:
-  - The IP address that this forwarding rule is serving on behalf of.
-  - Addresses are restricted based on the forwarding rule's load balancing scheme
-    (EXTERNAL or INTERNAL) and scope (global or regional).
-  - When the load balancing scheme is EXTERNAL, for global forwarding rules, the address
-    must be a global IP, and for regional forwarding rules, the address must live
-    in the same region as the forwarding rule. If this field is empty, an ephemeral
-    IPv4 address from the same scope (global or regional) will be assigned. A regional
-    forwarding rule supports IPv4 only. A global forwarding rule supports either IPv4
-    or IPv6.
-  - When the load balancing scheme is INTERNAL, this can only be an RFC 1918 IP address
-    belonging to the network/subnet configured for the forwarding rule. By default,
-    if this field is empty, an ephemeral internal IP address will be automatically
-    allocated from the IP range of the subnet or network configured for this forwarding
-    rule.
-  - 'An address can be specified either by a literal IP address or a URL reference
-    to an existing Address resource. The following examples are all valid: * 100.1.2.3
-    * U(https://www.googleapis.com/compute/v1/projects/project/regions/region/addresses/address)
+  - 'The IP address that this forwarding rule is serving on behalf of. Addresses are
+    restricted based on the forwarding rule''s load balancing scheme (EXTERNAL or
+    INTERNAL) and scope (global or regional). When the load balancing scheme is EXTERNAL,
+    for global forwarding rules, the address must be a global IP, and for regional
+    forwarding rules, the address must live in the same region as the forwarding rule.
+    If this field is empty, an ephemeral IPv4 address from the same scope (global
+    or regional) will be assigned. A regional forwarding rule supports IPv4 only.
+    A global forwarding rule supports either IPv4 or IPv6. When the load balancing
+    scheme is INTERNAL, this can only be an RFC 1918 IP address belonging to the network/subnet
+    configured for the forwarding rule. By default, if this field is empty, an ephemeral
+    internal IP address will be automatically allocated from the IP range of the subnet
+    or network configured for this forwarding rule. An address can be specified either
+    by a literal IP address or a URL reference to an existing Address resource. The
+    following examples are all valid: * 100.1.2.3 * U(https://www.googleapis.com/compute/v1/projects/project/regions/region/addresses/address)
     * projects/project/regions/region/addresses/address * regions/region/addresses/address
-    * global/addresses/address * address .'
+    * global/addresses/address * address.'
   returned: success
   type: str
 IPProtocol:
   description:
   - The IP protocol to which this rule applies. Valid options are TCP, UDP, ESP, AH,
-    SCTP or ICMP.
-  - When the load balancing scheme is INTERNAL, only TCP and UDP are valid.
+    SCTP or ICMP. When the load balancing scheme is INTERNAL, only TCP and UDP are
+    valid.
   returned: success
   type: str
 backendService:
@@ -314,7 +308,7 @@ loadBalancingScheme:
     following values: INTERNAL, EXTERNAL The value of INTERNAL means that this will
     be used for Internal Network Load Balancing (TCP, UDP). The value of EXTERNAL
     means that this will be used for External Load Balancing (HTTP(S) LB, External
-    TCP/UDP LB, SSL Proxy) .'
+    TCP/UDP LB, SSL Proxy).'
   returned: success
   type: str
 name:
@@ -339,31 +333,31 @@ portRange:
   description:
   - This field is used along with the target field for TargetHttpProxy, TargetHttpsProxy,
     TargetSslProxy, TargetTcpProxy, TargetVpnGateway, TargetPool, TargetInstance.
-  - Applicable only when IPProtocol is TCP, UDP, or SCTP, only packets addressed to
+    Applicable only when IPProtocol is TCP, UDP, or SCTP, only packets addressed to
     ports in the specified range will be forwarded to target.
-  - Forwarding rules with the same [IPAddress, IPProtocol] pair must have disjoint
-    port ranges.
-  - 'Some types of forwarding target have constraints on the acceptable ports: * TargetHttpProxy:
-    80, 8080 * TargetHttpsProxy: 443 * TargetTcpProxy: 25, 43, 110, 143, 195, 443,
-    465, 587, 700, 993, 995, 1883, 5222 * TargetSslProxy: 25, 43, 110, 143, 195, 443,
-    465, 587, 700, 993, 995, 1883, 5222 * TargetVpnGateway: 500, 4500 .'
+  - 'Forwarding rules with the same [IPAddress, IPProtocol] pair must have disjoint
+    port ranges. Some types of forwarding target have constraints on the acceptable
+    ports: * TargetHttpProxy: 80, 8080 * TargetHttpsProxy: 443 * TargetTcpProxy: 25,
+    43, 110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetSslProxy:
+    25, 43, 110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetVpnGateway:
+    500, 4500.'
   returned: success
   type: str
 ports:
   description:
   - This field is used along with the backend_service field for internal load balancing.
-  - When the load balancing scheme is INTERNAL, a single port or a comma separated
+    When the load balancing scheme is INTERNAL, a single port or a comma separated
     list of ports can be configured. Only packets addressed to these ports will be
-    forwarded to the backends configured with this forwarding rule.
-  - You may specify a maximum of up to 5 ports.
+    forwarded to the backends configured with this forwarding rule. You may specify
+    a maximum of up to 5 ports.
   returned: success
   type: list
 subnetwork:
   description:
   - The subnetwork that the load balanced IP should belong to for this Forwarding
-    Rule. This field is only used for INTERNAL load balancing.
-  - If the network specified is in auto subnet mode, this field is optional. However,
-    if the network is in custom subnet mode, a subnetwork must be specified.
+    Rule. This field is only used for INTERNAL load balancing. If the network specified
+    is in auto subnet mode, this field is optional. However, if the network is in
+    custom subnet mode, a subnetwork must be specified.
   returned: success
   type: dict
 target:
@@ -392,13 +386,13 @@ networkTier:
 serviceLabel:
   description:
   - An optional prefix to the service name for this Forwarding Rule.
-  - If specified, will be the first label of the fully qualified service name.
-  - The label must be 1-63 characters long, and comply with RFC1035.
+  - If specified, will be the first label of the fully qualified service name. The
+    label must be 1-63 characters long, and comply with RFC1035.
   - Specifically, the label must be 1-63 characters long and match the regular expression
     `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase
     letter, and all following characters must be a dash, lowercase letter, or digit,
-    except the last character, which cannot be a dash.
-  - This field is only used for INTERNAL load balancing.
+    except the last character, which cannot be a dash. This field is only used for
+    INTERNAL load balancing.
   returned: success
   type: str
 serviceName:

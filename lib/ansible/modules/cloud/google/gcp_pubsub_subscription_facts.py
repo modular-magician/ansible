@@ -89,21 +89,19 @@ resources:
           type: str
         attributes:
           description:
-          - Endpoint configuration attributes.
-          - Every endpoint has a set of API supported attributes that can be used
-            to control different aspects of the message delivery.
-          - The currently supported attribute is x-goog-version, which you can use
-            to change the format of the pushed message. This attribute indicates the
-            version of the data expected by the endpoint. This controls the shape
+          - 'Endpoint configuration attributes. Every endpoint has a set of API supported
+            attributes that can be used to control different aspects of the message
+            delivery. The currently supported attribute is x-goog-version, which you
+            can use to change the format of the pushed message. This attribute indicates
+            the version of the data expected by the endpoint. This controls the shape
             of the pushed message (i.e., its fields and metadata). The endpoint version
-            is based on the version of the Pub/Sub API.
-          - If not present during the subscriptions.create call, it will default to
-            the version of the API used to make such call. If not present during a
-            subscriptions.modifyPushConfig call, its value will not be changed. subscriptions.get
-            calls will always return a valid version, even if the subscription was
-            created without this attribute.
-          - 'The possible values for this attribute are: - v1beta1: uses the push
-            format defined in the v1beta1 Pub/Sub API.'
+            is based on the version of the Pub/Sub API. If not present during the
+            subscriptions.create call, it will default to the version of the API used
+            to make such call. If not present during a subscriptions.modifyPushConfig
+            call, its value will not be changed. subscriptions.get calls will always
+            return a valid version, even if the subscription was created without this
+            attribute. The possible values for this attribute are: - v1beta1: uses
+            the push format defined in the v1beta1 Pub/Sub API.'
           - "- v1 or v1beta2: uses the push format defined in the v1 Pub/Sub API."
           returned: success
           type: dict
@@ -113,27 +111,25 @@ resources:
         the subscriber should acknowledge the message. After message delivery but
         before the ack deadline expires and before the message is acknowledged, it
         is an outstanding message and will not be delivered again during that time
-        (on a best-effort basis).
-      - For pull subscriptions, this value is used as the initial value for the ack
-        deadline. To override this value for a given message, call subscriptions.modifyAckDeadline
-        with the corresponding ackId if using pull. The minimum custom deadline you
-        can specify is 10 seconds. The maximum custom deadline you can specify is
-        600 seconds (10 minutes).
-      - If this parameter is 0, a default value of 10 seconds is used.
-      - For push delivery, this value is also used to set the request timeout for
-        the call to the push endpoint.
-      - If the subscriber never acknowledges the message, the Pub/Sub system will
-        eventually redeliver the message.
+        (on a best-effort basis). For pull subscriptions, this value is used as the
+        initial value for the ack deadline. To override this value for a given message,
+        call subscriptions.modifyAckDeadline with the corresponding ackId if using
+        pull. The minimum custom deadline you can specify is 10 seconds. The maximum
+        custom deadline you can specify is 600 seconds (10 minutes).
+      - If this parameter is 0, a default value of 10 seconds is used. For push delivery,
+        this value is also used to set the request timeout for the call to the push
+        endpoint. If the subscriber never acknowledges the message, the Pub/Sub system
+        will eventually redeliver the message.
       returned: success
       type: int
     messageRetentionDuration:
       description:
-      - How long to retain unacknowledged messages in the subscription's backlog,
+      - 'How long to retain unacknowledged messages in the subscription''s backlog,
         from the moment a message is published. If retainAckedMessages is true, then
         this also configures the retention of acknowledged messages, and thus configures
         how far back in time a subscriptions.seek can be done. Defaults to 7 days.
         Cannot be more than 7 days (`"604800s"`) or less than 10 minutes (`"600s"`).
-      - 'A duration in seconds with up to nine fractional digits, terminated by ''s''.
+        A duration in seconds with up to nine fractional digits, terminated by ''s''.
         Example: `"600.5s"`.'
       returned: success
       type: str

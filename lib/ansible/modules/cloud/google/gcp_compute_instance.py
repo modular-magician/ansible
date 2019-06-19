@@ -64,10 +64,10 @@ options:
     suboptions:
       auto_delete:
         description:
-        - Specifies whether the disk will be auto-deleted when the instance is deleted
-          (but not when the disk is detached from the instance).
-        - 'Tip: Disks should be set to autoDelete=true so that leftover disks are
-          not left behind on machine deletion.'
+        - 'Specifies whether the disk will be auto-deleted when the instance is deleted
+          (but not when the disk is detached from the instance). Tip: Disks should
+          be set to autoDelete=true so that leftover disks are not left behind on
+          machine deletion.'
         required: false
         type: bool
       boot:
@@ -141,7 +141,7 @@ options:
             description:
             - The customer-supplied encryption key of the source image. Required if
               the source image is protected by a customer-supplied encryption key.
-            - Instance templates do not store customer-supplied encryption keys, so
+              Instance templates do not store customer-supplied encryption keys, so
               you cannot create disks for instances in a managed instance group if
               the source images are encrypted with your own keys.
             required: false
@@ -168,9 +168,9 @@ options:
       source:
         description:
         - Reference to a disk. When creating a new instance, one of initializeParams.sourceImage
-          or disks.source is required.
-        - If desired, you can also attach existing non-root persistent disks using
-          this property. This field is only applicable for persistent disks.
+          or disks.source is required. If desired, you can also attach existing non-root
+          persistent disks using this property. This field is only applicable for
+          persistent disks.
         - 'This field represents a link to a Disk resource in GCP. It can be specified
           in two ways. First, you can place a dictionary with key ''selfLink'' and
           value of your resource''s selfLink Alternatively, you can add `register:
@@ -185,7 +185,7 @@ options:
         required: false
   guest_accelerators:
     description:
-    - List of the type and count of accelerator cards attached to the instance .
+    - List of the type and count of accelerator cards attached to the instance.
     required: false
     suboptions:
       accelerator_count:
@@ -213,7 +213,7 @@ options:
   min_cpu_platform:
     description:
     - Specifies a minimum CPU platform for the VM instance. Applicable values are
-      the friendly names of CPU platforms .
+      the friendly names of CPU platforms.
     required: false
   name:
     description:
@@ -357,9 +357,8 @@ options:
   status:
     description:
     - 'The status of the instance. One of the following values: PROVISIONING, STAGING,
-      RUNNING, STOPPING, SUSPENDING, SUSPENDED, and TERMINATED.'
-    - As a user, use RUNNING to keep a machine "on" and TERMINATED to turn a machine
-      off .
+      RUNNING, STOPPING, SUSPENDING, SUSPENDED, and TERMINATED. As a user, use RUNNING
+      to keep a machine "on" and TERMINATED to turn a machine off.'
     - 'Some valid choices include: "PROVISIONING", "STAGING", "RUNNING", "STOPPING",
       "SUSPENDING", "SUSPENDED", "TERMINATED"'
     required: false
@@ -476,10 +475,10 @@ disks:
   contains:
     autoDelete:
       description:
-      - Specifies whether the disk will be auto-deleted when the instance is deleted
-        (but not when the disk is detached from the instance).
-      - 'Tip: Disks should be set to autoDelete=true so that leftover disks are not
-        left behind on machine deletion.'
+      - 'Specifies whether the disk will be auto-deleted when the instance is deleted
+        (but not when the disk is detached from the instance). Tip: Disks should be
+        set to autoDelete=true so that leftover disks are not left behind on machine
+        deletion.'
       returned: success
       type: bool
     boot:
@@ -565,10 +564,10 @@ disks:
         sourceImageEncryptionKey:
           description:
           - The customer-supplied encryption key of the source image. Required if
-            the source image is protected by a customer-supplied encryption key.
-          - Instance templates do not store customer-supplied encryption keys, so
-            you cannot create disks for instances in a managed instance group if the
-            source images are encrypted with your own keys.
+            the source image is protected by a customer-supplied encryption key. Instance
+            templates do not store customer-supplied encryption keys, so you cannot
+            create disks for instances in a managed instance group if the source images
+            are encrypted with your own keys.
           returned: success
           type: complex
           contains:
@@ -601,9 +600,9 @@ disks:
     source:
       description:
       - Reference to a disk. When creating a new instance, one of initializeParams.sourceImage
-        or disks.source is required.
-      - If desired, you can also attach existing non-root persistent disks using this
-        property. This field is only applicable for persistent disks.
+        or disks.source is required. If desired, you can also attach existing non-root
+        persistent disks using this property. This field is only applicable for persistent
+        disks.
       returned: success
       type: dict
     type:
@@ -614,7 +613,7 @@ disks:
       type: str
 guestAccelerators:
   description:
-  - List of the type and count of accelerator cards attached to the instance .
+  - List of the type and count of accelerator cards attached to the instance.
   returned: success
   type: complex
   contains:
@@ -658,7 +657,7 @@ machineType:
 minCpuPlatform:
   description:
   - Specifies a minimum CPU platform for the VM instance. Applicable values are the
-    friendly names of CPU platforms .
+    friendly names of CPU platforms.
   returned: success
   type: str
 name:
@@ -735,7 +734,7 @@ networkInterfaces:
     name:
       description:
       - The name of the network interface, generated by the server. For network devices,
-        these are eth0, eth1, etc .
+        these are eth0, eth1, etc.
       returned: success
       type: str
     network:
@@ -809,9 +808,8 @@ serviceAccounts:
 status:
   description:
   - 'The status of the instance. One of the following values: PROVISIONING, STAGING,
-    RUNNING, STOPPING, SUSPENDING, SUSPENDED, and TERMINATED.'
-  - As a user, use RUNNING to keep a machine "on" and TERMINATED to turn a machine
-    off .
+    RUNNING, STOPPING, SUSPENDING, SUSPENDED, and TERMINATED. As a user, use RUNNING
+    to keep a machine "on" and TERMINATED to turn a machine off.'
   returned: success
   type: str
 statusMessage:

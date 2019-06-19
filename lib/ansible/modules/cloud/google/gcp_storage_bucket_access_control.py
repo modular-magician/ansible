@@ -31,16 +31,15 @@ DOCUMENTATION = '''
 ---
 module: gcp_storage_bucket_access_control
 description:
-- The BucketAccessControls resource represents the Access Control Lists (ACLs) for
+- 'The BucketAccessControls resource represents the Access Control Lists (ACLs) for
   buckets within Google Cloud Storage. ACLs let you specify who has access to your
-  data and to what extent.
-- 'There are three roles that can be assigned to an entity: READERs can get the bucket,
-  though no acl property will be returned, and list the bucket''s objects. WRITERs
-  are READERs, and they can insert objects into the bucket and delete the bucket''s
-  objects. OWNERs are WRITERs, and they can get the acl property of a bucket, update
-  a bucket, and call all BucketAccessControls methods on the bucket. For more information,
-  see Access Control, with the caveat that this API uses READER, WRITER, and OWNER
-  instead of READ, WRITE, and FULL_CONTROL.'
+  data and to what extent. There are three roles that can be assigned to an entity:
+  READERs can get the bucket, though no acl property will be returned, and list the
+  bucket''s objects. WRITERs are READERs, and they can insert objects into the bucket
+  and delete the bucket''s objects. OWNERs are WRITERs, and they can get the acl property
+  of a bucket, update a bucket, and call all BucketAccessControls methods on the bucket.
+  For more information, see Access Control, with the caveat that this API uses READER,
+  WRITER, and OWNER instead of READ, WRITE, and FULL_CONTROL.'
 short_description: Creates a GCP BucketAccessControl
 version_added: 2.6
 author: Google Inc. (@googlecloudplatform)

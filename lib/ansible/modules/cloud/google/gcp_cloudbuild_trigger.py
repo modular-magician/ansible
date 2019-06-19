@@ -73,29 +73,27 @@ options:
   ignored_files:
     description:
     - ignoredFiles and includedFiles are file glob matches using http://godoc/pkg/path/filepath#Match
-      extended with support for `**`.
-    - If ignoredFiles and changed files are both empty, then they are not used to
-      determine whether or not to trigger a build.
-    - If ignoredFiles is not empty, then we ignore any files that match any of the
-      ignored_file globs. If the change has no files that are outside of the ignoredFiles
-      globs, then we do not trigger a build.
+      extended with support for `**`. If ignoredFiles and changed files are both empty,
+      then they are not used to determine whether or not to trigger a build. If ignoredFiles
+      is not empty, then we ignore any files that match any of the ignored_file globs.
+      If the change has no files that are outside of the ignoredFiles globs, then
+      we do not trigger a build.
     required: false
   included_files:
     description:
     - ignoredFiles and includedFiles are file glob matches using http://godoc/pkg/path/filepath#Match
-      extended with support for `**`.
-    - If any of the files altered in the commit pass the ignoredFiles filter and includedFiles
-      is empty, then as far as this filter is concerned, we should trigger the build.
-    - If any of the files altered in the commit pass the ignoredFiles filter and includedFiles
-      is not empty, then we make sure that at least one of those files matches a includedFiles
-      glob. If not, then we do not trigger a build.
+      extended with support for `**`. If any of the files altered in the commit pass
+      the ignoredFiles filter and includedFiles is empty, then as far as this filter
+      is concerned, we should trigger the build. If any of the files altered in the
+      commit pass the ignoredFiles filter and includedFiles is not empty, then we
+      make sure that at least one of those files matches a includedFiles glob. If
+      not, then we do not trigger a build.
     required: false
   trigger_template:
     description:
-    - Template describing the types of source changes to trigger a build.
-    - Branch and tag names in trigger templates are interpreted as regular expressions.
-      Any branch or tag change that matches that regular expression will trigger a
-      build.
+    - Template describing the types of source changes to trigger a build. Branch and
+      tag names in trigger templates are interpreted as regular expressions. Any branch
+      or tag change that matches that regular expression will trigger a build.
     required: false
     suboptions:
       project_id:
@@ -110,8 +108,8 @@ options:
         default: default
       dir:
         description:
-        - Directory, relative to the source root, in which to run the build.
-        - This must be a relative path. If a step's dir is specified and is an absolute
+        - Directory, relative to the source root, in which to run the build. This
+          must be a relative path. If a step's dir is specified and is an absolute
           path, this value is ignored for that step's execution.
         required: false
       branch_name:
@@ -156,23 +154,21 @@ options:
           name:
             description:
             - The name of the container image that will run this particular build
-              step.
-            - If the image is available in the host's Docker daemon's cache, it will
-              be run directly. If not, the host will attempt to pull the image first,
-              using the builder service account's credentials if necessary.
-            - The Docker daemon's cache will already have the latest versions of all
+              step. If the image is available in the host's Docker daemon's cache,
+              it will be run directly. If not, the host will attempt to pull the image
+              first, using the builder service account's credentials if necessary.
+              The Docker daemon's cache will already have the latest versions of all
               of the officially supported build steps (U(https://github.com/GoogleCloudPlatform/cloud-builders)).
             - The Docker daemon will also have cached many of the layers for some
               popular images, like "ubuntu", "debian", but they will be refreshed
-              at the time you attempt to use them.
-            - If you built an image in a previous build step, it will be stored in
-              the host's Docker daemon's cache and is available to use as the name
-              for a later build step.
+              at the time you attempt to use them. If you built an image in a previous
+              build step, it will be stored in the host's Docker daemon's cache and
+              is available to use as the name for a later build step.
             required: false
           args:
             description:
             - A list of arguments that will be presented to the step when it is started.
-            - If the image used to run the step's container has an entrypoint, the
+              If the image used to run the step's container has an entrypoint, the
               args are used as arguments to that entrypoint. If the image does not
               define an entrypoint, the first element in args is used as the entrypoint,
               and the remainder will be used as arguments.
@@ -180,8 +176,7 @@ options:
           env:
             description:
             - A list of environment variable definitions to be used when running a
-              step.
-            - The elements are of the form "KEY=VALUE" for the environment variable
+              step. The elements are of the form "KEY=VALUE" for the environment variable
               "KEY" being given the value "VALUE".
             required: false
           id:
@@ -192,19 +187,18 @@ options:
           entrypoint:
             description:
             - Entrypoint to be used instead of the build step image's default entrypoint.
-            - If unset, the image's default entrypoint is used .
+            - If unset, the image's default entrypoint is used.
             required: false
           dir:
             description:
-            - Working directory to use when running this step's container.
-            - If this value is a relative path, it is relative to the build's working
-              directory. If this value is absolute, it may be outside the build's
-              working directory, in which case the contents of the path may not be
-              persisted across build step executions, unless a `volume` for that path
-              is specified.
-            - If the build specifies a `RepoSource` with `dir` and a step with a `dir`,
-              which specifies an absolute path, the `RepoSource` `dir` is ignored
-              for the step's execution.
+            - Working directory to use when running this step's container. If this
+              value is a relative path, it is relative to the build's working directory.
+              If this value is absolute, it may be outside the build's working directory,
+              in which case the contents of the path may not be persisted across build
+              step executions, unless a `volume` for that path is specified. If the
+              build specifies a `RepoSource` with `dir` and a step with a `dir`, which
+              specifies an absolute path, the `RepoSource` `dir` is ignored for the
+              step's execution.
             required: false
           secret_env:
             description:
@@ -224,34 +218,31 @@ options:
             required: false
           volumes:
             description:
-            - List of volumes to mount into the build step.
-            - Each volume is created as an empty volume prior to execution of the
-              build step. Upon completion of the build, volumes and their contents
-              are discarded.
-            - Using a named volume in only one step is not valid as it is indicative
-              of a build request with an incorrect configuration.
+            - List of volumes to mount into the build step. Each volume is created
+              as an empty volume prior to execution of the build step. Upon completion
+              of the build, volumes and their contents are discarded. Using a named
+              volume in only one step is not valid as it is indicative of a build
+              request with an incorrect configuration.
             required: false
             suboptions:
               name:
                 description:
-                - Name of the volume to mount.
-                - Volume names must be unique per build step and must be valid names
-                  for Docker volumes. Each named volume must be used by at least two
-                  build steps.
+                - Name of the volume to mount. Volume names must be unique per build
+                  step and must be valid names for Docker volumes. Each named volume
+                  must be used by at least two build steps.
                 required: false
               path:
                 description:
-                - Path at which to mount the volume.
-                - Paths must be absolute and cannot conflict with other volume paths
-                  on the same build step or with certain reserved volume paths.
+                - Path at which to mount the volume. Paths must be absolute and cannot
+                  conflict with other volume paths on the same build step or with
+                  certain reserved volume paths.
                 required: false
           wait_for:
             description:
-            - The ID(s) of the step(s) that this build step depends on.
-            - This build step will not start until all the build steps in `wait_for`
-              have completed successfully. If `wait_for` is empty, this build step
-              will start when all previous build steps in the `Build.Steps` list have
-              completed successfully.
+            - The ID(s) of the step(s) that this build step depends on. This build
+              step will not start until all the build steps in `wait_for` have completed
+              successfully. If `wait_for` is empty, this build step will start when
+              all previous build steps in the `Build.Steps` list have completed successfully.
             required: false
 extends_documentation_fragment: gcp
 notes:
@@ -321,30 +312,29 @@ filename:
 ignoredFiles:
   description:
   - ignoredFiles and includedFiles are file glob matches using http://godoc/pkg/path/filepath#Match
-    extended with support for `**`.
-  - If ignoredFiles and changed files are both empty, then they are not used to determine
-    whether or not to trigger a build.
-  - If ignoredFiles is not empty, then we ignore any files that match any of the ignored_file
-    globs. If the change has no files that are outside of the ignoredFiles globs,
-    then we do not trigger a build.
+    extended with support for `**`. If ignoredFiles and changed files are both empty,
+    then they are not used to determine whether or not to trigger a build. If ignoredFiles
+    is not empty, then we ignore any files that match any of the ignored_file globs.
+    If the change has no files that are outside of the ignoredFiles globs, then we
+    do not trigger a build.
   returned: success
   type: list
 includedFiles:
   description:
   - ignoredFiles and includedFiles are file glob matches using http://godoc/pkg/path/filepath#Match
-    extended with support for `**`.
-  - If any of the files altered in the commit pass the ignoredFiles filter and includedFiles
-    is empty, then as far as this filter is concerned, we should trigger the build.
-  - If any of the files altered in the commit pass the ignoredFiles filter and includedFiles
-    is not empty, then we make sure that at least one of those files matches a includedFiles
-    glob. If not, then we do not trigger a build.
+    extended with support for `**`. If any of the files altered in the commit pass
+    the ignoredFiles filter and includedFiles is empty, then as far as this filter
+    is concerned, we should trigger the build. If any of the files altered in the
+    commit pass the ignoredFiles filter and includedFiles is not empty, then we make
+    sure that at least one of those files matches a includedFiles glob. If not, then
+    we do not trigger a build.
   returned: success
   type: list
 triggerTemplate:
   description:
-  - Template describing the types of source changes to trigger a build.
-  - Branch and tag names in trigger templates are interpreted as regular expressions.
-    Any branch or tag change that matches that regular expression will trigger a build.
+  - Template describing the types of source changes to trigger a build. Branch and
+    tag names in trigger templates are interpreted as regular expressions. Any branch
+    or tag change that matches that regular expression will trigger a build.
   returned: success
   type: complex
   contains:
@@ -361,9 +351,9 @@ triggerTemplate:
       type: str
     dir:
       description:
-      - Directory, relative to the source root, in which to run the build.
-      - This must be a relative path. If a step's dir is specified and is an absolute
-        path, this value is ignored for that step's execution.
+      - Directory, relative to the source root, in which to run the build. This must
+        be a relative path. If a step's dir is specified and is an absolute path,
+        this value is ignored for that step's execution.
       returned: success
       type: str
     branchName:
@@ -414,23 +404,22 @@ build:
         name:
           description:
           - The name of the container image that will run this particular build step.
-          - If the image is available in the host's Docker daemon's cache, it will
+            If the image is available in the host's Docker daemon's cache, it will
             be run directly. If not, the host will attempt to pull the image first,
-            using the builder service account's credentials if necessary.
-          - The Docker daemon's cache will already have the latest versions of all
-            of the officially supported build steps (U(https://github.com/GoogleCloudPlatform/cloud-builders)).
+            using the builder service account's credentials if necessary. The Docker
+            daemon's cache will already have the latest versions of all of the officially
+            supported build steps (U(https://github.com/GoogleCloudPlatform/cloud-builders)).
           - The Docker daemon will also have cached many of the layers for some popular
             images, like "ubuntu", "debian", but they will be refreshed at the time
-            you attempt to use them.
-          - If you built an image in a previous build step, it will be stored in the
-            host's Docker daemon's cache and is available to use as the name for a
-            later build step.
+            you attempt to use them. If you built an image in a previous build step,
+            it will be stored in the host's Docker daemon's cache and is available
+            to use as the name for a later build step.
           returned: success
           type: str
         args:
           description:
           - A list of arguments that will be presented to the step when it is started.
-          - If the image used to run the step's container has an entrypoint, the args
+            If the image used to run the step's container has an entrypoint, the args
             are used as arguments to that entrypoint. If the image does not define
             an entrypoint, the first element in args is used as the entrypoint, and
             the remainder will be used as arguments.
@@ -439,7 +428,7 @@ build:
         env:
           description:
           - A list of environment variable definitions to be used when running a step.
-          - The elements are of the form "KEY=VALUE" for the environment variable
+            The elements are of the form "KEY=VALUE" for the environment variable
             "KEY" being given the value "VALUE".
           returned: success
           type: list
@@ -452,19 +441,19 @@ build:
         entrypoint:
           description:
           - Entrypoint to be used instead of the build step image's default entrypoint.
-          - If unset, the image's default entrypoint is used .
+          - If unset, the image's default entrypoint is used.
           returned: success
           type: str
         dir:
           description:
-          - Working directory to use when running this step's container.
-          - If this value is a relative path, it is relative to the build's working
-            directory. If this value is absolute, it may be outside the build's working
-            directory, in which case the contents of the path may not be persisted
-            across build step executions, unless a `volume` for that path is specified.
-          - If the build specifies a `RepoSource` with `dir` and a step with a `dir`,
-            which specifies an absolute path, the `RepoSource` `dir` is ignored for
-            the step's execution.
+          - Working directory to use when running this step's container. If this value
+            is a relative path, it is relative to the build's working directory. If
+            this value is absolute, it may be outside the build's working directory,
+            in which case the contents of the path may not be persisted across build
+            step executions, unless a `volume` for that path is specified. If the
+            build specifies a `RepoSource` with `dir` and a step with a `dir`, which
+            specifies an absolute path, the `RepoSource` `dir` is ignored for the
+            step's execution.
           returned: success
           type: str
         secretEnv:
@@ -488,36 +477,34 @@ build:
           type: str
         volumes:
           description:
-          - List of volumes to mount into the build step.
-          - Each volume is created as an empty volume prior to execution of the build
-            step. Upon completion of the build, volumes and their contents are discarded.
-          - Using a named volume in only one step is not valid as it is indicative
-            of a build request with an incorrect configuration.
+          - List of volumes to mount into the build step. Each volume is created as
+            an empty volume prior to execution of the build step. Upon completion
+            of the build, volumes and their contents are discarded. Using a named
+            volume in only one step is not valid as it is indicative of a build request
+            with an incorrect configuration.
           returned: success
           type: complex
           contains:
             name:
               description:
-              - Name of the volume to mount.
-              - Volume names must be unique per build step and must be valid names
-                for Docker volumes. Each named volume must be used by at least two
-                build steps.
+              - Name of the volume to mount. Volume names must be unique per build
+                step and must be valid names for Docker volumes. Each named volume
+                must be used by at least two build steps.
               returned: success
               type: str
             path:
               description:
-              - Path at which to mount the volume.
-              - Paths must be absolute and cannot conflict with other volume paths
-                on the same build step or with certain reserved volume paths.
+              - Path at which to mount the volume. Paths must be absolute and cannot
+                conflict with other volume paths on the same build step or with certain
+                reserved volume paths.
               returned: success
               type: str
         waitFor:
           description:
-          - The ID(s) of the step(s) that this build step depends on.
-          - This build step will not start until all the build steps in `wait_for`
-            have completed successfully. If `wait_for` is empty, this build step will
-            start when all previous build steps in the `Build.Steps` list have completed
-            successfully.
+          - The ID(s) of the step(s) that this build step depends on. This build step
+            will not start until all the build steps in `wait_for` have completed
+            successfully. If `wait_for` is empty, this build step will start when
+            all previous build steps in the `Build.Steps` list have completed successfully.
           returned: success
           type: list
 '''

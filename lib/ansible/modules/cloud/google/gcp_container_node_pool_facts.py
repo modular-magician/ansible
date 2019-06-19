@@ -102,15 +102,14 @@ resources:
           type: int
         oauthScopes:
           description:
-          - The set of Google API scopes to be made available on all of the node VMs
-            under the "default" service account.
-          - 'The following scopes are recommended, but not required, and by default
-            are not included: U(https://www.googleapis.com/auth/compute) is required
-            for mounting persistent storage on your nodes.'
+          - 'The set of Google API scopes to be made available on all of the node
+            VMs under the "default" service account. The following scopes are recommended,
+            but not required, and by default are not included: U(https://www.googleapis.com/auth/compute)
+            is required for mounting persistent storage on your nodes.'
           - U(https://www.googleapis.com/auth/devstorage.read_only) is required for
-            communicating with gcr.io (the Google Container Registry).
-          - If unspecified, no scopes are added, unless Cloud Logging or Cloud Monitoring
-            are enabled, in which case their required scopes will be added.
+            communicating with gcr.io (the Google Container Registry). If unspecified,
+            no scopes are added, unless Cloud Logging or Cloud Monitoring are enabled,
+            in which case their required scopes will be added.
           returned: success
           type: list
         serviceAccount:
@@ -121,17 +120,16 @@ resources:
           type: str
         metadata:
           description:
-          - The metadata key/value pairs assigned to instances in the cluster.
-          - 'Keys must conform to the regexp [a-zA-Z0-9-_]+ and be less than 128 bytes
-            in length. These are reflected as part of a URL in the metadata server.
-            Additionally, to avoid ambiguity, keys must not conflict with any other
-            metadata keys for the project or be one of the four reserved keys: "instance-template",
+          - 'The metadata key/value pairs assigned to instances in the cluster. Keys
+            must conform to the regexp [a-zA-Z0-9-_]+ and be less than 128 bytes in
+            length. These are reflected as part of a URL in the metadata server. Additionally,
+            to avoid ambiguity, keys must not conflict with any other metadata keys
+            for the project or be one of the four reserved keys: "instance-template",
             "kube-env", "startup-script", and "user-data" Values are free-form strings,
             and only have meaning as interpreted by the image running in the instance.
             The only restriction placed on them is that each value''s size must be
-            less than or equal to 32 KB.'
-          - The total size of all keys and values must be less than 512 KB.
-          - 'An object containing a list of "key": value pairs.'
+            less than or equal to 32 KB. The total size of all keys and values must
+            be less than 512 KB. An object containing a list of "key": value pairs.'
           - 'Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.'
           returned: success
           type: dict
@@ -155,9 +153,9 @@ resources:
           type: dict
         localSsdCount:
           description:
-          - The number of local SSD disks to be attached to the node.
-          - 'The limit for this value is dependant upon the maximum number of disks
-            available on a machine per zone. See: U(https://cloud.google.com/compute/docs/disks/local-ssd#local_ssd_limits)
+          - 'The number of local SSD disks to be attached to the node. The limit for
+            this value is dependant upon the maximum number of disks available on
+            a machine per zone. See: U(https://cloud.google.com/compute/docs/disks/local-ssd#local_ssd_limits)
             for more information.'
           returned: success
           type: int
@@ -194,13 +192,13 @@ resources:
         diskType:
           description:
           - Type of the disk attached to each node (e.g. 'pd-standard' or 'pd-ssd')
-            If unspecified, the default disk type is 'pd-standard' .
+            If unspecified, the default disk type is 'pd-standard'.
           returned: success
           type: str
         minCpuPlatform:
           description:
           - Minimum CPU platform to be used by this instance. The instance may be
-            scheduled on the specified or newer CPU platform .
+            scheduled on the specified or newer CPU platform.
           returned: success
           type: str
         taints:

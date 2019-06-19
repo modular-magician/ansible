@@ -41,10 +41,7 @@ requirements:
 - google-auth >= 1.3.0
 options:
   filters:
-    description:
-    - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
-    - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+    description: []
 extends_documentation_fragment: gcp
 '''
 
@@ -110,14 +107,13 @@ resources:
     prefixLength:
       description:
       - The prefix length of the IP range. If not present, it means the address field
-        is a single IP address.
-      - This field is not applicable to addresses with addressType=EXTERNAL.
+        is a single IP address. This field is not applicable to addresses with addressType=EXTERNAL.
       returned: success
       type: int
     addressType:
       description:
-      - The type of the address to reserve, default is EXTERNAL.
-      - "* EXTERNAL indicates public/external single IP address."
+      - The type of the address to reserve, default is EXTERNAL. * EXTERNAL indicates
+        public/external single IP address.
       - "* INTERNAL indicates internal IP ranges belonging to some network."
       returned: success
       type: str
@@ -131,8 +127,8 @@ resources:
       description:
       - The URL of the network in which to reserve the IP range. The IP range must
         be in RFC1918 space. The network cannot be deleted if there are any reserved
-        IP ranges referring to it.
-      - This should only be set when using an Internal address.
+        IP ranges referring to it. This should only be set when using an Internal
+        address.
       returned: success
       type: dict
 '''
