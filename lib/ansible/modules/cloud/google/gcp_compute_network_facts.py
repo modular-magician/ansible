@@ -44,7 +44,7 @@ options:
     description:
     - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
     - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+      and filter2).
 extends_documentation_fragment: gcp
 '''
 
@@ -86,10 +86,10 @@ resources:
       description:
       - If this field is specified, a deprecated legacy network is created.
       - You will no longer be able to create a legacy network on Feb 1, 2020.
-      - See the [legacy network docs](U(https://cloud.google.com/vpc/docs/legacy))
+      - See the L(legacy network docs,U(https://cloud.google.com/vpc/docs/legacy))
         for more details.
       - The range of internal addresses that are legal on this legacy network.
-      - 'This range is a CIDR specification, for example: `192.168.0.0/16`.'
+      - 'This range is a CIDR specification, for example: 192.168.0.0/16.'
       - The resource must be recreated to modify this field.
       returned: success
       type: str
@@ -97,7 +97,7 @@ resources:
       description:
       - Name of the resource. Provided by the client when the resource is created.
         The name must be 1-63 characters long, and comply with RFC1035. Specifically,
-        the name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
+        the name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?
         which means the first character must be a lowercase letter, and all following
         characters must be a dash, lowercase letter, or digit, except the last character,
         which cannot be a dash.
@@ -110,11 +110,11 @@ resources:
       type: list
     autoCreateSubnetworks:
       description:
-      - When set to `true`, the network is created in "auto subnet mode" and it will
-        create a subnet for each region automatically across the `10.128.0.0/9` address
+      - When set to true, the network is created in "auto subnet mode" and it will
+        create a subnet for each region automatically across the 10.128.0.0/9 address
         range.
-      - When set to `false`, the network is created in "custom subnet mode" so the
-        user can explicitly connect subnetwork resources.
+      - When set to false, the network is created in "custom subnet mode" so the user
+        can explicitly connect subnetwork resources.
       returned: success
       type: bool
     creationTimestamp:
@@ -131,9 +131,9 @@ resources:
       contains:
         routingMode:
           description:
-          - The network-wide routing mode to use. If set to `REGIONAL`, this network's
+          - The network-wide routing mode to use. If set to REGIONAL, this network's
             cloud routers will only advertise routes with subnetworks of this network
-            in the same region as the router. If set to `GLOBAL`, this network's cloud
+            in the same region as the router. If set to GLOBAL, this network's cloud
             routers will advertise routes with all subnetworks of this network, across
             regions.
           returned: success

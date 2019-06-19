@@ -209,7 +209,7 @@ options:
         version_added: 2.8
   connection_draining:
     description:
-    - Settings for connection draining .
+    - Settings for connection draining.
     required: false
     suboptions:
       draining_timeout_sec:
@@ -248,18 +248,18 @@ options:
         type: bool
       oauth2_client_id:
         description:
-        - OAuth2 Client ID for IAP .
+        - OAuth2 Client ID for IAP.
         required: true
       oauth2_client_secret:
         description:
-        - OAuth2 Client Secret for IAP .
+        - OAuth2 Client Secret for IAP.
         required: true
   load_balancing_scheme:
     description:
     - Indicates whether the backend service will be used with internal or external
       load balancing. A backend service created for one type of load balancing cannot
-      be used with the other. Must be `EXTERNAL` or `INTERNAL_SELF_MANAGED` for a
-      global backend service. Defaults to `EXTERNAL`.
+      be used with the other. Must be EXTERNAL or INTERNAL_SELF_MANAGED for a global
+      backend service. Defaults to EXTERNAL.
     - 'Some valid choices include: "EXTERNAL", "INTERNAL_SELF_MANAGED"'
     required: false
     default: EXTERNAL
@@ -268,7 +268,7 @@ options:
     description:
     - Name of the resource. Provided by the client when the resource is created. The
       name must be 1-63 characters long, and comply with RFC1035. Specifically, the
-      name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
+      name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?
       which means the first character must be a lowercase letter, and all following
       characters must be a dash, lowercase letter, or digit, except the last character,
       which cannot be a dash.
@@ -517,7 +517,7 @@ cdnPolicy:
       type: int
 connectionDraining:
   description:
-  - Settings for connection draining .
+  - Settings for connection draining.
   returned: success
   type: complex
   contains:
@@ -575,32 +575,32 @@ iap:
       type: bool
     oauth2ClientId:
       description:
-      - OAuth2 Client ID for IAP .
+      - OAuth2 Client ID for IAP.
       returned: success
       type: str
     oauth2ClientSecret:
       description:
-      - OAuth2 Client Secret for IAP .
+      - OAuth2 Client Secret for IAP.
       returned: success
       type: str
     oauth2ClientSecretSha256:
       description:
-      - OAuth2 Client Secret SHA-256 for IAP .
+      - OAuth2 Client Secret SHA-256 for IAP.
       returned: success
       type: str
 loadBalancingScheme:
   description:
   - Indicates whether the backend service will be used with internal or external load
     balancing. A backend service created for one type of load balancing cannot be
-    used with the other. Must be `EXTERNAL` or `INTERNAL_SELF_MANAGED` for a global
-    backend service. Defaults to `EXTERNAL`.
+    used with the other. Must be EXTERNAL or INTERNAL_SELF_MANAGED for a global backend
+    service. Defaults to EXTERNAL.
   returned: success
   type: str
 name:
   description:
   - Name of the resource. Provided by the client when the resource is created. The
     name must be 1-63 characters long, and comply with RFC1035. Specifically, the
-    name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
+    name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?
     which means the first character must be a lowercase letter, and all following
     characters must be a dash, lowercase letter, or digit, except the last character,
     which cannot be a dash.

@@ -209,7 +209,7 @@ resources:
         diskType:
           description:
           - Type of the disk attached to each node (e.g. 'pd-standard' or 'pd-ssd')
-            If unspecified, the default disk type is 'pd-standard' .
+            If unspecified, the default disk type is 'pd-standard'.
           returned: success
           type: str
         minCpuPlatform:
@@ -221,8 +221,7 @@ resources:
         taints:
           description:
           - List of kubernetes taints to be applied to each node.
-          - 'For more information, including usage and the valid values, see: U(https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)
-            .'
+          - 'For more information, including usage and the valid values, see: U(https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/).'
           returned: success
           type: complex
           contains:

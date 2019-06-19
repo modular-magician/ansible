@@ -44,7 +44,7 @@ options:
     description:
     - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
     - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+      and filter2).
   region:
     description:
     - Region where the router resides.
@@ -84,7 +84,7 @@ resources:
       description:
       - Name of the resource. The name must be 1-63 characters long, and comply with
         RFC1035. Specifically, the name must be 1-63 characters long and match the
-        regular expression `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character
+        regular expression [a-z]([-a-z0-9]*[a-z0-9])? which means the first character
         must be a lowercase letter, and all following characters must be a dash, lowercase
         letter, or digit, except the last character, which cannot be a dash.
       returned: success
@@ -115,7 +115,7 @@ resources:
         advertiseMode:
           description:
           - User-specified flag to indicate which mode to use for advertisement.
-          - 'Valid values of this enum field are: DEFAULT, CUSTOM .'
+          - 'Valid values of this enum field are: DEFAULT, CUSTOM.'
           returned: success
           type: str
         advertisedGroups:
@@ -125,7 +125,7 @@ resources:
             to all peers of the router. These groups will be advertised in addition
             to any specified prefixes. Leave this field blank to advertise no custom
             groups.
-          - 'This enum field has the one valid value: ALL_SUBNETS .'
+          - 'This enum field has the one valid value: ALL_SUBNETS.'
           returned: success
           type: list
         advertisedIpRanges:

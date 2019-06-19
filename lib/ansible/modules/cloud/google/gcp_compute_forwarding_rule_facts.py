@@ -44,7 +44,7 @@ options:
     description:
     - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
     - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+      and filter2).
   region:
     description:
     - A reference to the region where the regional forwarding rule resides.
@@ -107,7 +107,7 @@ resources:
         to an existing Address resource. The following examples are all valid: * 100.1.2.3
         * U(https://www.googleapis.com/compute/v1/projects/project/regions/region/addresses/address)
         * projects/project/regions/region/addresses/address * regions/region/addresses/address
-        * global/addresses/address * address .'
+        * global/addresses/address * address.'
       returned: success
       type: str
     IPProtocol:
@@ -134,14 +134,14 @@ resources:
         the following values: INTERNAL, EXTERNAL The value of INTERNAL means that
         this will be used for Internal Network Load Balancing (TCP, UDP). The value
         of EXTERNAL means that this will be used for External Load Balancing (HTTP(S)
-        LB, External TCP/UDP LB, SSL Proxy) .'
+        LB, External TCP/UDP LB, SSL Proxy).'
       returned: success
       type: str
     name:
       description:
       - Name of the resource; provided by the client when the resource is created.
         The name must be 1-63 characters long, and comply with RFC1035. Specifically,
-        the name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
+        the name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?
         which means the first character must be a lowercase letter, and all following
         characters must be a dash, lowercase letter, or digit, except the last character,
         which cannot be a dash.
@@ -167,7 +167,7 @@ resources:
         * TargetHttpProxy: 80, 8080 * TargetHttpsProxy: 443 * TargetTcpProxy: 25,
         43, 110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetSslProxy:
         25, 43, 110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetVpnGateway:
-        500, 4500 .'
+        500, 4500.'
       returned: success
       type: str
     ports:
@@ -217,7 +217,7 @@ resources:
       - If specified, will be the first label of the fully qualified service name.
       - The label must be 1-63 characters long, and comply with RFC1035.
       - Specifically, the label must be 1-63 characters long and match the regular
-        expression `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must
+        expression [a-z]([-a-z0-9]*[a-z0-9])? which means the first character must
         be a lowercase letter, and all following characters must be a dash, lowercase
         letter, or digit, except the last character, which cannot be a dash.
       - This field is only used for INTERNAL load balancing.

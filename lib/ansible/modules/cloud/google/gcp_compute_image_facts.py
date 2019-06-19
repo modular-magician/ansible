@@ -44,7 +44,7 @@ options:
     description:
     - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
     - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+      and filter2).
 extends_documentation_fragment: gcp
 '''
 
@@ -170,8 +170,7 @@ resources:
       description:
       - Encrypts the image using a customer-supplied encryption key.
       - After you encrypt an image with a customer-supplied key, you must provide
-        the same key if you use the image later (e.g. to create a disk from the image)
-        .
+        the same key if you use the image later (e.g. to create a disk from the image).
       returned: success
       type: complex
       contains:
@@ -207,7 +206,7 @@ resources:
       description:
       - Name of the resource; provided by the client when the resource is created.
         The name must be 1-63 characters long, and comply with RFC1035. Specifically,
-        the name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
+        the name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?
         which means the first character must be a lowercase letter, and all following
         characters must be a dash, lowercase letter, or digit, except the last character,
         which cannot be a dash.
@@ -274,7 +273,7 @@ resources:
     sourceType:
       description:
       - The type of the image used to create this disk. The default and only value
-        is RAW .
+        is RAW.
       returned: success
       type: str
 '''

@@ -51,9 +51,9 @@ options:
     description:
     - Name of the resource. The name must be 1-63 characters long, and comply with
       RFC1035. Specifically, the name must be 1-63 characters long and match the regular
-      expression `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must
-      be a lowercase letter, and all following characters must be a dash, lowercase
-      letter, or digit, except the last character, which cannot be a dash.
+      expression [a-z]([-a-z0-9]*[a-z0-9])? which means the first character must be
+      a lowercase letter, and all following characters must be a dash, lowercase letter,
+      or digit, except the last character, which cannot be a dash.
     required: true
   description:
     description:
@@ -95,14 +95,14 @@ options:
   local_traffic_selector:
     description:
     - Local traffic selector to use when establishing the VPN tunnel with peer VPN
-      gateway. The value should be a CIDR formatted string, for example `192.168.0.0/16`.
+      gateway. The value should be a CIDR formatted string, for example 192.168.0.0/16.
       The ranges should be disjoint.
     - Only IPv4 is supported.
     required: false
   remote_traffic_selector:
     description:
     - Remote traffic selector to use when establishing the VPN tunnel with peer VPN
-      gateway. The value should be a CIDR formatted string, for example `192.168.0.0/16`.
+      gateway. The value should be a CIDR formatted string, for example 192.168.0.0/16.
       The ranges should be disjoint.
     - Only IPv4 is supported.
     required: false
@@ -180,7 +180,7 @@ name:
   description:
   - Name of the resource. The name must be 1-63 characters long, and comply with RFC1035.
     Specifically, the name must be 1-63 characters long and match the regular expression
-    `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase
+    [a-z]([-a-z0-9]*[a-z0-9])? which means the first character must be a lowercase
     letter, and all following characters must be a dash, lowercase letter, or digit,
     except the last character, which cannot be a dash.
   returned: success
@@ -225,15 +225,15 @@ ikeVersion:
 localTrafficSelector:
   description:
   - Local traffic selector to use when establishing the VPN tunnel with peer VPN gateway.
-    The value should be a CIDR formatted string, for example `192.168.0.0/16`. The
-    ranges should be disjoint.
+    The value should be a CIDR formatted string, for example 192.168.0.0/16. The ranges
+    should be disjoint.
   - Only IPv4 is supported.
   returned: success
   type: list
 remoteTrafficSelector:
   description:
   - Remote traffic selector to use when establishing the VPN tunnel with peer VPN
-    gateway. The value should be a CIDR formatted string, for example `192.168.0.0/16`.
+    gateway. The value should be a CIDR formatted string, for example 192.168.0.0/16.
     The ranges should be disjoint.
   - Only IPv4 is supported.
   returned: success

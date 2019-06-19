@@ -34,8 +34,7 @@ description:
 - Represents a GlobalForwardingRule resource. Global forwarding rules are used to
   forward traffic to the correct load balancer for HTTP load balancing. Global forwarding
   rules can only be used for HTTP load balancing.
-- For more information, see U(https://cloud.google.com/compute/docs/load-balancing/http/)
-  .
+- For more information, see U(https://cloud.google.com/compute/docs/load-balancing/http/).
 short_description: Creates a GCP GlobalForwardingRule
 version_added: 2.6
 author: Google Inc. (@googlecloudplatform)
@@ -76,7 +75,7 @@ options:
       to an existing Address resource. The following examples are all valid: * 100.1.2.3
       * U(https://www.googleapis.com/compute/v1/projects/project/regions/region/addresses/address)
       * projects/project/regions/region/addresses/address * regions/region/addresses/address
-      * global/addresses/address * address .'
+      * global/addresses/address * address.'
     required: false
   ip_protocol:
     description:
@@ -105,7 +104,7 @@ options:
     description:
     - Name of the resource; provided by the client when the resource is created. The
       name must be 1-63 characters long, and comply with RFC1035. Specifically, the
-      name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
+      name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?
       which means the first character must be a lowercase letter, and all following
       characters must be a dash, lowercase letter, or digit, except the last character,
       which cannot be a dash.
@@ -134,7 +133,7 @@ options:
       TargetHttpProxy: 80, 8080 * TargetHttpsProxy: 443 * TargetTcpProxy: 25, 43,
       110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetSslProxy: 25,
       43, 110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetVpnGateway:
-      500, 4500 .'
+      500, 4500.'
     required: false
   target:
     description:
@@ -261,7 +260,7 @@ IPAddress:
     to an existing Address resource. The following examples are all valid: * 100.1.2.3
     * U(https://www.googleapis.com/compute/v1/projects/project/regions/region/addresses/address)
     * projects/project/regions/region/addresses/address * regions/region/addresses/address
-    * global/addresses/address * address .'
+    * global/addresses/address * address.'
   returned: success
   type: str
 IPProtocol:
@@ -290,7 +289,7 @@ name:
   description:
   - Name of the resource; provided by the client when the resource is created. The
     name must be 1-63 characters long, and comply with RFC1035. Specifically, the
-    name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
+    name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?
     which means the first character must be a lowercase letter, and all following
     characters must be a dash, lowercase letter, or digit, except the last character,
     which cannot be a dash.
@@ -315,7 +314,7 @@ portRange:
   - 'Some types of forwarding target have constraints on the acceptable ports: * TargetHttpProxy:
     80, 8080 * TargetHttpsProxy: 443 * TargetTcpProxy: 25, 43, 110, 143, 195, 443,
     465, 587, 700, 993, 995, 1883, 5222 * TargetSslProxy: 25, 43, 110, 143, 195, 443,
-    465, 587, 700, 993, 995, 1883, 5222 * TargetVpnGateway: 500, 4500 .'
+    465, 587, 700, 993, 995, 1883, 5222 * TargetVpnGateway: 500, 4500.'
   returned: success
   type: str
 target:

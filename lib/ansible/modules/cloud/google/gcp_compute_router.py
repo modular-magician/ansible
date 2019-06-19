@@ -51,9 +51,9 @@ options:
     description:
     - Name of the resource. The name must be 1-63 characters long, and comply with
       RFC1035. Specifically, the name must be 1-63 characters long and match the regular
-      expression `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must
-      be a lowercase letter, and all following characters must be a dash, lowercase
-      letter, or digit, except the last character, which cannot be a dash.
+      expression [a-z]([-a-z0-9]*[a-z0-9])? which means the first character must be
+      a lowercase letter, and all following characters must be a dash, lowercase letter,
+      or digit, except the last character, which cannot be a dash.
     required: true
   description:
     description:
@@ -82,7 +82,7 @@ options:
       advertise_mode:
         description:
         - User-specified flag to indicate which mode to use for advertisement.
-        - 'Valid values of this enum field are: DEFAULT, CUSTOM .'
+        - 'Valid values of this enum field are: DEFAULT, CUSTOM.'
         - 'Some valid choices include: "DEFAULT", "CUSTOM"'
         required: false
         default: DEFAULT
@@ -93,7 +93,7 @@ options:
           to all peers of the router. These groups will be advertised in addition
           to any specified prefixes. Leave this field blank to advertise no custom
           groups.
-        - 'This enum field has the one valid value: ALL_SUBNETS .'
+        - 'This enum field has the one valid value: ALL_SUBNETS.'
         required: false
       advertised_ip_ranges:
         description:
@@ -166,7 +166,7 @@ name:
   description:
   - Name of the resource. The name must be 1-63 characters long, and comply with RFC1035.
     Specifically, the name must be 1-63 characters long and match the regular expression
-    `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase
+    [a-z]([-a-z0-9]*[a-z0-9])? which means the first character must be a lowercase
     letter, and all following characters must be a dash, lowercase letter, or digit,
     except the last character, which cannot be a dash.
   returned: success
@@ -197,7 +197,7 @@ bgp:
     advertiseMode:
       description:
       - User-specified flag to indicate which mode to use for advertisement.
-      - 'Valid values of this enum field are: DEFAULT, CUSTOM .'
+      - 'Valid values of this enum field are: DEFAULT, CUSTOM.'
       returned: success
       type: str
     advertisedGroups:
@@ -206,7 +206,7 @@ bgp:
       - This field can only be populated if advertiseMode is CUSTOM and is advertised
         to all peers of the router. These groups will be advertised in addition to
         any specified prefixes. Leave this field blank to advertise no custom groups.
-      - 'This enum field has the one valid value: ALL_SUBNETS .'
+      - 'This enum field has the one valid value: ALL_SUBNETS.'
       returned: success
       type: list
     advertisedIpRanges:

@@ -42,7 +42,7 @@ requirements:
 options:
   region:
     description:
-    - Region where the scheduler job resides .
+    - Region where the scheduler job resides.
     required: true
 extends_documentation_fragment: gcp
 '''
@@ -89,7 +89,7 @@ resources:
       description:
       - By default, if a job does not complete successfully, meaning that an acknowledgement
         is not received from the handler, then it will be retried with exponential
-        backoff according to the settings .
+        backoff according to the settings.
       returned: success
       type: complex
       contains:
@@ -134,7 +134,7 @@ resources:
     pubsubTarget:
       description:
       - Pub/Sub target If the job providers a Pub/Sub target the cron will publish
-        a message to the provided topic .
+        a message to the provided topic.
       returned: success
       type: complex
       contains:
@@ -161,7 +161,7 @@ resources:
       description:
       - App Engine HTTP target.
       - If the job providers a App Engine HTTP target the cron will send a request
-        to the service instance .
+        to the service instance.
       returned: success
       type: complex
       contains:
@@ -220,7 +220,7 @@ resources:
       description:
       - HTTP target.
       - If the job providers a http_target the cron will send a request to the targeted
-        url .
+        url.
       returned: success
       type: complex
       contains:
@@ -249,7 +249,7 @@ resources:
           type: dict
     region:
       description:
-      - Region where the scheduler job resides .
+      - Region where the scheduler job resides.
       returned: success
       type: str
 '''

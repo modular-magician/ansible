@@ -111,8 +111,7 @@ resources:
       description:
       - Redis configuration parameters, according to U(http://redis.io/topics/config).
       - 'Please check Memorystore documentation for the list of supported parameters:
-        U(https://cloud.google.com/memorystore/docs/redis/reference/rest/v1/projects.locations.instances#Instance.FIELDS.redis_configs)
-        .'
+        U(https://cloud.google.com/memorystore/docs/redis/reference/rest/v1/projects.locations.instances#Instance.FIELDS.redis_configs).'
       returned: success
       type: dict
     locationId:
@@ -125,7 +124,7 @@ resources:
       type: str
     name:
       description:
-      - The ID of the instance or a fully qualified identifier for the instance. .
+      - The ID of the instance or a fully qualified identifier for the instance.
       returned: success
       type: str
     memorySizeGb:
@@ -156,7 +155,7 @@ resources:
     tier:
       description:
       - 'The service tier of the instance. Must be one of these values: - BASIC: standalone
-        instance - STANDARD_HA: highly available primary/replica instances .'
+        instance - STANDARD_HA: highly available primary/replica instances.'
       returned: success
       type: str
     region:

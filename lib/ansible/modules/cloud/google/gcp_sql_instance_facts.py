@@ -60,9 +60,9 @@ resources:
   contains:
     backendType:
       description:
-      - "* FIRST_GEN: First Generation instance. MySQL only."
-      - "* SECOND_GEN: Second Generation instance or PostgreSQL instance."
-      - "* EXTERNAL: A database server that is not managed by Google."
+      - 'FIRST_GEN: First Generation instance. MySQL only., SECOND_GEN: Second Generation
+        instance or PostgreSQL instance., EXTERNAL: A database server that is not
+        managed by Google.'
       returned: success
       type: str
     connectionName:
@@ -195,7 +195,7 @@ resources:
               type: str
             clientCertificate:
               description:
-              - PEM representation of the slave's x509 certificate .
+              - PEM representation of the slave's x509 certificate.
               returned: success
               type: str
             clientKey:
@@ -357,7 +357,7 @@ resources:
               type: bool
             startTime:
               description:
-              - Define the backup start time in UTC (HH:MM) .
+              - Define the backup start time in UTC (HH:MM).
               returned: success
               type: str
         settingsVersion:

@@ -97,7 +97,7 @@ options:
     description:
     - Encrypts the image using a customer-supplied encryption key.
     - After you encrypt an image with a customer-supplied key, you must provide the
-      same key if you use the image later (e.g. to create a disk from the image) .
+      same key if you use the image later (e.g. to create a disk from the image).
     required: false
     suboptions:
       raw_key:
@@ -118,7 +118,7 @@ options:
     description:
     - Name of the resource; provided by the client when the resource is created. The
       name must be 1-63 characters long, and comply with RFC1035. Specifically, the
-      name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
+      name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?
       which means the first character must be a lowercase letter, and all following
       characters must be a dash, lowercase letter, or digit, except the last character,
       which cannot be a dash.
@@ -176,7 +176,7 @@ options:
   source_type:
     description:
     - The type of the image used to create this disk. The default and only value is
-      RAW .
+      RAW.
     - 'Some valid choices include: "RAW"'
     required: false
 extends_documentation_fragment: gcp
@@ -309,7 +309,7 @@ imageEncryptionKey:
   description:
   - Encrypts the image using a customer-supplied encryption key.
   - After you encrypt an image with a customer-supplied key, you must provide the
-    same key if you use the image later (e.g. to create a disk from the image) .
+    same key if you use the image later (e.g. to create a disk from the image).
   returned: success
   type: complex
   contains:
@@ -345,7 +345,7 @@ name:
   description:
   - Name of the resource; provided by the client when the resource is created. The
     name must be 1-63 characters long, and comply with RFC1035. Specifically, the
-    name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
+    name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?
     which means the first character must be a lowercase letter, and all following
     characters must be a dash, lowercase letter, or digit, except the last character,
     which cannot be a dash.
@@ -412,7 +412,7 @@ sourceDiskId:
 sourceType:
   description:
   - The type of the image used to create this disk. The default and only value is
-    RAW .
+    RAW.
   returned: success
   type: str
 '''

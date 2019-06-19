@@ -73,7 +73,7 @@ options:
   ignored_files:
     description:
     - ignoredFiles and includedFiles are file glob matches using http://godoc/pkg/path/filepath#Match
-      extended with support for `**`.
+      extended with support for **.
     - If ignoredFiles and changed files are both empty, then they are not used to
       determine whether or not to trigger a build.
     - If ignoredFiles is not empty, then we ignore any files that match any of the
@@ -83,7 +83,7 @@ options:
   included_files:
     description:
     - ignoredFiles and includedFiles are file glob matches using http://godoc/pkg/path/filepath#Match
-      extended with support for `**`.
+      extended with support for **.
     - If any of the files altered in the commit pass the ignoredFiles filter and includedFiles
       is empty, then as far as this filter is concerned, we should trigger the build.
     - If any of the files altered in the commit pass the ignoredFiles filter and includedFiles
@@ -186,13 +186,13 @@ options:
             required: false
           id:
             description:
-            - Unique identifier for this build step, used in `wait_for` to reference
+            - Unique identifier for this build step, used in wait_for to reference
               this build step as a dependency.
             required: false
           entrypoint:
             description:
             - Entrypoint to be used instead of the build step image's default entrypoint.
-            - If unset, the image's default entrypoint is used .
+            - If unset, the image's default entrypoint is used.
             required: false
           dir:
             description:
@@ -200,17 +200,17 @@ options:
             - If this value is a relative path, it is relative to the build's working
               directory. If this value is absolute, it may be outside the build's
               working directory, in which case the contents of the path may not be
-              persisted across build step executions, unless a `volume` for that path
+              persisted across build step executions, unless a volume for that path
               is specified.
-            - If the build specifies a `RepoSource` with `dir` and a step with a `dir`,
-              which specifies an absolute path, the `RepoSource` `dir` is ignored
-              for the step's execution.
+            - If the build specifies a RepoSource with dir and a step with a dir,
+              which specifies an absolute path, the RepoSource dir is ignored for
+              the step's execution.
             required: false
           secret_env:
             description:
             - A list of environment variables which are encrypted using a Cloud Key
               Management Service crypto key. These values must be specified in the
-              build's `Secret`.
+              build's Secret.
             required: false
           timeout:
             description:
@@ -248,10 +248,10 @@ options:
           wait_for:
             description:
             - The ID(s) of the step(s) that this build step depends on.
-            - This build step will not start until all the build steps in `wait_for`
-              have completed successfully. If `wait_for` is empty, this build step
-              will start when all previous build steps in the `Build.Steps` list have
-              completed successfully.
+            - This build step will not start until all the build steps in wait_for
+              have completed successfully. If wait_for is empty, this build step will
+              start when all previous build steps in the Build.Steps list have completed
+              successfully.
             required: false
 extends_documentation_fragment: gcp
 notes:
@@ -321,7 +321,7 @@ filename:
 ignoredFiles:
   description:
   - ignoredFiles and includedFiles are file glob matches using http://godoc/pkg/path/filepath#Match
-    extended with support for `**`.
+    extended with support for **.
   - If ignoredFiles and changed files are both empty, then they are not used to determine
     whether or not to trigger a build.
   - If ignoredFiles is not empty, then we ignore any files that match any of the ignored_file
@@ -332,7 +332,7 @@ ignoredFiles:
 includedFiles:
   description:
   - ignoredFiles and includedFiles are file glob matches using http://godoc/pkg/path/filepath#Match
-    extended with support for `**`.
+    extended with support for **.
   - If any of the files altered in the commit pass the ignoredFiles filter and includedFiles
     is empty, then as far as this filter is concerned, we should trigger the build.
   - If any of the files altered in the commit pass the ignoredFiles filter and includedFiles
@@ -445,14 +445,14 @@ build:
           type: list
         id:
           description:
-          - Unique identifier for this build step, used in `wait_for` to reference
-            this build step as a dependency.
+          - Unique identifier for this build step, used in wait_for to reference this
+            build step as a dependency.
           returned: success
           type: str
         entrypoint:
           description:
           - Entrypoint to be used instead of the build step image's default entrypoint.
-          - If unset, the image's default entrypoint is used .
+          - If unset, the image's default entrypoint is used.
           returned: success
           type: str
         dir:
@@ -461,17 +461,17 @@ build:
           - If this value is a relative path, it is relative to the build's working
             directory. If this value is absolute, it may be outside the build's working
             directory, in which case the contents of the path may not be persisted
-            across build step executions, unless a `volume` for that path is specified.
-          - If the build specifies a `RepoSource` with `dir` and a step with a `dir`,
-            which specifies an absolute path, the `RepoSource` `dir` is ignored for
-            the step's execution.
+            across build step executions, unless a volume for that path is specified.
+          - If the build specifies a RepoSource with dir and a step with a dir, which
+            specifies an absolute path, the RepoSource dir is ignored for the step's
+            execution.
           returned: success
           type: str
         secretEnv:
           description:
           - A list of environment variables which are encrypted using a Cloud Key
             Management Service crypto key. These values must be specified in the build's
-            `Secret`.
+            Secret.
           returned: success
           type: list
         timeout:
@@ -514,10 +514,9 @@ build:
         waitFor:
           description:
           - The ID(s) of the step(s) that this build step depends on.
-          - This build step will not start until all the build steps in `wait_for`
-            have completed successfully. If `wait_for` is empty, this build step will
-            start when all previous build steps in the `Build.Steps` list have completed
-            successfully.
+          - This build step will not start until all the build steps in wait_for have
+            completed successfully. If wait_for is empty, this build step will start
+            when all previous build steps in the Build.Steps list have completed successfully.
           returned: success
           type: list
 '''
