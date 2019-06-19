@@ -63,7 +63,7 @@ options:
       regular expression `([a-z]([-a-z0-9]*[a-z0-9])?)?`.
     - No more than 256 labels can be associated with a given resource.
     - Clients should store labels in a representation such as JSON that does not depend
-      on specific characters being disallowed .
+      on specific characters being disallowed.
     required: false
   parent:
     description:
@@ -132,7 +132,7 @@ labels:
     regular expression `([a-z]([-a-z0-9]*[a-z0-9])?)?`.
   - No more than 256 labels can be associated with a given resource.
   - Clients should store labels in a representation such as JSON that does not depend
-    on specific characters being disallowed .
+    on specific characters being disallowed.
   returned: success
   type: dict
 parent:

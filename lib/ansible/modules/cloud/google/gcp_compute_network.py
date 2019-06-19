@@ -56,7 +56,7 @@ options:
     description:
     - If this field is specified, a deprecated legacy network is created.
     - You will no longer be able to create a legacy network on Feb 1, 2020.
-    - See the [legacy network docs](U(https://cloud.google.com/vpc/docs/legacy)) for
+    - See the L(legacy network docs,U(https://cloud.google.com/vpc/docs/legacy)) for
       more details.
     - The range of internal addresses that are legal on this legacy network.
     - 'This range is a CIDR specification, for example: `192.168.0.0/16`.'
@@ -135,7 +135,7 @@ ipv4_range:
   description:
   - If this field is specified, a deprecated legacy network is created.
   - You will no longer be able to create a legacy network on Feb 1, 2020.
-  - See the [legacy network docs](U(https://cloud.google.com/vpc/docs/legacy)) for
+  - See the L(legacy network docs,U(https://cloud.google.com/vpc/docs/legacy)) for
     more details.
   - The range of internal addresses that are legal on this legacy network.
   - 'This range is a CIDR specification, for example: `192.168.0.0/16`.'

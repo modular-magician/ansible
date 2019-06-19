@@ -44,7 +44,7 @@ options:
     description:
     - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
     - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+      and filter2).
   zone:
     description:
     - A reference to the zone where the disk resides.
@@ -134,8 +134,7 @@ resources:
       type: int
     users:
       description:
-      - 'Links to the users of the disk (attached instances) in form: project/zones/zone/instances/instance
-        .'
+      - 'Links to the users of the disk (attached instances) in form: project/zones/zone/instances/instance.'
       returned: success
       type: list
     physicalBlockSizeBytes:
@@ -165,8 +164,7 @@ resources:
         disk with a private image that you created, specify the image name in the
         following format: global/images/my-private-image You can also specify a private
         image by its image family, which returns the latest version of the image in
-        that family. Replace the image name with family/family-name: global/images/family/my-private-family
-        .'
+        that family. Replace the image name with family/family-name: global/images/family/my-private-family.'
       returned: success
       type: str
     zone:

@@ -31,7 +31,7 @@ DOCUMENTATION = '''
 ---
 module: gcp_iam_role
 description:
-- A role in the Identity and Access Management API .
+- A role in the Identity and Access Management API.
 short_description: Creates a GCP Role
 version_added: 2.8
 author: Google Inc. (@googlecloudplatform)

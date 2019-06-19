@@ -115,8 +115,7 @@ options:
       To create a disk with a private image that you created, specify the image name
       in the following format: global/images/my-private-image You can also specify
       a private image by its image family, which returns the latest version of the
-      image in that family. Replace the image name with family/family-name: global/images/family/my-private-family
-      .'
+      image in that family. Replace the image name with family/family-name: global/images/family/my-private-family.'
     required: false
   zone:
     description:
@@ -268,8 +267,7 @@ sizeGb:
   type: int
 users:
   description:
-  - 'Links to the users of the disk (attached instances) in form: project/zones/zone/instances/instance
-    .'
+  - 'Links to the users of the disk (attached instances) in form: project/zones/zone/instances/instance.'
   returned: success
   type: list
 physicalBlockSizeBytes:
@@ -298,8 +296,7 @@ sourceImage:
     To create a disk with a private image that you created, specify the image name
     in the following format: global/images/my-private-image You can also specify a
     private image by its image family, which returns the latest version of the image
-    in that family. Replace the image name with family/family-name: global/images/family/my-private-family
-    .'
+    in that family. Replace the image name with family/family-name: global/images/family/my-private-family.'
   returned: success
   type: str
 zone:

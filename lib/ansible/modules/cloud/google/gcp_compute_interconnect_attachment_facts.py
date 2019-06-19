@@ -44,7 +44,7 @@ options:
     description:
     - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
     - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+      and filter2).
   region:
     description:
     - Region where the regional interconnect attachment resides.
@@ -108,7 +108,7 @@ resources:
       description:
       - '[Output only for type PARTNER. Not present for DEDICATED]. The opaque identifier
         of an PARTNER attachment used to initiate provisioning with a selected partner.
-        Of the form "XXXXX/region/domain" .'
+        Of the form "XXXXX/region/domain".'
       returned: success
       type: str
     partnerAsn:

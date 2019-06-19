@@ -44,7 +44,7 @@ options:
     description:
     - A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).
     - Each additional filter in the list will act be added as an AND condition (filter1
-      and filter2) .
+      and filter2).
 extends_documentation_fragment: gcp
 '''
 
@@ -234,7 +234,7 @@ resources:
           type: int
     connectionDraining:
       description:
-      - Settings for connection draining .
+      - Settings for connection draining.
       returned: success
       type: complex
       contains:
@@ -292,17 +292,17 @@ resources:
           type: bool
         oauth2ClientId:
           description:
-          - OAuth2 Client ID for IAP .
+          - OAuth2 Client ID for IAP.
           returned: success
           type: str
         oauth2ClientSecret:
           description:
-          - OAuth2 Client Secret for IAP .
+          - OAuth2 Client Secret for IAP.
           returned: success
           type: str
         oauth2ClientSecretSha256:
           description:
-          - OAuth2 Client Secret SHA-256 for IAP .
+          - OAuth2 Client Secret SHA-256 for IAP.
           returned: success
           type: str
     loadBalancingScheme:

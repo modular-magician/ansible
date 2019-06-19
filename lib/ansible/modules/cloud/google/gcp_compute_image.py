@@ -97,7 +97,7 @@ options:
     description:
     - Encrypts the image using a customer-supplied encryption key.
     - After you encrypt an image with a customer-supplied key, you must provide the
-      same key if you use the image later (e.g. to create a disk from the image) .
+      same key if you use the image later (e.g. to create a disk from the image).
     required: false
     suboptions:
       raw_key:
@@ -176,7 +176,7 @@ options:
   source_type:
     description:
     - The type of the image used to create this disk. The default and only value is
-      RAW .
+      RAW.
     - 'Some valid choices include: "RAW"'
     required: false
 extends_documentation_fragment: gcp
@@ -309,7 +309,7 @@ imageEncryptionKey:
   description:
   - Encrypts the image using a customer-supplied encryption key.
   - After you encrypt an image with a customer-supplied key, you must provide the
-    same key if you use the image later (e.g. to create a disk from the image) .
+    same key if you use the image later (e.g. to create a disk from the image).
   returned: success
   type: complex
   contains:
@@ -412,7 +412,7 @@ sourceDiskId:
 sourceType:
   description:
   - The type of the image used to create this disk. The default and only value is
-    RAW .
+    RAW.
   returned: success
   type: str
 '''

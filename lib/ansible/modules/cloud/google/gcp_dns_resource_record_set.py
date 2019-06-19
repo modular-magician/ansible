@@ -35,7 +35,7 @@ description:
 - This record defines the information about the domain and where the domain / subdomains
   direct to.
 - The record will include the domain/subdomain name, a type (i.e. A, AAA, CAA, MX,
-  CNAME, NS, etc) .
+  CNAME, NS, etc).
 short_description: Creates a GCP ResourceRecordSet
 version_added: 2.6
 author: Google Inc. (@googlecloudplatform)
@@ -67,7 +67,7 @@ options:
     required: false
   target:
     description:
-    - As defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1) .
+    - As defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1).
     required: false
   managed_zone:
     description:
@@ -126,7 +126,7 @@ ttl:
   type: int
 target:
   description:
-  - As defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1) .
+  - As defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1).
   returned: success
   type: list
 managed_zone:

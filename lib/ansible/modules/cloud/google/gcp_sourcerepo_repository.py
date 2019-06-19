@@ -50,8 +50,7 @@ options:
   name:
     description:
     - Resource name of the repository, of the form projects/{{project}}/repos/{{repo}}.
-    - The repo name may contain slashes. eg, projects/myproject/repos/name/with/slash
-      .
+    - The repo name may contain slashes. eg, projects/myproject/repos/name/with/slash.
     required: true
 extends_documentation_fragment: gcp
 notes:
@@ -73,8 +72,7 @@ RETURN = '''
 name:
   description:
   - Resource name of the repository, of the form projects/{{project}}/repos/{{repo}}.
-  - The repo name may contain slashes. eg, projects/myproject/repos/name/with/slash
-    .
+  - The repo name may contain slashes. eg, projects/myproject/repos/name/with/slash.
   returned: success
   type: str
 url:

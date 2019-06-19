@@ -209,7 +209,7 @@ options:
         version_added: 2.8
   connection_draining:
     description:
-    - Settings for connection draining .
+    - Settings for connection draining.
     required: false
     suboptions:
       draining_timeout_sec:
@@ -248,11 +248,11 @@ options:
         type: bool
       oauth2_client_id:
         description:
-        - OAuth2 Client ID for IAP .
+        - OAuth2 Client ID for IAP.
         required: true
       oauth2_client_secret:
         description:
-        - OAuth2 Client Secret for IAP .
+        - OAuth2 Client Secret for IAP.
         required: true
   load_balancing_scheme:
     description:
@@ -517,7 +517,7 @@ cdnPolicy:
       type: int
 connectionDraining:
   description:
-  - Settings for connection draining .
+  - Settings for connection draining.
   returned: success
   type: complex
   contains:
@@ -575,17 +575,17 @@ iap:
       type: bool
     oauth2ClientId:
       description:
-      - OAuth2 Client ID for IAP .
+      - OAuth2 Client ID for IAP.
       returned: success
       type: str
     oauth2ClientSecret:
       description:
-      - OAuth2 Client Secret for IAP .
+      - OAuth2 Client Secret for IAP.
       returned: success
       type: str
     oauth2ClientSecretSha256:
       description:
-      - OAuth2 Client Secret SHA-256 for IAP .
+      - OAuth2 Client Secret SHA-256 for IAP.
       returned: success
       type: str
 loadBalancingScheme:

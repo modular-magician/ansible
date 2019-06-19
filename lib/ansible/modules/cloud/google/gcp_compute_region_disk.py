@@ -235,8 +235,7 @@ sizeGb:
   type: int
 users:
   description:
-  - 'Links to the users of the disk (attached instances) in form: project/zones/zone/instances/instance
-    .'
+  - 'Links to the users of the disk (attached instances) in form: project/zones/zone/instances/instance.'
   returned: success
   type: list
 physicalBlockSizeBytes:

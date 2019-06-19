@@ -192,7 +192,7 @@ options:
           entrypoint:
             description:
             - Entrypoint to be used instead of the build step image's default entrypoint.
-            - If unset, the image's default entrypoint is used .
+            - If unset, the image's default entrypoint is used.
             required: false
           dir:
             description:
@@ -452,7 +452,7 @@ build:
         entrypoint:
           description:
           - Entrypoint to be used instead of the build step image's default entrypoint.
-          - If unset, the image's default entrypoint is used .
+          - If unset, the image's default entrypoint is used.
           returned: success
           type: str
         dir:

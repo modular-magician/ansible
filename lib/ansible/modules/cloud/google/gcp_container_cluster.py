@@ -174,7 +174,7 @@ options:
       disk_type:
         description:
         - Type of the disk attached to each node (e.g. 'pd-standard' or 'pd-ssd')
-          If unspecified, the default disk type is 'pd-standard' .
+          If unspecified, the default disk type is 'pd-standard'.
         required: false
         version_added: 2.9
       min_cpu_platform:
@@ -186,8 +186,7 @@ options:
       taints:
         description:
         - List of kubernetes taints to be applied to each node.
-        - 'For more information, including usage and the valid values, see: U(https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)
-          .'
+        - 'For more information, including usage and the valid values, see: U(https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/).'
         required: false
         version_added: 2.9
         suboptions:
@@ -572,7 +571,7 @@ nodeConfig:
     diskType:
       description:
       - Type of the disk attached to each node (e.g. 'pd-standard' or 'pd-ssd') If
-        unspecified, the default disk type is 'pd-standard' .
+        unspecified, the default disk type is 'pd-standard'.
       returned: success
       type: str
     minCpuPlatform:
@@ -584,8 +583,7 @@ nodeConfig:
     taints:
       description:
       - List of kubernetes taints to be applied to each node.
-      - 'For more information, including usage and the valid values, see: U(https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)
-        .'
+      - 'For more information, including usage and the valid values, see: U(https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/).'
       returned: success
       type: complex
       contains:

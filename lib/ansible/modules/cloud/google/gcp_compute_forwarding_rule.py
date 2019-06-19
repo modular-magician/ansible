@@ -74,7 +74,7 @@ options:
       to an existing Address resource. The following examples are all valid: * 100.1.2.3
       * U(https://www.googleapis.com/compute/v1/projects/project/regions/region/addresses/address)
       * projects/project/regions/region/addresses/address * regions/region/addresses/address
-      * global/addresses/address * address .'
+      * global/addresses/address * address.'
     required: false
   ip_protocol:
     description:
@@ -104,7 +104,7 @@ options:
       following values: INTERNAL, EXTERNAL The value of INTERNAL means that this will
       be used for Internal Network Load Balancing (TCP, UDP). The value of EXTERNAL
       means that this will be used for External Load Balancing (HTTP(S) LB, External
-      TCP/UDP LB, SSL Proxy) .'
+      TCP/UDP LB, SSL Proxy).'
     - 'Some valid choices include: "INTERNAL", "EXTERNAL"'
     required: false
   name:
@@ -140,7 +140,7 @@ options:
       TargetHttpProxy: 80, 8080 * TargetHttpsProxy: 443 * TargetTcpProxy: 25, 43,
       110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetSslProxy: 25,
       43, 110, 143, 195, 443, 465, 587, 700, 993, 995, 1883, 5222 * TargetVpnGateway:
-      500, 4500 .'
+      500, 4500.'
     required: false
   ports:
     description:
@@ -287,7 +287,7 @@ IPAddress:
     to an existing Address resource. The following examples are all valid: * 100.1.2.3
     * U(https://www.googleapis.com/compute/v1/projects/project/regions/region/addresses/address)
     * projects/project/regions/region/addresses/address * regions/region/addresses/address
-    * global/addresses/address * address .'
+    * global/addresses/address * address.'
   returned: success
   type: str
 IPProtocol:
@@ -314,7 +314,7 @@ loadBalancingScheme:
     following values: INTERNAL, EXTERNAL The value of INTERNAL means that this will
     be used for Internal Network Load Balancing (TCP, UDP). The value of EXTERNAL
     means that this will be used for External Load Balancing (HTTP(S) LB, External
-    TCP/UDP LB, SSL Proxy) .'
+    TCP/UDP LB, SSL Proxy).'
   returned: success
   type: str
 name:
@@ -346,7 +346,7 @@ portRange:
   - 'Some types of forwarding target have constraints on the acceptable ports: * TargetHttpProxy:
     80, 8080 * TargetHttpsProxy: 443 * TargetTcpProxy: 25, 43, 110, 143, 195, 443,
     465, 587, 700, 993, 995, 1883, 5222 * TargetSslProxy: 25, 43, 110, 143, 195, 443,
-    465, 587, 700, 993, 995, 1883, 5222 * TargetVpnGateway: 500, 4500 .'
+    465, 587, 700, 993, 995, 1883, 5222 * TargetVpnGateway: 500, 4500.'
   returned: success
   type: str
 ports:

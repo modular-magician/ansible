@@ -51,9 +51,9 @@ options:
     default: present
   backend_type:
     description:
-    - "* FIRST_GEN: First Generation instance. MySQL only."
-    - "* SECOND_GEN: Second Generation instance or PostgreSQL instance."
-    - "* EXTERNAL: A database server that is not managed by Google."
+    - 'FIRST_GEN: First Generation instance. MySQL only., SECOND_GEN: Second Generation
+      instance or PostgreSQL instance., EXTERNAL: A database server that is not managed
+      by Google.'
     - 'Some valid choices include: "FIRST_GEN", "SECOND_GEN", "EXTERNAL"'
     required: false
   connection_name:
@@ -141,7 +141,7 @@ options:
             required: false
           client_certificate:
             description:
-            - PEM representation of the slave's x509 certificate .
+            - PEM representation of the slave's x509 certificate.
             required: false
           client_key:
             description:
@@ -282,7 +282,7 @@ options:
             type: bool
           start_time:
             description:
-            - Define the backup start time in UTC (HH:MM) .
+            - Define the backup start time in UTC (HH:MM).
             required: false
 extends_documentation_fragment: gcp
 '''
@@ -307,9 +307,9 @@ EXAMPLES = '''
 RETURN = '''
 backendType:
   description:
-  - "* FIRST_GEN: First Generation instance. MySQL only."
-  - "* SECOND_GEN: Second Generation instance or PostgreSQL instance."
-  - "* EXTERNAL: A database server that is not managed by Google."
+  - 'FIRST_GEN: First Generation instance. MySQL only., SECOND_GEN: Second Generation
+    instance or PostgreSQL instance., EXTERNAL: A database server that is not managed
+    by Google.'
   returned: success
   type: str
 connectionName:
@@ -439,7 +439,7 @@ replicaConfiguration:
           type: str
         clientCertificate:
           description:
-          - PEM representation of the slave's x509 certificate .
+          - PEM representation of the slave's x509 certificate.
           returned: success
           type: str
         clientKey:
@@ -599,7 +599,7 @@ settings:
           type: bool
         startTime:
           description:
-          - Define the backup start time in UTC (HH:MM) .
+          - Define the backup start time in UTC (HH:MM).
           returned: success
           type: str
     settingsVersion:

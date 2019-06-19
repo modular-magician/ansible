@@ -146,7 +146,7 @@ options:
           * user-{{email}} (such as "user-liz@example.com") * group-{{groupId}} *
           group-{{email}} (such as "group-example@googlegroups.com") * domain-{{domain}}
           (such as "domain-example.com") * project-team-{{projectId}} * allUsers *
-          allAuthenticatedUsers .'
+          allAuthenticatedUsers.'
         required: true
       object:
         description:
@@ -451,7 +451,7 @@ defaultObjectAcl:
       - 'The entity holding the permission, in one of the following forms: * user-{{userId}}
         * user-{{email}} (such as "user-liz@example.com") * group-{{groupId}} * group-{{email}}
         (such as "group-example@googlegroups.com") * domain-{{domain}} (such as "domain-example.com")
-        * project-team-{{projectId}} * allUsers * allAuthenticatedUsers .'
+        * project-team-{{projectId}} * allUsers * allAuthenticatedUsers.'
       returned: success
       type: str
     entityId:
