@@ -67,6 +67,20 @@ resources:
   returned: always
   type: complex
   contains:
+    kubectlPath:
+      description:
+      - The path that the kubectl config file will be written to.
+      - The file will not be created if this path is unset.
+      - Any existing file at this path will be completely overwritten.
+      - This requires the PyYaml library.
+      returned: success
+      type: str
+    kubectlContext:
+      description:
+      - The name of the context for the kubectl config file. Will default to the cluster
+        name.
+      returned: success
+      type: str
     name:
       description:
       - The name of this cluster. The name must be unique within this project and
