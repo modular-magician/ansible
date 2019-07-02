@@ -37,7 +37,7 @@
       - result.changed == true
       - "result.kind == 'compute#targetPool'"
 - name: verify that target_pool was created
-  gcp_compute_target_pool_facts:
+  gcp_compute_target_pool_info:
       filters:
          - name = {{ resource_name }}
       region: us-west1
@@ -82,7 +82,7 @@
       - result.changed == true
       - result.has_key('kind') == False
 - name: verify that target_pool was deleted
-  gcp_compute_target_pool_facts:
+  gcp_compute_target_pool_info:
       filters:
          - name = {{ resource_name }}
       region: us-west1

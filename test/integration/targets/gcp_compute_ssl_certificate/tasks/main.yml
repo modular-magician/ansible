@@ -61,7 +61,7 @@
       - result.changed == true
       - "result.kind == 'compute#sslCertificate'"
 - name: verify that ssl_certificate was created
-  gcp_compute_ssl_certificate_facts:
+  gcp_compute_ssl_certificate_info:
       filters:
          - name = {{ resource_name }}
       project: "{{ gcp_project }}"
@@ -129,7 +129,7 @@
       - result.changed == true
       - result.has_key('kind') == False
 - name: verify that ssl_certificate was deleted
-  gcp_compute_ssl_certificate_facts:
+  gcp_compute_ssl_certificate_info:
       filters:
          - name = {{ resource_name }}
       project: "{{ gcp_project }}"

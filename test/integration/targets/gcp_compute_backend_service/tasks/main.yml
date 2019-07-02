@@ -66,7 +66,7 @@
       - result.changed == true
       - "result.kind == 'compute#backendService'"
 - name: verify that backend_service was created
-  gcp_compute_backend_service_facts:
+  gcp_compute_backend_service_info:
       filters:
          - name = {{ resource_name }}
       project: "{{ gcp_project }}"
@@ -118,7 +118,7 @@
       - result.changed == true
       - result.has_key('kind') == False
 - name: verify that backend_service was deleted
-  gcp_compute_backend_service_facts:
+  gcp_compute_backend_service_info:
       filters:
          - name = {{ resource_name }}
       project: "{{ gcp_project }}"
