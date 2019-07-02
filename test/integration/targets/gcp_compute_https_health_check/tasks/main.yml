@@ -43,7 +43,7 @@
       - result.changed == true
       - "result.kind == 'compute#httpsHealthCheck'"
 - name: verify that https_health_check was created
-  gcp_compute_https_health_check_facts:
+  gcp_compute_https_health_check_info:
       filters:
          - name = {{ resource_name }}
       project: "{{ gcp_project }}"
@@ -93,7 +93,7 @@
       - result.changed == true
       - result.has_key('kind') == False
 - name: verify that https_health_check was deleted
-  gcp_compute_https_health_check_facts:
+  gcp_compute_https_health_check_info:
       filters:
          - name = {{ resource_name }}
       project: "{{ gcp_project }}"

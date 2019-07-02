@@ -45,7 +45,7 @@
       - result.changed == true
       - "result.kind == 'compute#sslPolicy'"
 - name: verify that ssl_policy was created
-  gcp_compute_ssl_policy_facts:
+  gcp_compute_ssl_policy_info:
       filters:
          - name = {{ resource_name }}
       project: "{{ gcp_project }}"
@@ -97,7 +97,7 @@
       - result.changed == true
       - result.has_key('kind') == False
 - name: verify that ssl_policy was deleted
-  gcp_compute_ssl_policy_facts:
+  gcp_compute_ssl_policy_info:
       filters:
          - name = {{ resource_name }}
       project: "{{ gcp_project }}"

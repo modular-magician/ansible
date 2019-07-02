@@ -49,7 +49,7 @@
       - result.changed == true
       - "result.kind == 'compute#disk'"
 - name: verify that region_disk was created
-  gcp_compute_region_disk_facts:
+  gcp_compute_region_disk_info:
       filters:
          - name = {{ resource_name }}
       region: us-central1
@@ -106,7 +106,7 @@
       - result.changed == true
       - result.has_key('kind') == False
 - name: verify that region_disk was deleted
-  gcp_compute_region_disk_facts:
+  gcp_compute_region_disk_info:
       filters:
          - name = {{ resource_name }}
       region: us-central1
