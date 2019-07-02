@@ -32,6 +32,8 @@ DOCUMENTATION = '''
 module: gcp_resourcemanager_project_facts
 description:
 - Gather facts for GCP Project
+- This module was previously called gcp_resourcemanager_project_facts. The usage has
+  not changed
 short_description: Gather facts for GCP Project
 version_added: 2.8
 author: Google Inc. (@googlecloudplatform)
@@ -130,6 +132,7 @@ import json
 
 def main():
     module = GcpModule(argument_spec=dict())
+    module.deprecate("The 'gcp_resourcemanager_project_facts' has been renamed to 'gcp_resourcemanager_project_info'", version='2.13')
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']

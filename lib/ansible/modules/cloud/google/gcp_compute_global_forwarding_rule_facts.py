@@ -32,6 +32,8 @@ DOCUMENTATION = '''
 module: gcp_compute_global_forwarding_rule_facts
 description:
 - Gather facts for GCP GlobalForwardingRule
+- This module was previously called gcp_compute_global_forwarding_rule_facts. The
+  usage has not changed
 short_description: Gather facts for GCP GlobalForwardingRule
 version_added: 2.7
 author: Google Inc. (@googlecloudplatform)
@@ -180,6 +182,7 @@ import json
 
 def main():
     module = GcpModule(argument_spec=dict(filters=dict(type='list', elements='str')))
+    module.deprecate("The 'gcp_compute_global_forwarding_rule_facts' has been renamed to 'gcp_compute_global_forwarding_rule_info'", version='2.13')
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']

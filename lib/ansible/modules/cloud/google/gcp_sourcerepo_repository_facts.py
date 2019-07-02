@@ -32,6 +32,8 @@ DOCUMENTATION = '''
 module: gcp_sourcerepo_repository_facts
 description:
 - Gather facts for GCP Repository
+- This module was previously called gcp_sourcerepo_repository_facts. The usage has
+  not changed
 short_description: Gather facts for GCP Repository
 version_added: 2.8
 author: Google Inc. (@googlecloudplatform)
@@ -90,6 +92,7 @@ import json
 
 def main():
     module = GcpModule(argument_spec=dict())
+    module.deprecate("The 'gcp_sourcerepo_repository_facts' has been renamed to 'gcp_sourcerepo_repository_info'", version='2.13')
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']

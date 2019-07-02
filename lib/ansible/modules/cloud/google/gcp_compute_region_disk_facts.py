@@ -32,6 +32,8 @@ DOCUMENTATION = '''
 module: gcp_compute_region_disk_facts
 description:
 - Gather facts for GCP RegionDisk
+- This module was previously called gcp_compute_region_disk_facts. The usage has not
+  changed
 short_description: Gather facts for GCP RegionDisk
 version_added: 2.8
 author: Google Inc. (@googlecloudplatform)
@@ -238,6 +240,7 @@ import json
 
 def main():
     module = GcpModule(argument_spec=dict(filters=dict(type='list', elements='str'), region=dict(required=True, type='str')))
+    module.deprecate("The 'gcp_compute_region_disk_facts' has been renamed to 'gcp_compute_region_disk_info'", version='2.13')
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']

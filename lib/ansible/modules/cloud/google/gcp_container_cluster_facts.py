@@ -32,6 +32,8 @@ DOCUMENTATION = '''
 module: gcp_container_cluster_facts
 description:
 - Gather facts for GCP Cluster
+- This module was previously called gcp_container_cluster_facts. The usage has not
+  changed
 short_description: Gather facts for GCP Cluster
 version_added: 2.8
 author: Google Inc. (@googlecloudplatform)
@@ -577,6 +579,7 @@ import json
 
 def main():
     module = GcpModule(argument_spec=dict(location=dict(required=True, type='str', aliases=['region', 'zone'])))
+    module.deprecate("The 'gcp_container_cluster_facts' has been renamed to 'gcp_container_cluster_info'", version='2.13')
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']

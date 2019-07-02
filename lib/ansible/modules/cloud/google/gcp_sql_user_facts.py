@@ -32,6 +32,7 @@ DOCUMENTATION = '''
 module: gcp_sql_user_facts
 description:
 - Gather facts for GCP User
+- This module was previously called gcp_sql_user_facts. The usage has not changed
 short_description: Gather facts for GCP User
 version_added: 2.8
 author: Google Inc. (@googlecloudplatform)
@@ -105,6 +106,7 @@ import json
 
 def main():
     module = GcpModule(argument_spec=dict(instance=dict(required=True, type='dict')))
+    module.deprecate("The 'gcp_sql_user_facts' has been renamed to 'gcp_sql_user_info'", version='2.13')
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/sqlservice.admin']

@@ -32,6 +32,7 @@ DOCUMENTATION = '''
 module: gcp_bigquery_table_facts
 description:
 - Gather facts for GCP Table
+- This module was previously called gcp_bigquery_table_facts. The usage has not changed
 short_description: Gather facts for GCP Table
 version_added: 2.8
 author: Google Inc. (@googlecloudplatform)
@@ -514,6 +515,7 @@ import json
 
 def main():
     module = GcpModule(argument_spec=dict(dataset=dict(type='str')))
+    module.deprecate("The 'gcp_bigquery_table_facts' has been renamed to 'gcp_bigquery_table_info'", version='2.13')
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/bigquery']

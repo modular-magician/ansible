@@ -32,6 +32,7 @@ DOCUMENTATION = '''
 module: gcp_pubsub_topic_facts
 description:
 - Gather facts for GCP Topic
+- This module was previously called gcp_pubsub_topic_facts. The usage has not changed
 short_description: Gather facts for GCP Topic
 version_added: 2.8
 author: Google Inc. (@googlecloudplatform)
@@ -92,6 +93,7 @@ import json
 
 def main():
     module = GcpModule(argument_spec=dict())
+    module.deprecate("The 'gcp_pubsub_topic_facts' has been renamed to 'gcp_pubsub_topic_info'", version='2.13')
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/pubsub']

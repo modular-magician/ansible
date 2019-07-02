@@ -32,6 +32,8 @@ DOCUMENTATION = '''
 module: gcp_spanner_instance_facts
 description:
 - Gather facts for GCP Instance
+- This module was previously called gcp_spanner_instance_facts. The usage has not
+  changed
 short_description: Gather facts for GCP Instance
 version_added: 2.8
 author: Google Inc. (@googlecloudplatform)
@@ -106,6 +108,7 @@ import json
 
 def main():
     module = GcpModule(argument_spec=dict())
+    module.deprecate("The 'gcp_spanner_instance_facts' has been renamed to 'gcp_spanner_instance_info'", version='2.13')
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/spanner.admin']

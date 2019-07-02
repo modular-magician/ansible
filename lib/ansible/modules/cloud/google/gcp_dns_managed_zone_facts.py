@@ -32,6 +32,8 @@ DOCUMENTATION = '''
 module: gcp_dns_managed_zone_facts
 description:
 - Gather facts for GCP ManagedZone
+- This module was previously called gcp_dns_managed_zone_facts. The usage has not
+  changed
 short_description: Gather facts for GCP ManagedZone
 version_added: 2.8
 author: Google Inc. (@googlecloudplatform)
@@ -205,6 +207,7 @@ import json
 
 def main():
     module = GcpModule(argument_spec=dict(dns_name=dict(type='list', elements='str')))
+    module.deprecate("The 'gcp_dns_managed_zone_facts' has been renamed to 'gcp_dns_managed_zone_info'", version='2.13')
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/ndev.clouddns.readwrite']

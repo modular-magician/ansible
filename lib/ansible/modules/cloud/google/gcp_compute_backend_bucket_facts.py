@@ -32,6 +32,8 @@ DOCUMENTATION = '''
 module: gcp_compute_backend_bucket_facts
 description:
 - Gather facts for GCP BackendBucket
+- This module was previously called gcp_compute_backend_bucket_facts. The usage has
+  not changed
 short_description: Gather facts for GCP BackendBucket
 version_added: 2.7
 author: Google Inc. (@googlecloudplatform)
@@ -133,6 +135,7 @@ import json
 
 def main():
     module = GcpModule(argument_spec=dict(filters=dict(type='list', elements='str')))
+    module.deprecate("The 'gcp_compute_backend_bucket_facts' has been renamed to 'gcp_compute_backend_bucket_info'", version='2.13')
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']

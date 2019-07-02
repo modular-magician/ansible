@@ -32,6 +32,8 @@ DOCUMENTATION = '''
 module: gcp_cloudbuild_trigger_facts
 description:
 - Gather facts for GCP Trigger
+- This module was previously called gcp_cloudbuild_trigger_facts. The usage has not
+  changed
 short_description: Gather facts for GCP Trigger
 version_added: 2.8
 author: Google Inc. (@googlecloudplatform)
@@ -316,6 +318,7 @@ import json
 
 def main():
     module = GcpModule(argument_spec=dict())
+    module.deprecate("The 'gcp_cloudbuild_trigger_facts' has been renamed to 'gcp_cloudbuild_trigger_info'", version='2.13')
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']

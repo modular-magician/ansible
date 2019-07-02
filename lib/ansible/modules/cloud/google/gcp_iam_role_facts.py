@@ -32,6 +32,7 @@ DOCUMENTATION = '''
 module: gcp_iam_role_facts
 description:
 - Gather facts for GCP Role
+- This module was previously called gcp_iam_role_facts. The usage has not changed
 short_description: Gather facts for GCP Role
 version_added: 2.8
 author: Google Inc. (@googlecloudplatform)
@@ -104,6 +105,7 @@ import json
 
 def main():
     module = GcpModule(argument_spec=dict())
+    module.deprecate("The 'gcp_iam_role_facts' has been renamed to 'gcp_iam_role_info'", version='2.13')
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/iam']
