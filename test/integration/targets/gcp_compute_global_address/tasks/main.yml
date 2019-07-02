@@ -35,7 +35,7 @@
       - result.changed == true
       - "result.kind == 'compute#address'"
 - name: verify that global_address was created
-  gcp_compute_global_address_facts:
+  gcp_compute_global_address_info:
       filters:
          - name = {{ resource_name }}
       project: "{{ gcp_project }}"
@@ -77,7 +77,7 @@
       - result.changed == true
       - result.has_key('kind') == False
 - name: verify that global_address was deleted
-  gcp_compute_global_address_facts:
+  gcp_compute_global_address_info:
       filters:
          - name = {{ resource_name }}
       project: "{{ gcp_project }}"

@@ -100,7 +100,7 @@
       - result.changed == true
       - "result.kind == 'compute#targetSslProxy'"
 - name: verify that target_ssl_proxy was created
-  gcp_compute_target_ssl_proxy_facts:
+  gcp_compute_target_ssl_proxy_info:
       filters:
          - name = {{ resource_name }}
       project: "{{ gcp_project }}"
@@ -148,7 +148,7 @@
       - result.changed == true
       - result.has_key('kind') == False
 - name: verify that target_ssl_proxy was deleted
-  gcp_compute_target_ssl_proxy_facts:
+  gcp_compute_target_ssl_proxy_info:
       filters:
          - name = {{ resource_name }}
       project: "{{ gcp_project }}"

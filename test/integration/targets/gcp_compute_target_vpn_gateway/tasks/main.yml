@@ -56,7 +56,7 @@
       - result.changed == true
       - "result.kind == 'compute#targetVpnGateway'"
 - name: verify that target_vpn_gateway was created
-  gcp_compute_target_vpn_gateway_facts:
+  gcp_compute_target_vpn_gateway_info:
       filters:
          - name = {{ resource_name }}
       region: us-west1
@@ -103,7 +103,7 @@
       - result.changed == true
       - result.has_key('kind') == False
 - name: verify that target_vpn_gateway was deleted
-  gcp_compute_target_vpn_gateway_facts:
+  gcp_compute_target_vpn_gateway_info:
       filters:
          - name = {{ resource_name }}
       region: us-west1

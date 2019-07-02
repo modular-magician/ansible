@@ -77,7 +77,7 @@
       - result.changed == true
       - "result.kind == 'compute#targetTcpProxy'"
 - name: verify that target_tcp_proxy was created
-  gcp_compute_target_tcp_proxy_facts:
+  gcp_compute_target_tcp_proxy_info:
       filters:
          - name = {{ resource_name }}
       project: "{{ gcp_project }}"
@@ -123,7 +123,7 @@
       - result.changed == true
       - result.has_key('kind') == False
 - name: verify that target_tcp_proxy was deleted
-  gcp_compute_target_tcp_proxy_facts:
+  gcp_compute_target_tcp_proxy_info:
       filters:
          - name = {{ resource_name }}
       project: "{{ gcp_project }}"
