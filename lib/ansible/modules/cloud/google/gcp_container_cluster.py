@@ -438,7 +438,7 @@ EXAMPLES = '''
       machine_type: n1-standard-4
       disk_size_gb: 500
     location: us-central1-a
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

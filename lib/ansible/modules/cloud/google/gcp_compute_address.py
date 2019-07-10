@@ -120,7 +120,7 @@ EXAMPLES = '''
   gcp_compute_address:
     name: test-address1
     region: us-west1
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

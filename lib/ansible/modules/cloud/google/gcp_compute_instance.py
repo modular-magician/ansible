@@ -426,7 +426,7 @@ EXAMPLES = '''
 
 - name: create a instance
   gcp_compute_instance:
-    name: test_object
+    name: test-object
     machine_type: n1-standard-1
     disks:
     - auto_delete: 'true'
@@ -444,7 +444,7 @@ EXAMPLES = '''
         nat_ip: "{{ address }}"
         type: ONE_TO_ONE_NAT
     zone: us-central1-a
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

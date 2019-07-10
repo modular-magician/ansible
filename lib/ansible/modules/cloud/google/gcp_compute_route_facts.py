@@ -52,8 +52,8 @@ EXAMPLES = '''
 - name: " a route facts"
   gcp_compute_route_facts:
     filters:
-    - name = test_object
-    project: test_project
+    - name = test-object
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: facts

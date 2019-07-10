@@ -108,12 +108,12 @@ notes:
 EXAMPLES = '''
 - name: create a node
   gcp_tpu_node:
-    name: test_object
+    name: test-object
     zone: us-central1-b
     accelerator_type: v3-8
     tensorflow_version: '1.11'
     cidr_block: 10.2.0.0/29
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

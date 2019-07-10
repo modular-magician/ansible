@@ -162,10 +162,10 @@ notes:
 EXAMPLES = '''
 - name: create a managed zone
   gcp_dns_managed_zone:
-    name: test_object
+    name: test-object
     dns_name: test.somewild2.example.com.
     description: test zone
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

@@ -238,13 +238,13 @@ EXAMPLES = '''
 
 - name: create a forwarding rule
   gcp_compute_forwarding_rule:
-    name: test_object
+    name: test-object
     region: us-west1
     target: "{{ targetpool }}"
     ip_protocol: TCP
     port_range: 80-80
     ip_address: "{{ address.address }}"
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

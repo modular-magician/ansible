@@ -415,7 +415,7 @@ EXAMPLES = '''
 
 - name: create a instance template
   gcp_compute_instance_template:
-    name: test_object
+    name: test-object
     properties:
       disks:
       - auto_delete: 'true'
@@ -429,7 +429,7 @@ EXAMPLES = '''
         - name: test-config
           type: ONE_TO_ONE_NAT
           nat_ip: "{{ address }}"
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

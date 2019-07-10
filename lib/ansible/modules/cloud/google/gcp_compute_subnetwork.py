@@ -155,7 +155,7 @@ EXAMPLES = '''
     region: us-west1
     network: "{{ network }}"
     ip_cidr_range: 172.16.0.0/16
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

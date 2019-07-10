@@ -154,14 +154,14 @@ EXAMPLES = '''
 
 - name: create a route
   gcp_compute_route:
-    name: test_object
+    name: test-object
     dest_range: 192.168.6.0/24
     next_hop_gateway: global/gateways/default-internet-gateway
     network: "{{ network }}"
     tags:
     - backends
     - databases
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

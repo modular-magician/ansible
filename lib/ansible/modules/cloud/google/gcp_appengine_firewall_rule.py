@@ -82,7 +82,7 @@ EXAMPLES = '''
     priority: 1000
     source_range: 10.0.0.0
     action: ALLOW
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

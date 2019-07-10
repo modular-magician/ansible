@@ -220,7 +220,7 @@ notes:
 EXAMPLES = '''
 - name: create a firewall
   gcp_compute_firewall:
-    name: test_object
+    name: test-object
     allowed:
     - ip_protocol: tcp
       ports:
@@ -230,7 +230,7 @@ EXAMPLES = '''
     - staging-ssh-server
     source_tags:
     - test-ssh-clients
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

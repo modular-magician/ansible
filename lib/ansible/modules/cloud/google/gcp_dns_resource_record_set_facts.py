@@ -56,7 +56,7 @@ EXAMPLES = '''
 - name: " a resource record set facts"
   gcp_dns_resource_record_set_facts:
     managed_zone: "{{ managed_zone }}"
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: facts

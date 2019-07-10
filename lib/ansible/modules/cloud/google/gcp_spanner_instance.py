@@ -91,7 +91,7 @@ EXAMPLES = '''
     labels:
       cost_center: ti-1700004
     config: regional-us-central1
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

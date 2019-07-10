@@ -57,8 +57,8 @@ EXAMPLES = '''
   gcp_compute_instance_group_manager_facts:
     zone: us-west1-a
     filters:
-    - name = test_object
-    project: test_project
+    - name = test-object
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: facts

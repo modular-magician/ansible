@@ -148,7 +148,7 @@ EXAMPLES = '''
     name: my_example_dataset
     dataset_reference:
       dataset_id: my_example_dataset
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

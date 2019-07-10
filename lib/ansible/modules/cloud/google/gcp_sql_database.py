@@ -86,10 +86,10 @@ EXAMPLES = '''
 
 - name: create a database
   gcp_sql_database:
-    name: test_object
+    name: test-object
     charset: utf8
     instance: "{{ instance }}"
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

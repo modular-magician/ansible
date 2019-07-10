@@ -337,13 +337,13 @@ EXAMPLES = '''
 
 - name: create a backend service
   gcp_compute_backend_service:
-    name: test_object
+    name: test-object
     backends:
     - group: "{{ instancegroup.selfLink }}"
     health_checks:
     - "{{ healthcheck.selfLink }}"
     enable_cdn: 'true'
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

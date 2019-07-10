@@ -57,8 +57,8 @@ EXAMPLES = '''
   gcp_compute_interconnect_attachment_facts:
     region: us-central1
     filters:
-    - name = test_object
-    project: test_project
+    - name = test-object
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: facts

@@ -91,7 +91,7 @@ EXAMPLES = '''
     service_account: "{{ serviceaccount }}"
     private_key_type: TYPE_GOOGLE_CREDENTIALS_FILE
     path: "~/test_account.json"
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

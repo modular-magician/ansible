@@ -46,7 +46,7 @@ extends_documentation_fragment: gcp
 EXAMPLES = '''
 - name: " a firewall rule facts"
   gcp_appengine_firewall_rule_facts:
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: facts

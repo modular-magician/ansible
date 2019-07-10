@@ -51,7 +51,7 @@ EXAMPLES = '''
 - name: " a job facts"
   gcp_cloudscheduler_job_facts:
     region: us-central1
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: facts

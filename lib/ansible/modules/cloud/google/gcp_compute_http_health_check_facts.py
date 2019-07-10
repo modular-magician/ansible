@@ -52,8 +52,8 @@ EXAMPLES = '''
 - name: " a http health check facts"
   gcp_compute_http_health_check_facts:
     filters:
-    - name = test_object
-    project: test_project
+    - name = test-object
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: facts

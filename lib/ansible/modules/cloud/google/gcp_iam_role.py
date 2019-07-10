@@ -83,7 +83,7 @@ EXAMPLES = '''
     - iam.roles.list
     - iam.roles.create
     - iam.roles.delete
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

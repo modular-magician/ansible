@@ -51,7 +51,7 @@ EXAMPLES = '''
 - name: " a table facts"
   gcp_bigquery_table_facts:
     dataset: example_dataset
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: facts

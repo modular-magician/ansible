@@ -158,12 +158,12 @@ EXAMPLES = '''
 
 - name: create a instance group manager
   gcp_compute_instance_group_manager:
-    name: test_object
+    name: test-object
     base_instance_name: test1-child
     instance_template: "{{ instancetemplate }}"
     target_size: 3
     zone: us-west1-a
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

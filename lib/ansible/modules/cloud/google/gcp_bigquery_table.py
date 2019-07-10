@@ -399,9 +399,9 @@ EXAMPLES = '''
     dataset: example_dataset
     table_reference:
       dataset_id: example_dataset
-      project_id: test_project
+      project_id: test-project
       table_id: example_table
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

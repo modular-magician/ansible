@@ -259,7 +259,7 @@ notes:
 EXAMPLES = '''
 - name: create a health check
   gcp_compute_health_check:
-    name: test_object
+    name: test-object
     type: TCP
     tcp_health_check:
       port_name: service-health
@@ -268,7 +268,7 @@ EXAMPLES = '''
     healthy_threshold: 10
     timeout_sec: 2
     unhealthy_threshold: 5
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

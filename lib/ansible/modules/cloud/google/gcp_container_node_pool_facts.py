@@ -65,7 +65,7 @@ EXAMPLES = '''
   gcp_container_node_pool_facts:
     cluster: "{{ cluster }}"
     location: us-central1-a
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: facts

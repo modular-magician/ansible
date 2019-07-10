@@ -298,7 +298,7 @@ EXAMPLES = '''
           value: 8.8.8.8/32
       tier: db-n1-standard-1
     region: us-central1
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

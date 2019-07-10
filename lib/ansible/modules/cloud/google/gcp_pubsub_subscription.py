@@ -172,10 +172,10 @@ EXAMPLES = '''
 
 - name: create a subscription
   gcp_pubsub_subscription:
-    name: test_object
+    name: test-object
     topic: "{{ topic }}"
     ack_deadline_seconds: 300
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

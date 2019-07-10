@@ -56,7 +56,7 @@ EXAMPLES = '''
 - name: " a user facts"
   gcp_sql_user_facts:
     instance: "{{ instance }}"
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: facts

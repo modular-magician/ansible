@@ -52,8 +52,8 @@ EXAMPLES = '''
 - name: " a backend service facts"
   gcp_compute_backend_service_facts:
     filters:
-    - name = test_object
-    project: test_project
+    - name = test-object
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: facts

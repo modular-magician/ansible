@@ -105,9 +105,9 @@ notes:
 EXAMPLES = '''
 - name: create a network
   gcp_compute_network:
-    name: test_object
+    name: test-object
     auto_create_subnetworks: 'true'
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

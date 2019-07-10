@@ -324,7 +324,7 @@ EXAMPLES = '''
 - name: create a bucket
   gcp_storage_bucket:
     name: ansible-storage-module
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

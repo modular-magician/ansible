@@ -51,7 +51,7 @@ EXAMPLES = '''
 - name: " a node facts"
   gcp_tpu_node_facts:
     zone: us-central1-b
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: facts

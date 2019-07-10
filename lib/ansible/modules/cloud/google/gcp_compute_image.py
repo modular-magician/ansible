@@ -198,9 +198,9 @@ EXAMPLES = '''
 
 - name: create a image
   gcp_compute_image:
-    name: test_object
+    name: test-object
     source_disk: "{{ disk }}"
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

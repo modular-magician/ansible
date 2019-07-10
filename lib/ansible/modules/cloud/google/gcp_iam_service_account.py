@@ -63,7 +63,7 @@ EXAMPLES = '''
   gcp_iam_service_account:
     name: sa-{{ resource_name.split("-")[-1] }}@graphite-playground.google.com.iam.gserviceaccount.com
     display_name: My Ansible test key
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

@@ -80,7 +80,7 @@ EXAMPLES = '''
     bucket: ansible-bucket
     src: modules.zip
     dest: "~/modules.zip"
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

@@ -101,10 +101,10 @@ EXAMPLES = '''
 
 - name: create a target vpn gateway
   gcp_compute_target_vpn_gateway:
-    name: test_object
+    name: test-object
     region: us-west1
     network: "{{ network }}"
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

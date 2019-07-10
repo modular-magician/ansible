@@ -156,7 +156,7 @@ notes:
 EXAMPLES = '''
 - name: create a region disk
   gcp_compute_region_disk:
-    name: test_object
+    name: test-object
     size_gb: 50
     disk_encryption_key:
       raw_key: SGVsbG8gZnJvbSBHb29nbGUgQ2xvdWQgUGxhdGZvcm0=
@@ -164,7 +164,7 @@ EXAMPLES = '''
     replica_zones:
     - https://www.googleapis.com/compute/v1/projects/google.com:graphite-playground/zones/us-central1-a
     - https://www.googleapis.com/compute/v1/projects/google.com:graphite-playground/zones/us-central1-b
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

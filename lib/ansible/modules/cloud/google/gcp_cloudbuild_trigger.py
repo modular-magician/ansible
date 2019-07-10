@@ -276,10 +276,10 @@ EXAMPLES = '''
   gcp_cloudbuild_trigger:
     trigger_template:
       branch_name: master
-      project_id: test_project
-      repo_name: test_object
+      project_id: test-project
+      repo_name: test-object
     filename: cloudbuild.yaml
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present

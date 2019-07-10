@@ -166,11 +166,11 @@ EXAMPLES = '''
 
 - name: create a target ssl proxy
   gcp_compute_target_ssl_proxy:
-    name: test_object
+    name: test-object
     ssl_certificates:
     - "{{ sslcert }}"
     service: "{{ backendservice }}"
-    project: test_project
+    project: test-project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
     state: present
