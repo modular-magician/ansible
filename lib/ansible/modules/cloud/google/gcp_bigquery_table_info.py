@@ -32,8 +32,7 @@ DOCUMENTATION = '''
 module: gcp_bigquery_table_info
 description:
 - Gather info for GCP Table
-- This module was previously called gcp_bigquery_table_facts before Ansible 2.9. The
-  usage has not changed
+- This module was called C({{ old_name }}) before Ansible 2.9. The usage has not changed.
 short_description: Gather info for GCP Table
 version_added: 2.8
 author: Google Inc. (@googlecloudplatform)
@@ -51,7 +50,7 @@ extends_documentation_fragment: gcp
 '''
 
 EXAMPLES = '''
-- name: " a table info"
+- name: get info on a table
   gcp_bigquery_table_info:
     dataset: example_dataset
     project: test_project
