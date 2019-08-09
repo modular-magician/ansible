@@ -56,7 +56,7 @@ extends_documentation_fragment: gcp
 '''
 
 EXAMPLES = '''
-- name: get info on a user
+- name: get info on an user
   gcp_sql_user_info:
     instance: "{{ instance }}"
     project: test_project
