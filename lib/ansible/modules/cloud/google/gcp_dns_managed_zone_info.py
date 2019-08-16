@@ -214,7 +214,12 @@ def main():
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/ndev.clouddns.readwrite']
 
-    return_value = {'resources': fetch_list(module, collection(module), module.params['dns_name'])}
+    items = fetch_list(module, collection(module), module.params['dns_name'])
+    if items.get('managedZones'):
+        items = items.get('managedZones')
+    else:
+        items = []
+    return_value = {'resources': items}
     module.exit_json(**return_value)
 
 
@@ -224,7 +229,8 @@ def collection(module):
 
 def fetch_list(module, link, query):
     auth = GcpSession(module, 'dns')
-    return auth.list(link, return_if_object, array_name='managedZones', params={'dnsName': query})
+    response = auth.get(link, params={'dnsName': query})
+    return return_if_object(module, response)
 
 
 def return_if_object(module, response):

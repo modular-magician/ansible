@@ -108,7 +108,12 @@ def main():
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/sqlservice.admin']
 
-    return_value = {'resources': fetch_list(module, collection(module))}
+    items = fetch_list(module, collection(module))
+    if items.get('items'):
+        items = items.get('items')
+    else:
+        items = []
+    return_value = {'resources': items}
     module.exit_json(**return_value)
 
 
@@ -118,7 +123,8 @@ def collection(module):
 
 def fetch_list(module, link):
     auth = GcpSession(module, 'sql')
-    return auth.list(link, return_if_object, array_name='items')
+    response = auth.get(link)
+    return return_if_object(module, response)
 
 
 def return_if_object(module, response):

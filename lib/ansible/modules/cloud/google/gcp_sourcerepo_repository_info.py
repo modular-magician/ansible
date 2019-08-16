@@ -98,7 +98,12 @@ def main():
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
 
-    return_value = {'resources': fetch_list(module, collection(module))}
+    items = fetch_list(module, collection(module))
+    if items.get('repos'):
+        items = items.get('repos')
+    else:
+        items = []
+    return_value = {'resources': items}
     module.exit_json(**return_value)
 
 
@@ -108,7 +113,8 @@ def collection(module):
 
 def fetch_list(module, link):
     auth = GcpSession(module, 'sourcerepo')
-    return auth.list(link, return_if_object, array_name='repos')
+    response = auth.get(link)
+    return return_if_object(module, response)
 
 
 def return_if_object(module, response):
