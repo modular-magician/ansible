@@ -108,6 +108,31 @@ resources:
           - "- v1 or v1beta2: uses the push format defined in the v1 Pub/Sub API."
           returned: success
           type: dict
+        oidcToken:
+          description:
+          - If specified, Pub/Sub will generate and attach an OIDC JWT token as an
+            Authorization header in the HTTP request for every pushed message.
+          returned: success
+          type: complex
+          contains:
+            serviceAccountEmail:
+              description:
+              - Service account email to be used for generating the OIDC token.
+              - The caller (for subscriptions.create, UpdateSubscription, and subscriptions.modifyPushConfig
+                RPCs) must have the iam.serviceAccounts.actAs permission for the service
+                account.
+              returned: success
+              type: str
+            audience:
+              description:
+              - Audience to be used when generating OIDC token. The audience claim
+                identifies the recipients that the JWT is intended for.
+              - The audience value is a single case-sensitive string. Having multiple
+                values (array) for the audience field is not supported.
+              - 'More info about the OIDC JWT token audience here: U(https://tools.ietf.org/html/rfc7519#section-4.1.3)
+                Note: if not specified, the Push endpoint URL will be used.'
+              returned: success
+              type: str
     ackDeadlineSeconds:
       description:
       - This value is the maximum time after a subscriber receives a message before

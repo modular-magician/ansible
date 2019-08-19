@@ -104,6 +104,32 @@ options:
         - "- v1 or v1beta2: uses the push format defined in the v1 Pub/Sub API."
         required: false
         type: dict
+      oidc_token:
+        description:
+        - If specified, Pub/Sub will generate and attach an OIDC JWT token as an Authorization
+          header in the HTTP request for every pushed message.
+        required: false
+        type: dict
+        version_added: 2.9
+        suboptions:
+          service_account_email:
+            description:
+            - Service account email to be used for generating the OIDC token.
+            - The caller (for subscriptions.create, UpdateSubscription, and subscriptions.modifyPushConfig
+              RPCs) must have the iam.serviceAccounts.actAs permission for the service
+              account.
+            required: true
+            type: str
+          audience:
+            description:
+            - Audience to be used when generating OIDC token. The audience claim identifies
+              the recipients that the JWT is intended for.
+            - The audience value is a single case-sensitive string. Having multiple
+              values (array) for the audience field is not supported.
+            - 'More info about the OIDC JWT token audience here: U(https://tools.ietf.org/html/rfc7519#section-4.1.3)
+              Note: if not specified, the Push endpoint URL will be used.'
+            required: false
+            type: str
   ack_deadline_seconds:
     description:
     - This value is the maximum time after a subscriber receives a message before
@@ -241,6 +267,31 @@ pushConfig:
       - "- v1 or v1beta2: uses the push format defined in the v1 Pub/Sub API."
       returned: success
       type: dict
+    oidcToken:
+      description:
+      - If specified, Pub/Sub will generate and attach an OIDC JWT token as an Authorization
+        header in the HTTP request for every pushed message.
+      returned: success
+      type: complex
+      contains:
+        serviceAccountEmail:
+          description:
+          - Service account email to be used for generating the OIDC token.
+          - The caller (for subscriptions.create, UpdateSubscription, and subscriptions.modifyPushConfig
+            RPCs) must have the iam.serviceAccounts.actAs permission for the service
+            account.
+          returned: success
+          type: str
+        audience:
+          description:
+          - Audience to be used when generating OIDC token. The audience claim identifies
+            the recipients that the JWT is intended for.
+          - The audience value is a single case-sensitive string. Having multiple
+            values (array) for the audience field is not supported.
+          - 'More info about the OIDC JWT token audience here: U(https://tools.ietf.org/html/rfc7519#section-4.1.3)
+            Note: if not specified, the Push endpoint URL will be used.'
+          returned: success
+          type: str
 ackDeadlineSeconds:
   description:
   - This value is the maximum time after a subscriber receives a message before the
@@ -322,7 +373,14 @@ def main():
             name=dict(required=True, type='str'),
             topic=dict(required=True, type='dict'),
             labels=dict(type='dict'),
-            push_config=dict(type='dict', options=dict(push_endpoint=dict(required=True, type='str'), attributes=dict(type='dict'))),
+            push_config=dict(
+                type='dict',
+                options=dict(
+                    push_endpoint=dict(required=True, type='str'),
+                    attributes=dict(type='dict'),
+                    oidc_token=dict(type='dict', options=dict(service_account_email=dict(required=True, type='str'), audience=dict(type='str'))),
+                ),
+            ),
             ack_deadline_seconds=dict(type='int'),
             message_retention_duration=dict(default='604800s', type='str'),
             retain_acked_messages=dict(type='bool'),
@@ -515,10 +573,37 @@ class SubscriptionPushconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'pushEndpoint': self.request.get('push_endpoint'), u'attributes': self.request.get('attributes')})
+        return remove_nones_from_dict(
+            {
+                u'pushEndpoint': self.request.get('push_endpoint'),
+                u'attributes': self.request.get('attributes'),
+                u'oidcToken': SubscriptionOidctoken(self.request.get('oidc_token', {}), self.module).to_request(),
+            }
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({u'pushEndpoint': self.request.get(u'pushEndpoint'), u'attributes': self.request.get(u'attributes')})
+        return remove_nones_from_dict(
+            {
+                u'pushEndpoint': self.request.get(u'pushEndpoint'),
+                u'attributes': self.request.get(u'attributes'),
+                u'oidcToken': SubscriptionOidctoken(self.request.get(u'oidcToken', {}), self.module).from_response(),
+            }
+        )
+
+
+class SubscriptionOidctoken(object):
+    def __init__(self, request, module):
+        self.module = module
+        if request:
+            self.request = request
+        else:
+            self.request = {}
+
+    def to_request(self):
+        return remove_nones_from_dict({u'serviceAccountEmail': self.request.get('service_account_email'), u'audience': self.request.get('audience')})
+
+    def from_response(self):
+        return remove_nones_from_dict({u'serviceAccountEmail': self.request.get(u'serviceAccountEmail'), u'audience': self.request.get(u'audience')})
 
 
 class SubscriptionExpirationpolicy(object):
