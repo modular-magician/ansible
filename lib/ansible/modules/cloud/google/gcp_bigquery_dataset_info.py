@@ -148,12 +148,40 @@ resources:
           type: str
     defaultTableExpirationMs:
       description:
-      - The default lifetime of all tables in the dataset, in milliseconds .
+      - The default lifetime of all tables in the dataset, in milliseconds.
+      - Once this property is set, all newly-created partitioned tables in the dataset
+        will have an `expirationMs` property in the `timePartitioning` settings set
+        to this value, and changing the value will only affect new tables, not existing
+        ones. The storage in a partition will have an expiration time of its partition
+        time plus this value.
+      - 'Setting this property overrides the use of `defaultTableExpirationMs` for
+        partitioned tables: only one of `defaultTableExpirationMs` and `defaultPartitionExpirationMs`
+        will be used for any new partitioned table. If you provide an explicit `timePartitioning.expirationMs`
+        when creating or updating a partitioned table, that value takes precedence
+        over the default partition expiration time indicated by this property.'
+      returned: success
+      type: int
+    defaultPartitionExpirationMs:
+      description:
+      - This default partition expiration, expressed in milliseconds.
+      - When new time-partitioned tables are created in a dataset where this property
+        is set, the table will inherit this value, propagated as the TimePartitioning.expirationMs
+        property on the new table.
+      - If you set TimePartitioning.expirationMs explicitly when creating a table,
+        the defaultPartitionExpirationMs of the containing dataset is ignored.
+      - When creating a partitioned table, if defaultPartitionExpirationMs is set,
+        the defaultTableExpirationMs value is ignored and the table will not be inherit
+        a table expiration deadline.
       returned: success
       type: int
     description:
       description:
       - A user-friendly description of the dataset.
+      returned: success
+      type: str
+    etag:
+      description:
+      - A hash of the resource.
       returned: success
       type: str
     friendlyName:
@@ -182,8 +210,17 @@ resources:
       type: int
     location:
       description:
-      - The geographic location where the dataset should reside. Possible values include
-        EU and US. The default value is US.
+      - The geographic location where the dataset should reside.
+      - See [official docs].(U(https://cloud.google.com/bigquery/docs/dataset-locations))
+        There are two types of locations, regional or multi-regional. A regional location
+        is a specific geographic place, such as Tokyo, and a multi-regional location
+        is a large geographic area, such as the United States, that contains at least
+        two geographic places.
+      - 'Possible regional values include: `asia-east1`, `asia-northeast1`, `asia-southeast1`,
+        `australia-southeast1`, `europe-north1`, `europe-west2` and `us-east4`.'
+      - 'Possible multi-regional values: `EU` and `US`.'
+      - The default value is multi-regional location `US`.
+      - Changing this forces a new resource to be created.
       returned: success
       type: str
 '''
