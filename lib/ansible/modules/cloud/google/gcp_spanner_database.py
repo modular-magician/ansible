@@ -246,7 +246,7 @@ def return_if_object(module, response, allow_not_found=False):
 def is_different(module, response):
     request = resource_to_request(module)
     response = response_to_hash(module, response)
-    request = decode_response(request, module)
+    result = decode_response(response, module)
 
     # Remove all output-only from response.
     response_vals = {}
