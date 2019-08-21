@@ -1193,7 +1193,7 @@ def return_if_object(module, response, kind, allow_not_found=False):
 def is_different(module, response):
     request = resource_to_request(module)
     response = response_to_hash(module, response)
-    request = decode_response(request, module)
+    result = decode_response(response, module)
 
     # Remove all output-only from response.
     response_vals = {}
@@ -1272,7 +1272,8 @@ def wait_for_operation(module, response):
     wait_done = wait_for_completion(status, op_result, module)
     response = fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#instance')
     if response:
-        return decode_response(response, module)
+        response = decode_response(response, module)
+        return response
     else:
         return {}
 
