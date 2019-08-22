@@ -63,7 +63,7 @@ options:
   action:
     description:
     - The action to take if this rule matches.
-    - 'Some valid choices include: "UNSPECIFIED_ACTION", "ALLOW", "DENY"'
+    - 'Some valid choices include: "ALLOW", "DENY"'
     required: true
     type: str
   priority:
