@@ -87,6 +87,16 @@ options:
       letter, or digit, except the last character, which cannot be a dash.
     required: true
     type: str
+  purpose:
+    description:
+    - 'The purpose of this resource, which can be one of the following values: - GCE_ENDPOINT
+      for addresses that are used by VM instances, alias IP ranges, internal load
+      balancers, and similar resources.'
+    - This should only be set when using an Internal address.
+    - 'Some valid choices include: "GCE_ENDPOINT"'
+    required: false
+    type: str
+    version_added: 2.9
   network_tier:
     description:
     - 'The networking tier used for configuring this address. This field can take
@@ -172,6 +182,14 @@ name:
     except the last character, which cannot be a dash.
   returned: success
   type: str
+purpose:
+  description:
+  - 'The purpose of this resource, which can be one of the following values: - GCE_ENDPOINT
+    for addresses that are used by VM instances, alias IP ranges, internal load balancers,
+    and similar resources.'
+  - This should only be set when using an Internal address.
+  returned: success
+  type: str
 networkTier:
   description:
   - 'The networking tier used for configuring this address. This field can take the
@@ -223,6 +241,7 @@ def main():
             address_type=dict(default='EXTERNAL', type='str'),
             description=dict(type='str'),
             name=dict(required=True, type='str'),
+            purpose=dict(type='str'),
             network_tier=dict(type='str'),
             subnetwork=dict(type='dict'),
             region=dict(required=True, type='str'),
@@ -282,6 +301,7 @@ def resource_to_request(module):
         u'addressType': module.params.get('address_type'),
         u'description': module.params.get('description'),
         u'name': module.params.get('name'),
+        u'purpose': module.params.get('purpose'),
         u'networkTier': module.params.get('network_tier'),
         u'subnetwork': replace_resource_dict(module.params.get(u'subnetwork', {}), 'selfLink'),
     }
@@ -355,6 +375,7 @@ def response_to_hash(module, response):
         u'description': response.get(u'description'),
         u'id': response.get(u'id'),
         u'name': response.get(u'name'),
+        u'purpose': response.get(u'purpose'),
         u'networkTier': response.get(u'networkTier'),
         u'subnetwork': response.get(u'subnetwork'),
         u'users': response.get(u'users'),
