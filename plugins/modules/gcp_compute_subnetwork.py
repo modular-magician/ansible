@@ -49,7 +49,7 @@ description:
   private IP addresses. You can isolate portions of the network, even entire subnets,
   using firewall rules.
 short_description: Creates a GCP Subnetwork
-version_added: 2.6
+version_added: '2.6'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
@@ -104,7 +104,7 @@ options:
     - Whether to enable flow logging for this subnetwork.
     required: false
     type: bool
-    version_added: 2.8
+    version_added: '2.8'
   secondary_ip_ranges:
     description:
     - An array of configurations for secondary IP ranges for VM instances contained
@@ -112,7 +112,7 @@ options:
       of the subnetwork. The alias IPs may belong to either primary or secondary ranges.
     required: false
     type: list
-    version_added: 2.8
+    version_added: '2.8'
     suboptions:
       range_name:
         description:

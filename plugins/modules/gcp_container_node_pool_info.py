@@ -35,7 +35,7 @@ description:
 - This module was called C(gcp_container_node_pool_facts) before Ansible 2.9. The
   usage has not changed.
 short_description: Gather info for GCP NodePool
-version_added: 2.8
+version_added: '2.8'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
@@ -50,7 +50,7 @@ options:
     aliases:
     - region
     - zone
-    version_added: 2.8
+    version_added: '2.8'
   cluster:
     description:
     - The cluster this node pool belongs to.

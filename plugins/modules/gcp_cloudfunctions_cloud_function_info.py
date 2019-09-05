@@ -33,7 +33,7 @@ module: gcp_cloudfunctions_cloud_function_info
 description:
 - Gather info for GCP CloudFunction
 short_description: Gather info for GCP CloudFunction
-version_added: 2.9
+version_added: '2.9'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6

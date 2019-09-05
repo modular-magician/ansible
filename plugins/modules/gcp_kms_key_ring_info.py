@@ -33,7 +33,7 @@ module: gcp_kms_key_ring_info
 description:
 - Gather info for GCP KeyRing
 short_description: Gather info for GCP KeyRing
-version_added: 2.9
+version_added: '2.9'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6

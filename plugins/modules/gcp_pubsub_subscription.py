@@ -34,7 +34,7 @@ description:
 - A named resource representing the stream of messages from a single, specific topic,
   to be delivered to the subscribing application.
 short_description: Creates a GCP Subscription
-version_added: 2.6
+version_added: '2.6'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
@@ -69,7 +69,7 @@ options:
     - A set of key/value label pairs to assign to this Subscription.
     required: false
     type: dict
-    version_added: 2.8
+    version_added: '2.8'
   push_config:
     description:
     - If push delivery is used with this subscription, this field is used to configure
@@ -134,7 +134,7 @@ options:
     required: false
     default: 604800s
     type: str
-    version_added: 2.8
+    version_added: '2.8'
   retain_acked_messages:
     description:
     - Indicates whether to retain acknowledged messages. If `true`, then messages
@@ -142,7 +142,7 @@ options:
       until they fall out of the messageRetentionDuration window.
     required: false
     type: bool
-    version_added: 2.8
+    version_added: '2.8'
   expiration_policy:
     description:
     - A policy that specifies the conditions for this subscription's expiration.
@@ -152,7 +152,7 @@ options:
       used. The minimum allowed value for expirationPolicy.ttl is 1 day.
     required: false
     type: dict
-    version_added: 2.9
+    version_added: '2.9'
     suboptions:
       ttl:
         description:

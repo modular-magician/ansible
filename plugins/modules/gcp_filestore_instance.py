@@ -33,7 +33,7 @@ module: gcp_filestore_instance
 description:
 - A Google Cloud Filestore instance.
 short_description: Creates a GCP Instance
-version_added: 2.9
+version_added: '2.9'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6

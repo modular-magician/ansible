@@ -33,7 +33,7 @@ module: gcp_mlengine_model_info
 description:
 - Gather info for GCP Model
 short_description: Gather info for GCP Model
-version_added: 2.9
+version_added: '2.9'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6

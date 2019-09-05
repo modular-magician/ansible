@@ -33,7 +33,7 @@ module: gcp_filestore_instance_info
 description:
 - Gather info for GCP Instance
 short_description: Gather info for GCP Instance
-version_added: 2.9
+version_added: '2.9'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6

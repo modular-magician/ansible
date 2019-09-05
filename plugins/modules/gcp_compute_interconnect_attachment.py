@@ -34,7 +34,7 @@ description:
 - Represents an InterconnectAttachment (VLAN attachment) resource. For more information,
   see Creating VLAN Attachments.
 short_description: Creates a GCP InterconnectAttachment
-version_added: 2.8
+version_added: '2.8'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
@@ -55,7 +55,7 @@ options:
       this will Pre-Activate the interconnect attachment .
     required: false
     type: bool
-    version_added: 2.9
+    version_added: '2.9'
   interconnect:
     description:
     - URL of the underlying Interconnect object that this attachment's traffic will
@@ -81,7 +81,7 @@ options:
       "BPS_50G"'
     required: false
     type: str
-    version_added: 2.9
+    version_added: '2.9'
   edge_availability_domain:
     description:
     - Desired availability domain for the attachment. Only available for type PARTNER,

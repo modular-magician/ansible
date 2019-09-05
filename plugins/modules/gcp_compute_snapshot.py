@@ -41,7 +41,7 @@ description:
   faster and at a much lower cost than if you regularly created a full image of the
   disk.
 short_description: Creates a GCP Snapshot
-version_added: 2.9
+version_added: '2.9'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6

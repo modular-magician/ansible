@@ -33,7 +33,7 @@ module: gcp_cloudtasks_queue
 description:
 - A named resource to which messages are sent by publishers.
 short_description: Creates a GCP Queue
-version_added: 2.9
+version_added: '2.9'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6

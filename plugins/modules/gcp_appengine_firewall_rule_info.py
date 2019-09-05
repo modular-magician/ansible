@@ -33,7 +33,7 @@ module: gcp_appengine_firewall_rule_info
 description:
 - Gather info for GCP FirewallRule
 short_description: Gather info for GCP FirewallRule
-version_added: 2.9
+version_added: '2.9'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
