@@ -346,9 +346,16 @@ resources:
       type: str
     sessionAffinity:
       description:
-      - Type of session affinity to use. The default is NONE.
-      - When the load balancing scheme is EXTERNAL, can be NONE, CLIENT_IP, or GENERATED_COOKIE.
-      - When the protocol is UDP, this field is not used.
+      - Type of session affinity to use. The default is NONE. Session affinity is
+        not applicable if the --protocol is UDP.
+      - When the loadBalancingScheme is EXTERNAL, possible values are NONE, CLIENT_IP,
+        or GENERATED_COOKIE. You can use GENERATED_COOKIE if the protocol is HTTP
+        or HTTPS.
+      - When the loadBalancingScheme is INTERNAL, possible values are NONE, CLIENT_IP,
+        CLIENT_IP_PROTO, or CLIENT_IP_PORT_PROTO.
+      - When the loadBalancingScheme is INTERNAL_SELF_MANAGED, possible values are
+        NONE, CLIENT_IP, GENERATED_COOKIE, or (google-beta provider only) HEADER_FIELD,
+        or HTTP_COOKIE.
       returned: success
       type: str
     timeoutSec:
