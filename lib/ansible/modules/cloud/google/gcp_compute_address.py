@@ -96,7 +96,7 @@ options:
     - 'Some valid choices include: "GCE_ENDPOINT"'
     required: false
     type: str
-    version_added: 2.1
+    version_added: 2.9
   network_tier:
     description:
     - 'The networking tier used for configuring this address. This field can take
