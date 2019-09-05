@@ -33,7 +33,7 @@ module: gcp_pubsub_topic
 description:
 - A named resource to which messages are sent by publishers.
 short_description: Creates a GCP Topic
-version_added: 2.6
+version_added: '2.6'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
@@ -61,13 +61,13 @@ options:
     - The expected format is `projects/*/locations/*/keyRings/*/cryptoKeys/*` .
     required: false
     type: str
-    version_added: 2.9
+    version_added: '2.9'
   labels:
     description:
     - A set of key/value label pairs to assign to this Topic.
     required: false
     type: dict
-    version_added: 2.8
+    version_added: '2.8'
   message_storage_policy:
     description:
     - Policy constraining the set of Google Cloud Platform regions where messages
@@ -75,7 +75,7 @@ options:
       in effect.
     required: false
     type: dict
-    version_added: 2.9
+    version_added: '2.9'
     suboptions:
       allowed_persistence_regions:
         description:

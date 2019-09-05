@@ -34,7 +34,7 @@ description:
 - Represents a TargetHttpsProxy resource, which is used by one or more global forwarding
   rule to route incoming HTTPS requests to a URL map.
 short_description: Creates a GCP TargetHttpsProxy
-version_added: 2.6
+version_added: '2.6'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
@@ -74,7 +74,7 @@ options:
     - 'Some valid choices include: "NONE", "ENABLE", "DISABLE"'
     required: false
     type: str
-    version_added: 2.7
+    version_added: '2.7'
   ssl_certificates:
     description:
     - A list of SslCertificate resources that are used to authenticate connections
@@ -94,7 +94,7 @@ options:
       }}"'
     required: false
     type: dict
-    version_added: 2.8
+    version_added: '2.8'
   url_map:
     description:
     - A reference to the UrlMap resource that defines the mapping from URL to the

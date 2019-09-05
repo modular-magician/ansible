@@ -40,7 +40,7 @@ description:
   incoming traffic. For all networks except the default network, you must create any
   firewall rules you need.
 short_description: Creates a GCP Firewall
-version_added: 2.6
+version_added: '2.6'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
@@ -85,7 +85,7 @@ options:
       and port-range tuple that describes a denied connection.
     required: false
     type: list
-    version_added: 2.8
+    version_added: '2.8'
     suboptions:
       ip_protocol:
         description:
@@ -117,7 +117,7 @@ options:
       in CIDR format. Only IPv4 is supported.
     required: false
     type: list
-    version_added: 2.8
+    version_added: '2.8'
   direction:
     description:
     - 'Direction of traffic to which this firewall applies; default is INGRESS. Note:
@@ -126,7 +126,7 @@ options:
     - 'Some valid choices include: "INGRESS", "EGRESS"'
     required: false
     type: str
-    version_added: 2.8
+    version_added: '2.8'
   disabled:
     description:
     - Denotes whether the firewall rule is disabled, i.e not applied to the network
@@ -135,7 +135,7 @@ options:
       rule will be enabled.
     required: false
     type: bool
-    version_added: 2.8
+    version_added: '2.8'
   name:
     description:
     - Name of the resource. Provided by the client when the resource is created. The
@@ -173,7 +173,7 @@ options:
     required: false
     default: '1000'
     type: int
-    version_added: 2.8
+    version_added: '2.8'
   source_ranges:
     description:
     - If source ranges are specified, the firewall will apply only to traffic that
@@ -198,7 +198,7 @@ options:
       sourceServiceAccounts cannot be used at the same time as sourceTags or targetTags.
     required: false
     type: list
-    version_added: 2.8
+    version_added: '2.8'
   source_tags:
     description:
     - If source tags are specified, the firewall will apply only to traffic with source
@@ -220,7 +220,7 @@ options:
       rule applies to all instances on the specified network.
     required: false
     type: list
-    version_added: 2.8
+    version_added: '2.8'
   target_tags:
     description:
     - A list of instance tags indicating sets of instances located in the network

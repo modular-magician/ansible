@@ -33,7 +33,7 @@ module: gcp_tpu_node_info
 description:
 - Gather info for GCP Node
 short_description: Gather info for GCP Node
-version_added: 2.9
+version_added: '2.9'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6

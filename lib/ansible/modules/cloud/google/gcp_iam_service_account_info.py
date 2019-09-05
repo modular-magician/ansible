@@ -35,7 +35,7 @@ description:
 - This module was called C(gcp_iam_service_account_facts) before Ansible 2.9. The
   usage has not changed.
 short_description: Gather info for GCP ServiceAccount
-version_added: 2.8
+version_added: '2.8'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6

@@ -41,7 +41,7 @@ description:
   successfully to some number of consecutive probes, it is marked healthy again and
   can receive new connections.
 short_description: Creates a GCP HealthCheck
-version_added: 2.6
+version_added: '2.6'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
@@ -171,7 +171,7 @@ options:
         - 'Some valid choices include: "USE_FIXED_PORT", "USE_NAMED_PORT", "USE_SERVING_PORT"'
         required: false
         type: str
-        version_added: 2.9
+        version_added: '2.9'
   https_health_check:
     description:
     - A nested object resource.
@@ -233,7 +233,7 @@ options:
         - 'Some valid choices include: "USE_FIXED_PORT", "USE_NAMED_PORT", "USE_SERVING_PORT"'
         required: false
         type: str
-        version_added: 2.9
+        version_added: '2.9'
   tcp_health_check:
     description:
     - A nested object resource.
@@ -288,7 +288,7 @@ options:
         - 'Some valid choices include: "USE_FIXED_PORT", "USE_NAMED_PORT", "USE_SERVING_PORT"'
         required: false
         type: str
-        version_added: 2.9
+        version_added: '2.9'
   ssl_health_check:
     description:
     - A nested object resource.
@@ -343,7 +343,7 @@ options:
         - 'Some valid choices include: "USE_FIXED_PORT", "USE_NAMED_PORT", "USE_SERVING_PORT"'
         required: false
         type: str
-        version_added: 2.9
+        version_added: '2.9'
 extends_documentation_fragment: gcp
 notes:
 - 'API Reference: U(https://cloud.google.com/compute/docs/reference/rest/v1/healthChecks)'

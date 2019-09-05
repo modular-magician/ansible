@@ -37,7 +37,7 @@ description:
   rather than a backend service. It can send requests for static content to a Cloud
   Storage bucket and requests for dynamic content a virtual machine instance.
 short_description: Creates a GCP BackendBucket
-version_added: 2.6
+version_added: '2.6'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
@@ -62,7 +62,7 @@ options:
     - Cloud CDN configuration for this Backend Bucket.
     required: false
     type: dict
-    version_added: 2.8
+    version_added: '2.8'
     suboptions:
       signed_url_cache_max_age_sec:
         description:

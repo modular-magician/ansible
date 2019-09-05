@@ -33,7 +33,7 @@ module: gcp_bigquery_table
 description:
 - A Table that belongs to a Dataset .
 short_description: Creates a GCP Table
-version_added: 2.8
+version_added: '2.8'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
@@ -77,7 +77,7 @@ options:
       determines the sort order of the data.
     required: false
     type: list
-    version_added: 2.9
+    version_added: '2.9'
   description:
     description:
     - A user-friendly description of the dataset.
@@ -105,7 +105,7 @@ options:
       buffer.
     required: false
     type: int
-    version_added: 2.9
+    version_added: '2.9'
   view:
     description:
     - The view definition.
@@ -155,7 +155,7 @@ options:
           or REQUIRED.
         required: false
         type: str
-        version_added: 2.9
+        version_added: '2.9'
       type:
         description:
         - The only type supported is DAY, which will generate one partition per day.

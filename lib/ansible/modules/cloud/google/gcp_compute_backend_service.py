@@ -37,7 +37,7 @@ description:
 - For managed internal load balancing, use a regional backend service instead.
 - Currently self-managed internal load balancing is only available in beta.
 short_description: Creates a GCP BackendService
-version_added: 2.6
+version_added: '2.6'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
@@ -134,7 +134,7 @@ options:
           must be set.
         required: false
         type: int
-        version_added: 2.9
+        version_added: '2.9'
       max_rate:
         description:
         - The max requests per second (RPS) of the group.
@@ -159,7 +159,7 @@ options:
           must be set.
         required: false
         type: str
-        version_added: 2.9
+        version_added: '2.9'
       max_utilization:
         description:
         - Used when balancingMode is UTILIZATION. This ratio defines the CPU utilization
@@ -225,7 +225,7 @@ options:
         required: false
         default: '3600'
         type: int
-        version_added: 2.8
+        version_added: '2.8'
   connection_draining:
     description:
     - Settings for connection draining .
@@ -263,7 +263,7 @@ options:
     - Settings for enabling Cloud Identity Aware Proxy.
     required: false
     type: dict
-    version_added: 2.7
+    version_added: '2.7'
     suboptions:
       enabled:
         description:
@@ -290,7 +290,7 @@ options:
     required: false
     default: EXTERNAL
     type: str
-    version_added: 2.7
+    version_added: '2.7'
   name:
     description:
     - Name of the resource. Provided by the client when the resource is created. The
@@ -321,7 +321,7 @@ options:
     - The security policy associated with this backend service.
     required: false
     type: str
-    version_added: 2.8
+    version_added: '2.8'
   session_affinity:
     description:
     - Type of session affinity to use. The default is NONE.

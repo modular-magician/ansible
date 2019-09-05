@@ -33,7 +33,7 @@ module: gcp_kms_crypto_key_info
 description:
 - Gather info for GCP CryptoKey
 short_description: Gather info for GCP CryptoKey
-version_added: 2.9
+version_added: '2.9'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6

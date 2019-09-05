@@ -35,7 +35,7 @@ description:
 - This module was called C(gcp_compute_address_facts) before Ansible 2.9. The usage
   has not changed.
 short_description: Gather info for GCP Address
-version_added: 2.7
+version_added: '2.7'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6

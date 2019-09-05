@@ -33,7 +33,7 @@ module: gcp_cloudfunctions_cloud_function
 description:
 - A Cloud Function that contains user computation executed in response to an event.
 short_description: Creates a GCP CloudFunction
-version_added: 2.9
+version_added: '2.9'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6

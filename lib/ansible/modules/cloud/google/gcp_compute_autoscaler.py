@@ -35,7 +35,7 @@ description:
 - Autoscalers allow you to automatically scale virtual machine instances in managed
   instance groups according to an autoscaling policy that you define.
 short_description: Creates a GCP Autoscaler
-version_added: 2.9
+version_added: '2.9'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6

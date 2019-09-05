@@ -33,7 +33,7 @@ module: gcp_compute_snapshot_info
 description:
 - Gather info for GCP Snapshot
 short_description: Gather info for GCP Snapshot
-version_added: 2.9
+version_added: '2.9'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6

@@ -35,7 +35,7 @@ description:
 - A model can have multiple versions, each of which is a deployed, trained model ready
   to receive prediction requests. The model itself is just a container.
 short_description: Creates a GCP Model
-version_added: 2.9
+version_added: '2.9'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
