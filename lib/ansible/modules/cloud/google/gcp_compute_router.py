@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -312,7 +311,23 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), description=dict(type='str'), network=dict(required=True, type='dict'), bgp=dict(type='dict', options=dict(asn=dict(required=True, type='int'), advertise_mode=dict(default='DEFAULT', type='str'), advertised_groups=dict(type='list', elements='str'), advertised_ip_ranges=dict(type='list', elements='dict', options=dict(range=dict(type='str'), description=dict(type='str'))))), region=dict(required=True, type='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            name=dict(required=True, type='str'),
+            description=dict(type='str'),
+            network=dict(required=True, type='dict'),
+            bgp=dict(
+                type='dict',
+                options=dict(
+                    asn=dict(required=True, type='int'),
+                    advertise_mode=dict(default='DEFAULT', type='str'),
+                    advertised_groups=dict(type='list', elements='str'),
+                    advertised_ip_ranges=dict(type='list', elements='dict', options=dict(range=dict(type='str'), description=dict(type='str'))),
+                ),
+            ),
+            region=dict(required=True, type='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -361,7 +376,14 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#router',u'region': module.params.get('region'),u'name': module.params.get('name'),u'description': module.params.get('description'),u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),u'bgp': RouterBgp(module.params.get('bgp', {}), module).to_request() }
+    request = {
+        u'kind': 'compute#router',
+        u'region': module.params.get('region'),
+        u'name': module.params.get('name'),
+        u'description': module.params.get('description'),
+        u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
+        u'bgp': RouterBgp(module.params.get('bgp', {}), module).to_request(),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -425,7 +447,14 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'id': response.get(u'id'),u'creationTimestamp': response.get(u'creationTimestamp'),u'name': module.params.get('name'),u'description': response.get(u'description'),u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),u'bgp': RouterBgp(response.get(u'bgp', {}), module).from_response() }
+    return {
+        u'id': response.get(u'id'),
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'name': module.params.get('name'),
+        u'description': response.get(u'description'),
+        u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
+        u'bgp': RouterBgp(response.get(u'bgp', {}), module).from_response(),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -444,6 +473,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#router')
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
@@ -471,12 +501,24 @@ class RouterBgp(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'asn': self.request.get('asn'),u'advertiseMode': self.request.get('advertise_mode'),u'advertisedGroups': self.request.get('advertised_groups'),u'advertisedIpRanges': RouterAdvertisediprangesArray(self.request.get('advertised_ip_ranges', []), self.module).to_request() }
-)
+        return remove_nones_from_dict(
+            {
+                u'asn': self.request.get('asn'),
+                u'advertiseMode': self.request.get('advertise_mode'),
+                u'advertisedGroups': self.request.get('advertised_groups'),
+                u'advertisedIpRanges': RouterAdvertisediprangesArray(self.request.get('advertised_ip_ranges', []), self.module).to_request(),
+            }
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({ u'asn': self.request.get(u'asn'),u'advertiseMode': self.request.get(u'advertiseMode'),u'advertisedGroups': self.request.get(u'advertisedGroups'),u'advertisedIpRanges': RouterAdvertisediprangesArray(self.request.get(u'advertisedIpRanges', []), self.module).from_response() }
-)
+        return remove_nones_from_dict(
+            {
+                u'asn': self.request.get(u'asn'),
+                u'advertiseMode': self.request.get(u'advertiseMode'),
+                u'advertisedGroups': self.request.get(u'advertisedGroups'),
+                u'advertisedIpRanges': RouterAdvertisediprangesArray(self.request.get(u'advertisedIpRanges', []), self.module).from_response(),
+            }
+        )
 
 
 class RouterAdvertisediprangesArray(object):
@@ -500,12 +542,10 @@ class RouterAdvertisediprangesArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({ u'range': item.get('range'),u'description': item.get('description') }
-)
+        return remove_nones_from_dict({u'range': item.get('range'), u'description': item.get('description')})
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({ u'range': item.get(u'range'),u'description': item.get(u'description') }
-)
+        return remove_nones_from_dict({u'range': item.get(u'range'), u'description': item.get(u'description')})
 
 
 if __name__ == '__main__':

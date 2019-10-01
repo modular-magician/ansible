@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -243,7 +242,14 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), description=dict(type='str'), name=dict(required=True, type='str'), proxy_header=dict(type='str'), service=dict(required=True, type='dict')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            description=dict(type='str'),
+            name=dict(required=True, type='str'),
+            proxy_header=dict(type='str'),
+            service=dict(required=True, type='dict'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -282,8 +288,7 @@ def create(module, link, kind):
 
 
 def update(module, link, kind, fetch):
-    update_fields(module, resource_to_request(module),
-                  response_to_hash(module, fetch))
+    update_fields(module, resource_to_request(module), response_to_hash(module, fetch))
     return fetch_resource(module, self_link(module), kind)
 
 
@@ -297,22 +302,18 @@ def update_fields(module, request, response):
 def proxy_header_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join([
-            "https://www.googleapis.com/compute/v1/",
-            "projects/{project}/global/targetTcpProxies/{name}/setProxyHeader"
-        ]).format(**module.params),
-{ u'proxyHeader': module.params.get('proxy_header') }
+        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/global/targetTcpProxies/{name}/setProxyHeader"]).format(**module.params),
+        {u'proxyHeader': module.params.get('proxy_header')},
     )
+
 
 def service_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join([
-            "https://www.googleapis.com/compute/v1/",
-            "projects/{project}/global/targetTcpProxies/{name}/setBackendService"
-        ]).format(**module.params),
-{ u'service': replace_resource_dict(module.params.get(u'service', {}), 'selfLink') }
+        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/global/targetTcpProxies/{name}/setBackendService"]).format(**module.params),
+        {u'service': replace_resource_dict(module.params.get(u'service', {}), 'selfLink')},
     )
+
 
 def delete(module, link, kind):
     auth = GcpSession(module, 'compute')
@@ -320,7 +321,13 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#targetTcpProxy',u'description': module.params.get('description'),u'name': module.params.get('name'),u'proxyHeader': module.params.get('proxy_header'),u'service': replace_resource_dict(module.params.get(u'service', {}), 'selfLink') }
+    request = {
+        u'kind': 'compute#targetTcpProxy',
+        u'description': module.params.get('description'),
+        u'name': module.params.get('name'),
+        u'proxyHeader': module.params.get('proxy_header'),
+        u'service': replace_resource_dict(module.params.get(u'service', {}), 'selfLink'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -384,7 +391,14 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'creationTimestamp': response.get(u'creationTimestamp'),u'description': module.params.get('description'),u'id': response.get(u'id'),u'name': module.params.get('name'),u'proxyHeader': response.get(u'proxyHeader'),u'service': response.get(u'service') }
+    return {
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'description': module.params.get('description'),
+        u'id': response.get(u'id'),
+        u'name': module.params.get('name'),
+        u'proxyHeader': response.get(u'proxyHeader'),
+        u'service': response.get(u'service'),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -403,6 +417,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#targetTcpProxy')
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])

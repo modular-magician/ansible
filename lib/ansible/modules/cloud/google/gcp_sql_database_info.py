@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -154,8 +153,7 @@ import json
 
 
 def main():
-    module = GcpModule(
-            argument_spec=dict(instance=dict(required=True, type='str'))    )
+    module = GcpModule(argument_spec=dict(instance=dict(required=True, type='str')))
 
     if module._name == 'gcp_sql_database_facts':
         module.deprecate("The 'gcp_sql_database_facts' module has been renamed to 'gcp_sql_database_info'", version='2.13')
@@ -163,9 +161,7 @@ def main():
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/sqlservice.admin']
 
-    return_value = {
-        'resources': fetch_list(module, collection(module))
-    }
+    return_value = {'resources': fetch_list(module, collection(module))}
     module.exit_json(**return_value)
 
 

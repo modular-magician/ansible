@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -151,8 +150,7 @@ import json
 
 
 def main():
-    module = GcpModule(
-            argument_spec=dict(instance=dict(required=True, type='dict'))    )
+    module = GcpModule(argument_spec=dict(instance=dict(required=True, type='dict')))
 
     if module._name == 'gcp_spanner_database_facts':
         module.deprecate("The 'gcp_spanner_database_facts' module has been renamed to 'gcp_spanner_database_info'", version='2.13')
@@ -160,17 +158,12 @@ def main():
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/spanner.admin']
 
-    return_value = {
-        'resources': fetch_list(module, collection(module))
-    }
+    return_value = {'resources': fetch_list(module, collection(module))}
     module.exit_json(**return_value)
 
 
 def collection(module):
-    res = {
-        'project': module.params['project'],
-        'instance': replace_resource_dict(module.params['instance'], 'name')
-    }
+    res = {'project': module.params['project'], 'instance': replace_resource_dict(module.params['instance'], 'name')}
     return "https://spanner.googleapis.com/v1/projects/{project}/instances/{instance}/databases".format(**res)
 
 

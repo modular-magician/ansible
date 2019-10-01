@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -211,7 +210,17 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), description=dict(type='str'), default_version=dict(type='dict', options=dict(name=dict(type='str'))), regions=dict(type='list', elements='str'), online_prediction_logging=dict(type='bool'), online_prediction_console_logging=dict(type='bool'), labels=dict(type='dict')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            name=dict(required=True, type='str'),
+            description=dict(type='str'),
+            default_version=dict(type='dict', options=dict(name=dict(type='str'))),
+            regions=dict(type='list', elements='str'),
+            online_prediction_logging=dict(type='bool'),
+            online_prediction_console_logging=dict(type='bool'),
+            labels=dict(type='dict'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
@@ -259,7 +268,15 @@ def delete(module, link):
 
 
 def resource_to_request(module):
-    request = { u'name': module.params.get('name'),u'description': module.params.get('description'),u'defaultVersion': ModelDefaultversion(module.params.get('default_version', {}), module).to_request(),u'regions': module.params.get('regions'),u'onlinePredictionLogging': module.params.get('online_prediction_logging'),u'onlinePredictionConsoleLogging': module.params.get('online_prediction_console_logging'),u'labels': module.params.get('labels') }
+    request = {
+        u'name': module.params.get('name'),
+        u'description': module.params.get('description'),
+        u'defaultVersion': ModelDefaultversion(module.params.get('default_version', {}), module).to_request(),
+        u'regions': module.params.get('regions'),
+        u'onlinePredictionLogging': module.params.get('online_prediction_logging'),
+        u'onlinePredictionConsoleLogging': module.params.get('online_prediction_console_logging'),
+        u'labels': module.params.get('labels'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -326,7 +343,15 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'name': response.get(u'name'),u'description': response.get(u'description'),u'defaultVersion': ModelDefaultversion(response.get(u'defaultVersion', {}), module).from_response(),u'regions': response.get(u'regions'),u'onlinePredictionLogging': response.get(u'onlinePredictionLogging'),u'onlinePredictionConsoleLogging': response.get(u'onlinePredictionConsoleLogging'),u'labels': response.get(u'labels') }
+    return {
+        u'name': response.get(u'name'),
+        u'description': response.get(u'description'),
+        u'defaultVersion': ModelDefaultversion(response.get(u'defaultVersion', {}), module).from_response(),
+        u'regions': response.get(u'regions'),
+        u'onlinePredictionLogging': response.get(u'onlinePredictionLogging'),
+        u'onlinePredictionConsoleLogging': response.get(u'onlinePredictionConsoleLogging'),
+        u'labels': response.get(u'labels'),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -382,12 +407,10 @@ class ModelDefaultversion(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'name': self.request.get('name') }
-)
+        return remove_nones_from_dict({u'name': self.request.get('name')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'name': self.request.get(u'name') }
-)
+        return remove_nones_from_dict({u'name': self.request.get(u'name')})
 
 
 if __name__ == '__main__':

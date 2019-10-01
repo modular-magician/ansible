@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -251,7 +250,15 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), description=dict(type='str'), name=dict(required=True, type='str'), profile=dict(type='str'), min_tls_version=dict(type='str'), custom_features=dict(type='list', elements='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            description=dict(type='str'),
+            name=dict(required=True, type='str'),
+            profile=dict(type='str'),
+            min_tls_version=dict(type='str'),
+            custom_features=dict(type='list', elements='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -300,7 +307,14 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#sslPolicy',u'description': module.params.get('description'),u'name': module.params.get('name'),u'profile': module.params.get('profile'),u'minTlsVersion': module.params.get('min_tls_version'),u'customFeatures': module.params.get('custom_features') }
+    request = {
+        u'kind': 'compute#sslPolicy',
+        u'description': module.params.get('description'),
+        u'name': module.params.get('name'),
+        u'profile': module.params.get('profile'),
+        u'minTlsVersion': module.params.get('min_tls_version'),
+        u'customFeatures': module.params.get('custom_features'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -364,7 +378,18 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'creationTimestamp': response.get(u'creationTimestamp'),u'description': module.params.get('description'),u'id': response.get(u'id'),u'name': module.params.get('name'),u'profile': response.get(u'profile'),u'minTlsVersion': response.get(u'minTlsVersion'),u'enabledFeatures': response.get(u'enabledFeatures'),u'customFeatures': response.get(u'customFeatures'),u'fingerprint': response.get(u'fingerprint'),u'warnings': SslPolicyWarningsArray(response.get(u'warnings', []), module).from_response() }
+    return {
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'description': module.params.get('description'),
+        u'id': response.get(u'id'),
+        u'name': module.params.get('name'),
+        u'profile': response.get(u'profile'),
+        u'minTlsVersion': response.get(u'minTlsVersion'),
+        u'enabledFeatures': response.get(u'enabledFeatures'),
+        u'customFeatures': response.get(u'customFeatures'),
+        u'fingerprint': response.get(u'fingerprint'),
+        u'warnings': SslPolicyWarningsArray(response.get(u'warnings', []), module).from_response(),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -383,6 +408,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#sslPolicy')
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
@@ -422,12 +448,10 @@ class SslPolicyWarningsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({  }
-)
+        return remove_nones_from_dict({})
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({  }
-)
+        return remove_nones_from_dict({})
 
 
 if __name__ == '__main__':

@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -181,7 +180,15 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), title=dict(type='str'), description=dict(type='str'), included_permissions=dict(type='list', elements='str'), stage=dict(type='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            name=dict(required=True, type='str'),
+            title=dict(type='str'),
+            description=dict(type='str'),
+            included_permissions=dict(type='list', elements='str'),
+            stage=dict(type='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/iam']
@@ -220,9 +227,7 @@ def create(module, link):
 
 def update(module, link, fetch):
     auth = GcpSession(module, 'iam')
-    params = {
-        'updateMask': updateMask(resource_to_request(module), response_to_hash(module, fetch))
-    }
+    params = {'updateMask': updateMask(resource_to_request(module), response_to_hash(module, fetch))}
     request = resource_to_request(module)
     del request['name']
     return return_if_object(module, auth.put(link, request, params=params))
@@ -241,13 +246,21 @@ def updateMask(request, response):
     if request.get('stage') != response.get('stage'):
         update_mask.append('stage')
     return ','.join(update_mask)
+
+
 def delete(module, link):
     auth = GcpSession(module, 'iam')
     return return_if_object(module, auth.delete(link))
 
 
 def resource_to_request(module):
-    request = { u'name': module.params.get('name'),u'title': module.params.get('title'),u'description': module.params.get('description'),u'includedPermissions': module.params.get('included_permissions'),u'stage': module.params.get('stage') }
+    request = {
+        u'name': module.params.get('name'),
+        u'title': module.params.get('title'),
+        u'description': module.params.get('description'),
+        u'includedPermissions': module.params.get('included_permissions'),
+        u'stage': module.params.get('stage'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -314,16 +327,21 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'name': response.get(u'name'),u'title': response.get(u'title'),u'description': response.get(u'description'),u'includedPermissions': response.get(u'includedPermissions'),u'stage': response.get(u'stage'),u'deleted': response.get(u'deleted') }
+    return {
+        u'name': response.get(u'name'),
+        u'title': response.get(u'title'),
+        u'description': response.get(u'description'),
+        u'includedPermissions': response.get(u'includedPermissions'),
+        u'stage': response.get(u'stage'),
+        u'deleted': response.get(u'deleted'),
+    }
 
 
 def resource_to_create(module):
     role = resource_to_request(module)
     del role['name']
-    return {
-        'roleId': module.params['name'],
-        'role': role
-    }
+    return {'roleId': module.params['name'], 'role': role}
+
 
 def decode_response(response, module):
     if 'name' in response:

@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -282,7 +281,18 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), address=dict(type='str'), address_type=dict(default='EXTERNAL', type='str'), description=dict(type='str'), name=dict(required=True, type='str'), purpose=dict(type='str'), network_tier=dict(type='str'), subnetwork=dict(type='dict'), region=dict(required=True, type='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            address=dict(type='str'),
+            address_type=dict(default='EXTERNAL', type='str'),
+            description=dict(type='str'),
+            name=dict(required=True, type='str'),
+            purpose=dict(type='str'),
+            network_tier=dict(type='str'),
+            subnetwork=dict(type='dict'),
+            region=dict(required=True, type='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -331,7 +341,16 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#address',u'address': module.params.get('address'),u'addressType': module.params.get('address_type'),u'description': module.params.get('description'),u'name': module.params.get('name'),u'purpose': module.params.get('purpose'),u'networkTier': module.params.get('network_tier'),u'subnetwork': replace_resource_dict(module.params.get(u'subnetwork', {}), 'selfLink') }
+    request = {
+        u'kind': 'compute#address',
+        u'address': module.params.get('address'),
+        u'addressType': module.params.get('address_type'),
+        u'description': module.params.get('description'),
+        u'name': module.params.get('name'),
+        u'purpose': module.params.get('purpose'),
+        u'networkTier': module.params.get('network_tier'),
+        u'subnetwork': replace_resource_dict(module.params.get(u'subnetwork', {}), 'selfLink'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -395,7 +414,18 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'address': response.get(u'address'),u'addressType': response.get(u'addressType'),u'creationTimestamp': response.get(u'creationTimestamp'),u'description': response.get(u'description'),u'id': response.get(u'id'),u'name': response.get(u'name'),u'purpose': response.get(u'purpose'),u'networkTier': response.get(u'networkTier'),u'subnetwork': response.get(u'subnetwork'),u'users': response.get(u'users') }
+    return {
+        u'address': response.get(u'address'),
+        u'addressType': response.get(u'addressType'),
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'description': response.get(u'description'),
+        u'id': response.get(u'id'),
+        u'name': response.get(u'name'),
+        u'purpose': response.get(u'purpose'),
+        u'networkTier': response.get(u'networkTier'),
+        u'subnetwork': response.get(u'subnetwork'),
+        u'users': response.get(u'users'),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -414,6 +444,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#address')
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])

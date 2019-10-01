@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -197,7 +196,15 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), type=dict(required=True, type='str'), ttl=dict(type='int'), target=dict(type='list', elements='str'), managed_zone=dict(required=True, type='dict')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            name=dict(required=True, type='str'),
+            type=dict(required=True, type='str'),
+            ttl=dict(type='int'),
+            target=dict(type='list', elements='str'),
+            managed_zone=dict(required=True, type='dict'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/ndev.clouddns.readwrite']
@@ -205,13 +212,11 @@ def main():
     state = module.params['state']
     kind = 'dns#resourceRecordSet'
 
-    fetch = fetch_wrapped_resource(module, 'dns#resourceRecordSet',
-                                   'dns#resourceRecordSetsListResponse',
-                                   'rrsets')
+    fetch = fetch_wrapped_resource(module, 'dns#resourceRecordSet', 'dns#resourceRecordSetsListResponse', 'rrsets')
     changed = False
 
     if 'dnsName' not in module.params.get('managed_zone') or 'name' not in module.params.get('managed_zone'):
-      module.fail_json(msg="managed_zone dictionary must contain both the name of the zone and the dns name of the zone")
+        module.fail_json(msg="managed_zone dictionary must contain both the name of the zone and the dns name of the zone")
 
     if fetch:
         if state == 'present':
@@ -240,9 +245,7 @@ def create(module, link, kind):
     change_id = int(change['id'])
     if change['status'] == 'pending':
         wait_for_change_to_complete(change_id, module)
-    return fetch_wrapped_resource(module, 'dns#resourceRecordSet',
-                                  'dns#resourceRecordSetsListResponse',
-                                  'rrsets')
+    return fetch_wrapped_resource(module, 'dns#resourceRecordSet', 'dns#resourceRecordSetsListResponse', 'rrsets')
 
 
 def update(module, link, kind, fetch):
@@ -250,9 +253,7 @@ def update(module, link, kind, fetch):
     change_id = int(change['id'])
     if change['status'] == 'pending':
         wait_for_change_to_complete(change_id, module)
-    return fetch_wrapped_resource(module, 'dns#resourceRecordSet',
-                                  'dns#resourceRecordSetsListResponse',
-                                  'rrsets')
+    return fetch_wrapped_resource(module, 'dns#resourceRecordSet', 'dns#resourceRecordSetsListResponse', 'rrsets')
 
 
 def delete(module, link, kind, fetch):
@@ -260,13 +261,17 @@ def delete(module, link, kind, fetch):
     change_id = int(change['id'])
     if change['status'] == 'pending':
         wait_for_change_to_complete(change_id, module)
-    return fetch_wrapped_resource(module, 'dns#resourceRecordSet',
-                                  'dns#resourceRecordSetsListResponse',
-                                  'rrsets')
+    return fetch_wrapped_resource(module, 'dns#resourceRecordSet', 'dns#resourceRecordSetsListResponse', 'rrsets')
 
 
 def resource_to_request(module):
-    request = { u'kind': 'dns#resourceRecordSet',u'name': module.params.get('name'),u'type': module.params.get('type'),u'ttl': module.params.get('ttl'),u'rrdatas': module.params.get('target') }
+    request = {
+        u'kind': 'dns#resourceRecordSet',
+        u'name': module.params.get('name'),
+        u'type': module.params.get('type'),
+        u'ttl': module.params.get('ttl'),
+        u'rrdatas': module.params.get('target'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -301,16 +306,13 @@ def self_link(module):
         'project': module.params['project'],
         'managed_zone': replace_resource_dict(module.params['managed_zone'], 'name'),
         'name': module.params['name'],
-        'type': module.params['type']
+        'type': module.params['type'],
     }
     return "https://www.googleapis.com/dns/v1/projects/{project}/managedZones/{managed_zone}/rrsets?name={name}&type={type}".format(**res)
 
 
 def collection(module):
-    res = {
-        'project': module.params['project'],
-        'managed_zone': replace_resource_dict(module.params['managed_zone'], 'name')
-    }
+    res = {'project': module.params['project'], 'managed_zone': replace_resource_dict(module.params['managed_zone'], 'name')}
     return "https://www.googleapis.com/dns/v1/projects/{project}/managedZones/{managed_zone}/changes".format(**res)
 
 
@@ -356,7 +358,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'name': response.get(u'name'),u'type': response.get(u'type'),u'ttl': response.get(u'ttl'),u'rrdatas': response.get(u'rrdatas') }
+    return {u'name': response.get(u'name'), u'type': response.get(u'type'), u'ttl': response.get(u'ttl'), u'rrdatas': response.get(u'rrdatas')}
 
 
 def updated_record(module):
@@ -365,7 +367,7 @@ def updated_record(module):
         'name': module.params['name'],
         'type': module.params['type'],
         'ttl': module.params['ttl'] if module.params['ttl'] else 900,
-        'rrdatas': module.params['target']
+        'rrdatas': module.params['target'],
     }
 
 
@@ -389,34 +391,30 @@ class SOAForwardable(object):
 
 def prefetch_soa_resource(module):
 
-    resource = SOAForwardable({
-        'type': 'SOA',
-        'managed_zone': module.params['managed_zone'],
-        'name': replace_resource_dict(module.params['managed_zone'], 'dnsName'),
-        'project': module.params['project'],
-        'scopes': module.params['scopes'],
-        'service_account_file': module.params.get('service_account_file'),
-        'auth_kind': module.params['auth_kind'],
-        'service_account_email': module.params.get('service_account_email'),
-        'service_account_contents': module.params.get('service_account_contents')
-    }, module)
+    resource = SOAForwardable(
+        {
+            'type': 'SOA',
+            'managed_zone': module.params['managed_zone'],
+            'name': replace_resource_dict(module.params['managed_zone'], 'dnsName'),
+            'project': module.params['project'],
+            'scopes': module.params['scopes'],
+            'service_account_file': module.params.get('service_account_file'),
+            'auth_kind': module.params['auth_kind'],
+            'service_account_email': module.params.get('service_account_email'),
+            'service_account_contents': module.params.get('service_account_contents'),
+        },
+        module,
+    )
 
-    result = fetch_wrapped_resource(resource, 'dns#resourceRecordSet',
-                                    'dns#resourceRecordSetsListResponse',
-                                    'rrsets')
+    result = fetch_wrapped_resource(resource, 'dns#resourceRecordSet', 'dns#resourceRecordSetsListResponse', 'rrsets')
     if not result:
-        raise ValueError("Google DNS Managed Zone %s not found" %
-replace_resource_dict(module.params['managed_zone'], 'name'))
+        raise ValueError("Google DNS Managed Zone %s not found" % replace_resource_dict(module.params['managed_zone'], 'name'))
     return result
 
 
 def create_change(original, updated, module):
     auth = GcpSession(module, 'dns')
-    return return_if_change_object(module,
-                                   auth.post(collection(module),
-                                             resource_to_change_request(
-                                                 original, updated, module)
-                                             ))
+    return return_if_change_object(module, auth.post(collection(module), resource_to_change_request(original, updated, module)))
 
 
 # Fetch current SOA. We need the last SOA so we can increment its serial
@@ -472,12 +470,7 @@ def get_change_status(change_id, module):
 
 
 def new_change_request():
-    return {
-        'kind': 'dns#change',
-        'additions': [],
-        'deletions': [],
-        'start_time': datetime.datetime.now().isoformat()
-    }
+    return {'kind': 'dns#change', 'additions': [], 'deletions': [], 'start_time': datetime.datetime.now().isoformat()}
 
 
 def return_if_change_object(module, response):

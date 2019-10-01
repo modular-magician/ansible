@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -727,8 +726,7 @@ import json
 
 
 def main():
-    module = GcpModule(
-            argument_spec=dict(location=dict(required=True, type='str', aliases=['region', 'zone']))    )
+    module = GcpModule(argument_spec=dict(location=dict(required=True, type='str', aliases=['region', 'zone'])))
 
     if module._name == 'gcp_container_cluster_facts':
         module.deprecate("The 'gcp_container_cluster_facts' module has been renamed to 'gcp_container_cluster_info'", version='2.13')
@@ -736,9 +734,7 @@ def main():
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
 
-    return_value = {
-        'resources': fetch_list(module, collection(module))
-    }
+    return_value = {'resources': fetch_list(module, collection(module))}
     module.exit_json(**return_value)
 
 

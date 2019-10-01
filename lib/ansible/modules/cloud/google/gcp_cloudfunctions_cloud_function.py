@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -374,7 +373,27 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), description=dict(type='str'), entry_point=dict(type='str'), runtime=dict(type='str'), timeout=dict(type='str'), available_memory_mb=dict(type='int'), labels=dict(type='dict'), environment_variables=dict(type='dict'), source_archive_url=dict(type='str'), source_upload_url=dict(type='str'), source_repository=dict(type='dict', options=dict(url=dict(type='str'))), https_trigger=dict(type='dict', options=dict()), event_trigger=dict(type='dict', options=dict(event_type=dict(required=True, type='str'), resource=dict(required=True, type='str'), service=dict(type='str'))), location=dict(required=True, type='str'), trigger_http=dict(type='bool')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            name=dict(required=True, type='str'),
+            description=dict(type='str'),
+            entry_point=dict(type='str'),
+            runtime=dict(type='str'),
+            timeout=dict(type='str'),
+            available_memory_mb=dict(type='int'),
+            labels=dict(type='dict'),
+            environment_variables=dict(type='dict'),
+            source_archive_url=dict(type='str'),
+            source_upload_url=dict(type='str'),
+            source_repository=dict(type='dict', options=dict(url=dict(type='str'))),
+            https_trigger=dict(type='dict', options=dict()),
+            event_trigger=dict(
+                type='dict', options=dict(event_type=dict(required=True, type='str'), resource=dict(required=True, type='str'), service=dict(type='str'))
+            ),
+            location=dict(required=True, type='str'),
+            trigger_http=dict(type='bool'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
@@ -386,9 +405,9 @@ def main():
 
     # Need to set triggerHttps to {} if boolean true.
     if fetch and fetch.get('httpsTrigger') and module.params['trigger_http']:
-      module.params['https_trigger'] = fetch.get('httpsTrigger')
+        module.params['https_trigger'] = fetch.get('httpsTrigger')
     elif module.params['trigger_http']:
-      module.params['https_trigger'] = {}
+        module.params['https_trigger'] = {}
 
     if fetch:
         if state == 'present':
@@ -419,9 +438,7 @@ def create(module, link):
 
 def update(module, link, fetch):
     auth = GcpSession(module, 'cloudfunctions')
-    params = {
-        'updateMask': updateMask(resource_to_request(module), response_to_hash(module, fetch))
-    }
+    params = {'updateMask': updateMask(resource_to_request(module), response_to_hash(module, fetch))}
     request = resource_to_request(module)
     del request['name']
     return wait_for_operation(module, auth.put(link, request, params=params))
@@ -460,13 +477,29 @@ def updateMask(request, response):
     if request.get('trigger_http') != response.get('trigger_http'):
         update_mask.append('trigger_http')
     return ','.join(update_mask)
+
+
 def delete(module, link):
     auth = GcpSession(module, 'cloudfunctions')
     return wait_for_operation(module, auth.delete(link))
 
 
 def resource_to_request(module):
-    request = { u'name': name_pattern(module.params.get('name'), module),u'description': module.params.get('description'),u'entryPoint': module.params.get('entry_point'),u'runtime': module.params.get('runtime'),u'timeout': module.params.get('timeout'),u'availableMemoryMb': module.params.get('available_memory_mb'),u'labels': module.params.get('labels'),u'environmentVariables': module.params.get('environment_variables'),u'sourceArchiveUrl': module.params.get('source_archive_url'),u'sourceUploadUrl': module.params.get('source_upload_url'),u'sourceRepository': CloudFunctionSourcerepository(module.params.get('source_repository', {}), module).to_request(),u'httpsTrigger': CloudFunctionHttpstrigger(module.params.get('https_trigger', {}), module).to_request(),u'eventTrigger': CloudFunctionEventtrigger(module.params.get('event_trigger', {}), module).to_request() }
+    request = {
+        u'name': name_pattern(module.params.get('name'), module),
+        u'description': module.params.get('description'),
+        u'entryPoint': module.params.get('entry_point'),
+        u'runtime': module.params.get('runtime'),
+        u'timeout': module.params.get('timeout'),
+        u'availableMemoryMb': module.params.get('available_memory_mb'),
+        u'labels': module.params.get('labels'),
+        u'environmentVariables': module.params.get('environment_variables'),
+        u'sourceArchiveUrl': module.params.get('source_archive_url'),
+        u'sourceUploadUrl': module.params.get('source_upload_url'),
+        u'sourceRepository': CloudFunctionSourcerepository(module.params.get('source_repository', {}), module).to_request(),
+        u'httpsTrigger': CloudFunctionHttpstrigger(module.params.get('https_trigger', {}), module).to_request(),
+        u'eventTrigger': CloudFunctionEventtrigger(module.params.get('event_trigger', {}), module).to_request(),
+    }
     request = encode_request(request, module)
     return request
 
@@ -526,7 +559,27 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'name': response.get(u'name'),u'description': response.get(u'description'),u'status': response.get(u'status'),u'entryPoint': response.get(u'entryPoint'),u'runtime': response.get(u'runtime'),u'timeout': response.get(u'timeout'),u'availableMemoryMb': response.get(u'availableMemoryMb'),u'serviceAccountEmail': response.get(u'serviceAccountEmail'),u'updateTime': response.get(u'updateTime'),u'versionId': response.get(u'versionId'),u'labels': response.get(u'labels'),u'environmentVariables': response.get(u'environmentVariables'),u'sourceArchiveUrl': response.get(u'sourceArchiveUrl'),u'sourceUploadUrl': response.get(u'sourceUploadUrl'),u'sourceRepository': CloudFunctionSourcerepository(response.get(u'sourceRepository', {}), module).from_response(),u'httpsTrigger': CloudFunctionHttpstrigger(response.get(u'httpsTrigger', {}), module).from_response(),u'eventTrigger': CloudFunctionEventtrigger(response.get(u'eventTrigger', {}), module).from_response() }
+    return {
+        u'name': response.get(u'name'),
+        u'description': response.get(u'description'),
+        u'status': response.get(u'status'),
+        u'entryPoint': response.get(u'entryPoint'),
+        u'runtime': response.get(u'runtime'),
+        u'timeout': response.get(u'timeout'),
+        u'availableMemoryMb': response.get(u'availableMemoryMb'),
+        u'serviceAccountEmail': response.get(u'serviceAccountEmail'),
+        u'updateTime': response.get(u'updateTime'),
+        u'versionId': response.get(u'versionId'),
+        u'labels': response.get(u'labels'),
+        u'environmentVariables': response.get(u'environmentVariables'),
+        u'sourceArchiveUrl': response.get(u'sourceArchiveUrl'),
+        u'sourceUploadUrl': response.get(u'sourceUploadUrl'),
+        u'sourceRepository': CloudFunctionSourcerepository(response.get(u'sourceRepository', {}), module).from_response(),
+        u'httpsTrigger': CloudFunctionHttpstrigger(response.get(u'httpsTrigger', {}), module).from_response(),
+        u'eventTrigger': CloudFunctionEventtrigger(response.get(u'eventTrigger', {}), module).from_response(),
+    }
+
+
 def name_pattern(name, module):
     if name is None:
         return
@@ -596,12 +649,10 @@ class CloudFunctionSourcerepository(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'url': self.request.get('url') }
-)
+        return remove_nones_from_dict({u'url': self.request.get('url')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'url': self.request.get(u'url') }
-)
+        return remove_nones_from_dict({u'url': self.request.get(u'url')})
 
 
 class CloudFunctionHttpstrigger(object):
@@ -613,12 +664,10 @@ class CloudFunctionHttpstrigger(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({  }
-)
+        return remove_nones_from_dict({})
 
     def from_response(self):
-        return remove_nones_from_dict({  }
-)
+        return remove_nones_from_dict({})
 
 
 class CloudFunctionEventtrigger(object):
@@ -630,12 +679,14 @@ class CloudFunctionEventtrigger(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'eventType': self.request.get('event_type'),u'resource': self.request.get('resource'),u'service': self.request.get('service') }
-)
+        return remove_nones_from_dict(
+            {u'eventType': self.request.get('event_type'), u'resource': self.request.get('resource'), u'service': self.request.get('service')}
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({ u'eventType': self.request.get(u'eventType'),u'resource': self.request.get(u'resource'),u'service': self.request.get(u'service') }
-)
+        return remove_nones_from_dict(
+            {u'eventType': self.request.get(u'eventType'), u'resource': self.request.get(u'resource'), u'service': self.request.get(u'service')}
+        )
 
 
 if __name__ == '__main__':

@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -596,7 +595,48 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), description=dict(type='str'), schedule=dict(type='str'), time_zone=dict(default='Etc/UTC', type='str'), retry_config=dict(type='dict', options=dict(retry_count=dict(type='int'), max_retry_duration=dict(type='str'), min_backoff_duration=dict(type='str'), max_backoff_duration=dict(type='str'), max_doublings=dict(type='int'))), pubsub_target=dict(type='dict', options=dict(topic_name=dict(required=True, type='str'), data=dict(type='str'), attributes=dict(type='dict'))), app_engine_http_target=dict(type='dict', options=dict(http_method=dict(type='str'), app_engine_routing=dict(type='dict', options=dict(service=dict(type='str'), version=dict(type='str'), instance=dict(type='str'))), relative_uri=dict(required=True, type='str'), body=dict(type='str'), headers=dict(type='dict'))), http_target=dict(type='dict', options=dict(uri=dict(required=True, type='str'), http_method=dict(type='str'), body=dict(type='str'), headers=dict(type='dict'), oauth_token=dict(type='dict', options=dict(service_account_email=dict(type='str'), scope=dict(type='str'))), oidc_token=dict(type='dict', options=dict(service_account_email=dict(type='str'), audience=dict(type='str'))))), region=dict(required=True, type='str')), mutually_exclusive=[['app_engine_http_target', 'http_target', 'pubsub_target']])
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            name=dict(required=True, type='str'),
+            description=dict(type='str'),
+            schedule=dict(type='str'),
+            time_zone=dict(default='Etc/UTC', type='str'),
+            retry_config=dict(
+                type='dict',
+                options=dict(
+                    retry_count=dict(type='int'),
+                    max_retry_duration=dict(type='str'),
+                    min_backoff_duration=dict(type='str'),
+                    max_backoff_duration=dict(type='str'),
+                    max_doublings=dict(type='int'),
+                ),
+            ),
+            pubsub_target=dict(type='dict', options=dict(topic_name=dict(required=True, type='str'), data=dict(type='str'), attributes=dict(type='dict'))),
+            app_engine_http_target=dict(
+                type='dict',
+                options=dict(
+                    http_method=dict(type='str'),
+                    app_engine_routing=dict(type='dict', options=dict(service=dict(type='str'), version=dict(type='str'), instance=dict(type='str'))),
+                    relative_uri=dict(required=True, type='str'),
+                    body=dict(type='str'),
+                    headers=dict(type='dict'),
+                ),
+            ),
+            http_target=dict(
+                type='dict',
+                options=dict(
+                    uri=dict(required=True, type='str'),
+                    http_method=dict(type='str'),
+                    body=dict(type='str'),
+                    headers=dict(type='dict'),
+                    oauth_token=dict(type='dict', options=dict(service_account_email=dict(type='str'), scope=dict(type='str'))),
+                    oidc_token=dict(type='dict', options=dict(service_account_email=dict(type='str'), audience=dict(type='str'))),
+                ),
+            ),
+            region=dict(required=True, type='str'),
+        ),
+        mutually_exclusive=[['app_engine_http_target', 'http_target', 'pubsub_target']],
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
@@ -644,7 +684,16 @@ def delete(module, link):
 
 
 def resource_to_request(module):
-    request = { u'name': module.params.get('name'),u'description': module.params.get('description'),u'schedule': module.params.get('schedule'),u'timeZone': module.params.get('time_zone'),u'retryConfig': JobRetryconfig(module.params.get('retry_config', {}), module).to_request(),u'pubsubTarget': JobPubsubtarget(module.params.get('pubsub_target', {}), module).to_request(),u'appEngineHttpTarget': JobAppenginehttptarget(module.params.get('app_engine_http_target', {}), module).to_request(),u'httpTarget': JobHttptarget(module.params.get('http_target', {}), module).to_request() }
+    request = {
+        u'name': module.params.get('name'),
+        u'description': module.params.get('description'),
+        u'schedule': module.params.get('schedule'),
+        u'timeZone': module.params.get('time_zone'),
+        u'retryConfig': JobRetryconfig(module.params.get('retry_config', {}), module).to_request(),
+        u'pubsubTarget': JobPubsubtarget(module.params.get('pubsub_target', {}), module).to_request(),
+        u'appEngineHttpTarget': JobAppenginehttptarget(module.params.get('app_engine_http_target', {}), module).to_request(),
+        u'httpTarget': JobHttptarget(module.params.get('http_target', {}), module).to_request(),
+    }
     request = encode_request(request, module)
     return_vals = {}
     for k, v in request.items():
@@ -712,12 +761,22 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'name': module.params.get('name'),u'description': module.params.get('description'),u'schedule': module.params.get('schedule'),u'timeZone': module.params.get('time_zone'),u'retryConfig': JobRetryconfig(module.params.get('retry_config', {}), module).to_request(),u'pubsubTarget': JobPubsubtarget(module.params.get('pubsub_target', {}), module).to_request(),u'appEngineHttpTarget': JobAppenginehttptarget(module.params.get('app_engine_http_target', {}), module).to_request(),u'httpTarget': JobHttptarget(module.params.get('http_target', {}), module).to_request() }
+    return {
+        u'name': module.params.get('name'),
+        u'description': module.params.get('description'),
+        u'schedule': module.params.get('schedule'),
+        u'timeZone': module.params.get('time_zone'),
+        u'retryConfig': JobRetryconfig(module.params.get('retry_config', {}), module).to_request(),
+        u'pubsubTarget': JobPubsubtarget(module.params.get('pubsub_target', {}), module).to_request(),
+        u'appEngineHttpTarget': JobAppenginehttptarget(module.params.get('app_engine_http_target', {}), module).to_request(),
+        u'httpTarget': JobHttptarget(module.params.get('http_target', {}), module).to_request(),
+    }
 
 
 def encode_request(request, module):
-    request['name'] = "projects/%s/locations/%s/jobs/%s" %(module.params['project'], module.params['region'], module.params['name'])
+    request['name'] = "projects/%s/locations/%s/jobs/%s" % (module.params['project'], module.params['region'], module.params['name'])
     return request
+
 
 def decode_request(response, module):
     if 'name' in response:
@@ -735,12 +794,26 @@ class JobRetryconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'retryCount': self.request.get('retry_count'),u'maxRetryDuration': self.request.get('max_retry_duration'),u'minBackoffDuration': self.request.get('min_backoff_duration'),u'maxBackoffDuration': self.request.get('max_backoff_duration'),u'maxDoublings': self.request.get('max_doublings') }
-)
+        return remove_nones_from_dict(
+            {
+                u'retryCount': self.request.get('retry_count'),
+                u'maxRetryDuration': self.request.get('max_retry_duration'),
+                u'minBackoffDuration': self.request.get('min_backoff_duration'),
+                u'maxBackoffDuration': self.request.get('max_backoff_duration'),
+                u'maxDoublings': self.request.get('max_doublings'),
+            }
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({ u'retryCount': self.module.params.get('retry_count'),u'maxRetryDuration': self.module.params.get('max_retry_duration'),u'minBackoffDuration': self.module.params.get('min_backoff_duration'),u'maxBackoffDuration': self.module.params.get('max_backoff_duration'),u'maxDoublings': self.module.params.get('max_doublings') }
-)
+        return remove_nones_from_dict(
+            {
+                u'retryCount': self.module.params.get('retry_count'),
+                u'maxRetryDuration': self.module.params.get('max_retry_duration'),
+                u'minBackoffDuration': self.module.params.get('min_backoff_duration'),
+                u'maxBackoffDuration': self.module.params.get('max_backoff_duration'),
+                u'maxDoublings': self.module.params.get('max_doublings'),
+            }
+        )
 
 
 class JobPubsubtarget(object):
@@ -752,12 +825,14 @@ class JobPubsubtarget(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'topicName': self.request.get('topic_name'),u'data': self.request.get('data'),u'attributes': self.request.get('attributes') }
-)
+        return remove_nones_from_dict(
+            {u'topicName': self.request.get('topic_name'), u'data': self.request.get('data'), u'attributes': self.request.get('attributes')}
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({ u'topicName': self.module.params.get('topic_name'),u'data': self.module.params.get('data'),u'attributes': self.module.params.get('attributes') }
-)
+        return remove_nones_from_dict(
+            {u'topicName': self.module.params.get('topic_name'), u'data': self.module.params.get('data'), u'attributes': self.module.params.get('attributes')}
+        )
 
 
 class JobAppenginehttptarget(object):
@@ -769,12 +844,26 @@ class JobAppenginehttptarget(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'httpMethod': self.request.get('http_method'),u'appEngineRouting': JobAppenginerouting(self.request.get('app_engine_routing', {}), self.module).to_request(),u'relativeUri': self.request.get('relative_uri'),u'body': self.request.get('body'),u'headers': self.request.get('headers') }
-)
+        return remove_nones_from_dict(
+            {
+                u'httpMethod': self.request.get('http_method'),
+                u'appEngineRouting': JobAppenginerouting(self.request.get('app_engine_routing', {}), self.module).to_request(),
+                u'relativeUri': self.request.get('relative_uri'),
+                u'body': self.request.get('body'),
+                u'headers': self.request.get('headers'),
+            }
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({ u'httpMethod': self.module.params.get('http_method'),u'appEngineRouting': JobAppenginerouting(self.module.params.get('app_engine_routing', {}), self.module).to_request(),u'relativeUri': self.request.get(u'relativeUri'),u'body': self.module.params.get('body'),u'headers': self.module.params.get('headers') }
-)
+        return remove_nones_from_dict(
+            {
+                u'httpMethod': self.module.params.get('http_method'),
+                u'appEngineRouting': JobAppenginerouting(self.module.params.get('app_engine_routing', {}), self.module).to_request(),
+                u'relativeUri': self.request.get(u'relativeUri'),
+                u'body': self.module.params.get('body'),
+                u'headers': self.module.params.get('headers'),
+            }
+        )
 
 
 class JobAppenginerouting(object):
@@ -786,12 +875,14 @@ class JobAppenginerouting(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'service': self.request.get('service'),u'version': self.request.get('version'),u'instance': self.request.get('instance') }
-)
+        return remove_nones_from_dict(
+            {u'service': self.request.get('service'), u'version': self.request.get('version'), u'instance': self.request.get('instance')}
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({ u'service': self.module.params.get('service'),u'version': self.module.params.get('version'),u'instance': self.module.params.get('instance') }
-)
+        return remove_nones_from_dict(
+            {u'service': self.module.params.get('service'), u'version': self.module.params.get('version'), u'instance': self.module.params.get('instance')}
+        )
 
 
 class JobHttptarget(object):
@@ -803,12 +894,28 @@ class JobHttptarget(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'uri': self.request.get('uri'),u'httpMethod': self.request.get('http_method'),u'body': self.request.get('body'),u'headers': self.request.get('headers'),u'oauthToken': JobOauthtoken(self.request.get('oauth_token', {}), self.module).to_request(),u'oidcToken': JobOidctoken(self.request.get('oidc_token', {}), self.module).to_request() }
-)
+        return remove_nones_from_dict(
+            {
+                u'uri': self.request.get('uri'),
+                u'httpMethod': self.request.get('http_method'),
+                u'body': self.request.get('body'),
+                u'headers': self.request.get('headers'),
+                u'oauthToken': JobOauthtoken(self.request.get('oauth_token', {}), self.module).to_request(),
+                u'oidcToken': JobOidctoken(self.request.get('oidc_token', {}), self.module).to_request(),
+            }
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({ u'uri': self.request.get(u'uri'),u'httpMethod': self.request.get(u'httpMethod'),u'body': self.request.get(u'body'),u'headers': self.request.get(u'headers'),u'oauthToken': JobOauthtoken(self.module.params.get('oauth_token', {}), self.module).to_request(),u'oidcToken': JobOidctoken(self.module.params.get('oidc_token', {}), self.module).to_request() }
-)
+        return remove_nones_from_dict(
+            {
+                u'uri': self.request.get(u'uri'),
+                u'httpMethod': self.request.get(u'httpMethod'),
+                u'body': self.request.get(u'body'),
+                u'headers': self.request.get(u'headers'),
+                u'oauthToken': JobOauthtoken(self.module.params.get('oauth_token', {}), self.module).to_request(),
+                u'oidcToken': JobOidctoken(self.module.params.get('oidc_token', {}), self.module).to_request(),
+            }
+        )
 
 
 class JobOauthtoken(object):
@@ -820,12 +927,10 @@ class JobOauthtoken(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'serviceAccountEmail': self.request.get('service_account_email'),u'scope': self.request.get('scope') }
-)
+        return remove_nones_from_dict({u'serviceAccountEmail': self.request.get('service_account_email'), u'scope': self.request.get('scope')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'serviceAccountEmail': self.request.get(u'serviceAccountEmail'),u'scope': self.request.get(u'scope') }
-)
+        return remove_nones_from_dict({u'serviceAccountEmail': self.request.get(u'serviceAccountEmail'), u'scope': self.request.get(u'scope')})
 
 
 class JobOidctoken(object):
@@ -837,12 +942,10 @@ class JobOidctoken(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'serviceAccountEmail': self.request.get('service_account_email'),u'audience': self.request.get('audience') }
-)
+        return remove_nones_from_dict({u'serviceAccountEmail': self.request.get('service_account_email'), u'audience': self.request.get('audience')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'serviceAccountEmail': self.request.get(u'serviceAccountEmail'),u'audience': self.request.get(u'audience') }
-)
+        return remove_nones_from_dict({u'serviceAccountEmail': self.request.get(u'serviceAccountEmail'), u'audience': self.request.get(u'audience')})
 
 
 if __name__ == '__main__':

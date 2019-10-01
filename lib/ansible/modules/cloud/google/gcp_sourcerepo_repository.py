@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -154,8 +153,7 @@ import re
 def main():
     """Main function"""
 
-    module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str')))
+    module = GcpModule(argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
@@ -203,7 +201,7 @@ def delete(module, link):
 
 
 def resource_to_request(module):
-    request = { u'name': name_pattern(module.params.get('name'), module) }
+    request = {u'name': name_pattern(module.params.get('name'), module)}
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -267,7 +265,9 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'name': name_pattern(module.params.get('name'), module),u'url': response.get(u'url'),u'size': response.get(u'size') }
+    return {u'name': name_pattern(module.params.get('name'), module), u'url': response.get(u'url'), u'size': response.get(u'size')}
+
+
 def name_pattern(name, module):
     if name is None:
         return

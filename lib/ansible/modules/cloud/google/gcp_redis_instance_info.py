@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -228,8 +227,7 @@ import json
 
 
 def main():
-    module = GcpModule(
-            argument_spec=dict(region=dict(required=True, type='str'))    )
+    module = GcpModule(argument_spec=dict(region=dict(required=True, type='str')))
 
     if module._name == 'gcp_redis_instance_facts':
         module.deprecate("The 'gcp_redis_instance_facts' module has been renamed to 'gcp_redis_instance_info'", version='2.13')
@@ -237,9 +235,7 @@ def main():
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
 
-    return_value = {
-        'resources': fetch_list(module, collection(module))
-    }
+    return_value = {'resources': fetch_list(module, collection(module))}
     module.exit_json(**return_value)
 
 

@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -184,7 +183,14 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), description=dict(type='str'), source_range=dict(required=True, type='str'), action=dict(required=True, type='str'), priority=dict(type='int')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            description=dict(type='str'),
+            source_range=dict(required=True, type='str'),
+            action=dict(required=True, type='str'),
+            priority=dict(type='int'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
@@ -223,9 +229,7 @@ def create(module, link):
 
 def update(module, link, fetch):
     auth = GcpSession(module, 'appengine')
-    params = {
-        'updateMask': updateMask(resource_to_request(module), response_to_hash(module, fetch))
-    }
+    params = {'updateMask': updateMask(resource_to_request(module), response_to_hash(module, fetch))}
     request = resource_to_request(module)
     del request['name']
     return return_if_object(module, auth.patch(link, request, params=params))
@@ -242,13 +246,15 @@ def updateMask(request, response):
     if request.get('priority') != response.get('priority'):
         update_mask.append('priority')
     return ','.join(update_mask)
+
+
 def delete(module, link):
     auth = GcpSession(module, 'appengine')
     return return_if_object(module, auth.delete(link))
 
 
 def resource_to_request(module):
-    request = { u'description': module.params.get('description'),u'sourceRange': module.params.get('source_range'),u'action': module.params.get('action') }
+    request = {u'description': module.params.get('description'), u'sourceRange': module.params.get('source_range'), u'action': module.params.get('action')}
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -312,7 +318,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'description': response.get(u'description'),u'sourceRange': response.get(u'sourceRange'),u'action': response.get(u'action') }
+    return {u'description': response.get(u'description'), u'sourceRange': response.get(u'sourceRange'), u'action': response.get(u'action')}
 
 
 if __name__ == '__main__':

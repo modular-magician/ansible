@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -383,7 +382,32 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), description=dict(required=True, type='str'), dns_name=dict(required=True, type='str'), dnssec_config=dict(type='dict', options=dict(kind=dict(default='dns#managedZoneDnsSecConfig', type='str'), non_existence=dict(type='str'), state=dict(type='str'), default_key_specs=dict(type='list', elements='dict', options=dict(algorithm=dict(type='str'), key_length=dict(type='int'), key_type=dict(type='str'), kind=dict(default='dns#dnsKeySpec', type='str'))))), name=dict(required=True, type='str'), name_server_set=dict(type='str'), labels=dict(type='dict'), visibility=dict(default='public', type='str'), private_visibility_config=dict(type='dict', options=dict(networks=dict(type='list', elements='dict', options=dict(network_url=dict(type='str')))))))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            description=dict(required=True, type='str'),
+            dns_name=dict(required=True, type='str'),
+            dnssec_config=dict(
+                type='dict',
+                options=dict(
+                    kind=dict(default='dns#managedZoneDnsSecConfig', type='str'),
+                    non_existence=dict(type='str'),
+                    state=dict(type='str'),
+                    default_key_specs=dict(
+                        type='list',
+                        elements='dict',
+                        options=dict(
+                            algorithm=dict(type='str'), key_length=dict(type='int'), key_type=dict(type='str'), kind=dict(default='dns#dnsKeySpec', type='str')
+                        ),
+                    ),
+                ),
+            ),
+            name=dict(required=True, type='str'),
+            name_server_set=dict(type='str'),
+            labels=dict(type='dict'),
+            visibility=dict(default='public', type='str'),
+            private_visibility_config=dict(type='dict', options=dict(networks=dict(type='list', elements='dict', options=dict(network_url=dict(type='str'))))),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/ndev.clouddns.readwrite']
@@ -422,25 +446,30 @@ def create(module, link, kind):
 
 
 def update(module, link, kind, fetch):
-    update_fields(module, resource_to_request(module),
-                  response_to_hash(module, fetch))
+    update_fields(module, resource_to_request(module), response_to_hash(module, fetch))
     return fetch_resource(module, self_link(module), kind)
 
 
 def update_fields(module, request, response):
-    if response.get('description') != request.get('description') or response.get('labels') != request.get('labels') or response.get('privateVisibilityConfig') != request.get('privateVisibilityConfig'):
+    if (
+        response.get('description') != request.get('description')
+        or response.get('labels') != request.get('labels')
+        or response.get('privateVisibilityConfig') != request.get('privateVisibilityConfig')
+    ):
         description_update(module, request, response)
 
 
 def description_update(module, request, response):
     auth = GcpSession(module, 'dns')
     auth.patch(
-        ''.join([
-            "https://www.googleapis.com/dns/v1/",
-            "projects/{project}/managedZones/{name}"
-        ]).format(**module.params),
-{ u'description': module.params.get('description'),u'labels': module.params.get('labels'),u'privateVisibilityConfig': ManagedZonePrivatevisibilityconfig(module.params.get('private_visibility_config', {}), module).to_request() }
+        ''.join(["https://www.googleapis.com/dns/v1/", "projects/{project}/managedZones/{name}"]).format(**module.params),
+        {
+            u'description': module.params.get('description'),
+            u'labels': module.params.get('labels'),
+            u'privateVisibilityConfig': ManagedZonePrivatevisibilityconfig(module.params.get('private_visibility_config', {}), module).to_request(),
+        },
     )
+
 
 def delete(module, link, kind):
     auth = GcpSession(module, 'dns')
@@ -448,7 +477,17 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'dns#managedZone',u'description': module.params.get('description'),u'dnsName': module.params.get('dns_name'),u'dnssecConfig': ManagedZoneDnssecconfig(module.params.get('dnssec_config', {}), module).to_request(),u'name': module.params.get('name'),u'nameServerSet': module.params.get('name_server_set'),u'labels': module.params.get('labels'),u'visibility': module.params.get('visibility'),u'privateVisibilityConfig': ManagedZonePrivatevisibilityconfig(module.params.get('private_visibility_config', {}), module).to_request() }
+    request = {
+        u'kind': 'dns#managedZone',
+        u'description': module.params.get('description'),
+        u'dnsName': module.params.get('dns_name'),
+        u'dnssecConfig': ManagedZoneDnssecconfig(module.params.get('dnssec_config', {}), module).to_request(),
+        u'name': module.params.get('name'),
+        u'nameServerSet': module.params.get('name_server_set'),
+        u'labels': module.params.get('labels'),
+        u'visibility': module.params.get('visibility'),
+        u'privateVisibilityConfig': ManagedZonePrivatevisibilityconfig(module.params.get('private_visibility_config', {}), module).to_request(),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -512,7 +551,19 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'description': response.get(u'description'),u'dnsName': response.get(u'dnsName'),u'dnssecConfig': ManagedZoneDnssecconfig(response.get(u'dnssecConfig', {}), module).from_response(),u'id': response.get(u'id'),u'name': response.get(u'name'),u'nameServers': response.get(u'nameServers'),u'nameServerSet': response.get(u'nameServerSet'),u'creationTime': response.get(u'creationTime'),u'labels': response.get(u'labels'),u'visibility': response.get(u'visibility'),u'privateVisibilityConfig': ManagedZonePrivatevisibilityconfig(response.get(u'privateVisibilityConfig', {}), module).from_response() }
+    return {
+        u'description': response.get(u'description'),
+        u'dnsName': response.get(u'dnsName'),
+        u'dnssecConfig': ManagedZoneDnssecconfig(response.get(u'dnssecConfig', {}), module).from_response(),
+        u'id': response.get(u'id'),
+        u'name': response.get(u'name'),
+        u'nameServers': response.get(u'nameServers'),
+        u'nameServerSet': response.get(u'nameServerSet'),
+        u'creationTime': response.get(u'creationTime'),
+        u'labels': response.get(u'labels'),
+        u'visibility': response.get(u'visibility'),
+        u'privateVisibilityConfig': ManagedZonePrivatevisibilityconfig(response.get(u'privateVisibilityConfig', {}), module).from_response(),
+    }
 
 
 class ManagedZoneDnssecconfig(object):
@@ -524,12 +575,24 @@ class ManagedZoneDnssecconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'kind': self.request.get('kind'),u'nonExistence': self.request.get('non_existence'),u'state': self.request.get('state'),u'defaultKeySpecs': ManagedZoneDefaultkeyspecsArray(self.request.get('default_key_specs', []), self.module).to_request() }
-)
+        return remove_nones_from_dict(
+            {
+                u'kind': self.request.get('kind'),
+                u'nonExistence': self.request.get('non_existence'),
+                u'state': self.request.get('state'),
+                u'defaultKeySpecs': ManagedZoneDefaultkeyspecsArray(self.request.get('default_key_specs', []), self.module).to_request(),
+            }
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({ u'kind': self.request.get(u'kind'),u'nonExistence': self.request.get(u'nonExistence'),u'state': self.request.get(u'state'),u'defaultKeySpecs': ManagedZoneDefaultkeyspecsArray(self.request.get(u'defaultKeySpecs', []), self.module).from_response() }
-)
+        return remove_nones_from_dict(
+            {
+                u'kind': self.request.get(u'kind'),
+                u'nonExistence': self.request.get(u'nonExistence'),
+                u'state': self.request.get(u'state'),
+                u'defaultKeySpecs': ManagedZoneDefaultkeyspecsArray(self.request.get(u'defaultKeySpecs', []), self.module).from_response(),
+            }
+        )
 
 
 class ManagedZoneDefaultkeyspecsArray(object):
@@ -553,12 +616,14 @@ class ManagedZoneDefaultkeyspecsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({ u'algorithm': item.get('algorithm'),u'keyLength': item.get('key_length'),u'keyType': item.get('key_type'),u'kind': item.get('kind') }
-)
+        return remove_nones_from_dict(
+            {u'algorithm': item.get('algorithm'), u'keyLength': item.get('key_length'), u'keyType': item.get('key_type'), u'kind': item.get('kind')}
+        )
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({ u'algorithm': item.get(u'algorithm'),u'keyLength': item.get(u'keyLength'),u'keyType': item.get(u'keyType'),u'kind': item.get(u'kind') }
-)
+        return remove_nones_from_dict(
+            {u'algorithm': item.get(u'algorithm'), u'keyLength': item.get(u'keyLength'), u'keyType': item.get(u'keyType'), u'kind': item.get(u'kind')}
+        )
 
 
 class ManagedZonePrivatevisibilityconfig(object):
@@ -570,12 +635,10 @@ class ManagedZonePrivatevisibilityconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'networks': ManagedZoneNetworksArray(self.request.get('networks', []), self.module).to_request() }
-)
+        return remove_nones_from_dict({u'networks': ManagedZoneNetworksArray(self.request.get('networks', []), self.module).to_request()})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'networks': ManagedZoneNetworksArray(self.request.get(u'networks', []), self.module).from_response() }
-)
+        return remove_nones_from_dict({u'networks': ManagedZoneNetworksArray(self.request.get(u'networks', []), self.module).from_response()})
 
 
 class ManagedZoneNetworksArray(object):
@@ -599,12 +662,10 @@ class ManagedZoneNetworksArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({ u'networkUrl': item.get('network_url') }
-)
+        return remove_nones_from_dict({u'networkUrl': item.get('network_url')})
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({ u'networkUrl': item.get(u'networkUrl') }
-)
+        return remove_nones_from_dict({u'networkUrl': item.get(u'networkUrl')})
 
 
 if __name__ == '__main__':

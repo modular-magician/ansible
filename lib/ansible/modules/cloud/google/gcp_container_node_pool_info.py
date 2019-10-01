@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -411,8 +410,7 @@ import json
 
 
 def main():
-    module = GcpModule(
-            argument_spec=dict(location=dict(required=True, type='str', aliases=['region', 'zone']), cluster=dict(required=True, type='dict'))    )
+    module = GcpModule(argument_spec=dict(location=dict(required=True, type='str', aliases=['region', 'zone']), cluster=dict(required=True, type='dict')))
 
     if module._name == 'gcp_container_node_pool_facts':
         module.deprecate("The 'gcp_container_node_pool_facts' module has been renamed to 'gcp_container_node_pool_info'", version='2.13')
@@ -420,18 +418,12 @@ def main():
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
 
-    return_value = {
-        'resources': fetch_list(module, collection(module))
-    }
+    return_value = {'resources': fetch_list(module, collection(module))}
     module.exit_json(**return_value)
 
 
 def collection(module):
-    res = {
-        'project': module.params['project'],
-        'location': module.params['location'],
-        'cluster': replace_resource_dict(module.params['cluster'], 'name')
-    }
+    res = {'project': module.params['project'], 'location': module.params['location'], 'cluster': replace_resource_dict(module.params['cluster'], 'name')}
     return "https://container.googleapis.com/v1/projects/{project}/locations/{location}/clusters/{cluster}/nodePools".format(**res)
 
 

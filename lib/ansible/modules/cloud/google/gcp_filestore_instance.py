@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -292,7 +291,26 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), description=dict(type='str'), tier=dict(required=True, type='str'), labels=dict(type='dict'), file_shares=dict(required=True, type='list', elements='dict', options=dict(name=dict(required=True, type='str'), capacity_gb=dict(required=True, type='int'))), networks=dict(required=True, type='list', elements='dict', options=dict(network=dict(required=True, type='str'), modes=dict(required=True, type='list', elements='str'), reserved_ip_range=dict(type='str'))), zone=dict(required=True, type='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            name=dict(required=True, type='str'),
+            description=dict(type='str'),
+            tier=dict(required=True, type='str'),
+            labels=dict(type='dict'),
+            file_shares=dict(
+                required=True, type='list', elements='dict', options=dict(name=dict(required=True, type='str'), capacity_gb=dict(required=True, type='int'))
+            ),
+            networks=dict(
+                required=True,
+                type='list',
+                elements='dict',
+                options=dict(
+                    network=dict(required=True, type='str'), modes=dict(required=True, type='list', elements='str'), reserved_ip_range=dict(type='str')
+                ),
+            ),
+            zone=dict(required=True, type='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
@@ -331,9 +349,7 @@ def create(module, link):
 
 def update(module, link, fetch):
     auth = GcpSession(module, 'filestore')
-    params = {
-        'updateMask': updateMask(resource_to_request(module), response_to_hash(module, fetch))
-    }
+    params = {'updateMask': updateMask(resource_to_request(module), response_to_hash(module, fetch))}
     request = resource_to_request(module)
     return wait_for_operation(module, auth.patch(link, request, params=params))
 
@@ -347,13 +363,21 @@ def updateMask(request, response):
     if request.get('fileShares') != response.get('fileShares'):
         update_mask.append('fileShares')
     return ','.join(update_mask)
+
+
 def delete(module, link):
     auth = GcpSession(module, 'filestore')
     return wait_for_operation(module, auth.delete(link))
 
 
 def resource_to_request(module):
-    request = { u'description': module.params.get('description'),u'tier': module.params.get('tier'),u'labels': module.params.get('labels'),u'fileShares': InstanceFilesharesArray(module.params.get('file_shares', []), module).to_request(),u'networks': InstanceNetworksArray(module.params.get('networks', []), module).to_request() }
+    request = {
+        u'description': module.params.get('description'),
+        u'tier': module.params.get('tier'),
+        u'labels': module.params.get('labels'),
+        u'fileShares': InstanceFilesharesArray(module.params.get('file_shares', []), module).to_request(),
+        u'networks': InstanceNetworksArray(module.params.get('networks', []), module).to_request(),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -421,7 +445,18 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'name': response.get(u'name'),u'description': response.get(u'description'),u'createTime': response.get(u'createTime'),u'tier': module.params.get('tier'),u'labels': response.get(u'labels'),u'fileShares': InstanceFilesharesArray(response.get(u'fileShares', []), module).from_response(),u'networks': InstanceNetworksArray(module.params.get('networks', []), module).to_request(),u'etag': response.get(u'etag') }
+    return {
+        u'name': response.get(u'name'),
+        u'description': response.get(u'description'),
+        u'createTime': response.get(u'createTime'),
+        u'tier': module.params.get('tier'),
+        u'labels': response.get(u'labels'),
+        u'fileShares': InstanceFilesharesArray(response.get(u'fileShares', []), module).from_response(),
+        u'networks': InstanceNetworksArray(module.params.get('networks', []), module).to_request(),
+        u'etag': response.get(u'etag'),
+    }
+
+
 def name_pattern(name, module):
     if name is None:
         return
@@ -491,12 +526,10 @@ class InstanceFilesharesArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({ u'name': item.get('name'),u'capacityGb': item.get('capacity_gb') }
-)
+        return remove_nones_from_dict({u'name': item.get('name'), u'capacityGb': item.get('capacity_gb')})
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({ u'name': item.get(u'name'),u'capacityGb': item.get(u'capacityGb') }
-)
+        return remove_nones_from_dict({u'name': item.get(u'name'), u'capacityGb': item.get(u'capacityGb')})
 
 
 class InstanceNetworksArray(object):
@@ -520,12 +553,12 @@ class InstanceNetworksArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({ u'network': item.get('network'),u'modes': item.get('modes'),u'reservedIpRange': item.get('reserved_ip_range') }
-)
+        return remove_nones_from_dict({u'network': item.get('network'), u'modes': item.get('modes'), u'reservedIpRange': item.get('reserved_ip_range')})
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({ u'network': self.module.params.get('network'),u'modes': self.module.params.get('modes'),u'reservedIpRange': item.get(u'reservedIpRange') }
-)
+        return remove_nones_from_dict(
+            {u'network': self.module.params.get('network'), u'modes': self.module.params.get('modes'), u'reservedIpRange': item.get(u'reservedIpRange')}
+        )
 
 
 if __name__ == '__main__':

@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -364,7 +363,18 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), topic=dict(required=True, type='dict'), labels=dict(type='dict'), push_config=dict(type='dict', options=dict(push_endpoint=dict(required=True, type='str'), attributes=dict(type='dict'))), ack_deadline_seconds=dict(type='int'), message_retention_duration=dict(default='604800s', type='str'), retain_acked_messages=dict(type='bool'), expiration_policy=dict(type='dict', options=dict(ttl=dict(type='str')))))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            name=dict(required=True, type='str'),
+            topic=dict(required=True, type='dict'),
+            labels=dict(type='dict'),
+            push_config=dict(type='dict', options=dict(push_endpoint=dict(required=True, type='str'), attributes=dict(type='dict'))),
+            ack_deadline_seconds=dict(type='int'),
+            message_retention_duration=dict(default='604800s', type='str'),
+            retain_acked_messages=dict(type='bool'),
+            expiration_policy=dict(type='dict', options=dict(ttl=dict(type='str'))),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/pubsub']
@@ -403,9 +413,7 @@ def create(module, link):
 
 def update(module, link, fetch):
     auth = GcpSession(module, 'pubsub')
-    params = {
-        'updateMask': updateMask(resource_to_request(module), response_to_hash(module, fetch))
-    }
+    params = {'updateMask': updateMask(resource_to_request(module), response_to_hash(module, fetch))}
     request = resource_to_request(module)
     del request['name']
     return return_if_object(module, auth.patch(link, request, params=params))
@@ -426,13 +434,24 @@ def updateMask(request, response):
     if request.get('expirationPolicy') != response.get('expirationPolicy'):
         update_mask.append('expirationPolicy')
     return ','.join(update_mask)
+
+
 def delete(module, link):
     auth = GcpSession(module, 'pubsub')
     return return_if_object(module, auth.delete(link))
 
 
 def resource_to_request(module):
-    request = { u'name': name_pattern(module.params.get('name'), module),u'topic': topic_pattern(replace_resource_dict(module.params.get(u'topic', {}), 'name'), module),u'labels': module.params.get('labels'),u'pushConfig': SubscriptionPushconfig(module.params.get('push_config', {}), module).to_request(),u'ackDeadlineSeconds': module.params.get('ack_deadline_seconds'),u'messageRetentionDuration': module.params.get('message_retention_duration'),u'retainAckedMessages': module.params.get('retain_acked_messages'),u'expirationPolicy': SubscriptionExpirationpolicy(module.params.get('expiration_policy', {}), module).to_request() }
+    request = {
+        u'name': name_pattern(module.params.get('name'), module),
+        u'topic': topic_pattern(replace_resource_dict(module.params.get(u'topic', {}), 'name'), module),
+        u'labels': module.params.get('labels'),
+        u'pushConfig': SubscriptionPushconfig(module.params.get('push_config', {}), module).to_request(),
+        u'ackDeadlineSeconds': module.params.get('ack_deadline_seconds'),
+        u'messageRetentionDuration': module.params.get('message_retention_duration'),
+        u'retainAckedMessages': module.params.get('retain_acked_messages'),
+        u'expirationPolicy': SubscriptionExpirationpolicy(module.params.get('expiration_policy', {}), module).to_request(),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -496,7 +515,18 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'name': name_pattern(module.params.get('name'), module),u'topic': topic_pattern(replace_resource_dict(module.params.get(u'topic', {}), 'name'), module),u'labels': response.get(u'labels'),u'pushConfig': SubscriptionPushconfig(response.get(u'pushConfig', {}), module).from_response(),u'ackDeadlineSeconds': response.get(u'ackDeadlineSeconds'),u'messageRetentionDuration': response.get(u'messageRetentionDuration'),u'retainAckedMessages': response.get(u'retainAckedMessages'),u'expirationPolicy': SubscriptionExpirationpolicy(response.get(u'expirationPolicy', {}), module).from_response() }
+    return {
+        u'name': name_pattern(module.params.get('name'), module),
+        u'topic': topic_pattern(replace_resource_dict(module.params.get(u'topic', {}), 'name'), module),
+        u'labels': response.get(u'labels'),
+        u'pushConfig': SubscriptionPushconfig(response.get(u'pushConfig', {}), module).from_response(),
+        u'ackDeadlineSeconds': response.get(u'ackDeadlineSeconds'),
+        u'messageRetentionDuration': response.get(u'messageRetentionDuration'),
+        u'retainAckedMessages': response.get(u'retainAckedMessages'),
+        u'expirationPolicy': SubscriptionExpirationpolicy(response.get(u'expirationPolicy', {}), module).from_response(),
+    }
+
+
 def name_pattern(name, module):
     if name is None:
         return
@@ -507,6 +537,8 @@ def name_pattern(name, module):
         name = "projects/{project}/subscriptions/{name}".format(**module.params)
 
     return name
+
+
 def topic_pattern(name, module):
     if name is None:
         return
@@ -514,10 +546,7 @@ def topic_pattern(name, module):
     regex = r"projects/.*/topics/.*"
 
     if not re.match(regex, name):
-        formatted_params = {
-          'project': module.params['project'],
-          'topic': replace_resource_dict(module.params['topic'], 'name'),
-        }
+        formatted_params = {'project': module.params['project'], 'topic': replace_resource_dict(module.params['topic'], 'name')}
         name = "projects/{project}/topics/{topic}".format(**formatted_params)
 
     return name
@@ -532,12 +561,10 @@ class SubscriptionPushconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'pushEndpoint': self.request.get('push_endpoint'),u'attributes': self.request.get('attributes') }
-)
+        return remove_nones_from_dict({u'pushEndpoint': self.request.get('push_endpoint'), u'attributes': self.request.get('attributes')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'pushEndpoint': self.request.get(u'pushEndpoint'),u'attributes': self.request.get(u'attributes') }
-)
+        return remove_nones_from_dict({u'pushEndpoint': self.request.get(u'pushEndpoint'), u'attributes': self.request.get(u'attributes')})
 
 
 class SubscriptionExpirationpolicy(object):
@@ -549,12 +576,10 @@ class SubscriptionExpirationpolicy(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'ttl': self.request.get('ttl') }
-)
+        return remove_nones_from_dict({u'ttl': self.request.get('ttl')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'ttl': self.request.get(u'ttl') }
-)
+        return remove_nones_from_dict({u'ttl': self.request.get(u'ttl')})
 
 
 if __name__ == '__main__':

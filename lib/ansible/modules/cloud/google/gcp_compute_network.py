@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -258,7 +257,16 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), description=dict(type='str'), ipv4_range=dict(type='str'), name=dict(required=True, type='str'), auto_create_subnetworks=dict(type='bool'), routing_config=dict(type='dict', options=dict(routing_mode=dict(required=True, type='str')))), mutually_exclusive=[['auto_create_subnetworks', 'ipv4_range']])
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            description=dict(type='str'),
+            ipv4_range=dict(type='str'),
+            name=dict(required=True, type='str'),
+            auto_create_subnetworks=dict(type='bool'),
+            routing_config=dict(type='dict', options=dict(routing_mode=dict(required=True, type='str'))),
+        ),
+        mutually_exclusive=[['auto_create_subnetworks', 'ipv4_range']],
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -297,8 +305,7 @@ def create(module, link, kind):
 
 
 def update(module, link, kind, fetch):
-    update_fields(module, resource_to_request(module),
-                  response_to_hash(module, fetch))
+    update_fields(module, resource_to_request(module), response_to_hash(module, fetch))
     return fetch_resource(module, self_link(module), kind)
 
 
@@ -310,12 +317,10 @@ def update_fields(module, request, response):
 def routing_config_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.patch(
-        ''.join([
-            "https://www.googleapis.com/compute/v1/",
-            "projects/{project}/global/networks/{name}"
-        ]).format(**module.params),
-{ u'routingConfig': NetworkRoutingconfig(module.params.get('routing_config', {}), module).to_request() }
+        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/global/networks/{name}"]).format(**module.params),
+        {u'routingConfig': NetworkRoutingconfig(module.params.get('routing_config', {}), module).to_request()},
     )
+
 
 def delete(module, link, kind):
     auth = GcpSession(module, 'compute')
@@ -323,7 +328,14 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#network',u'description': module.params.get('description'),u'IPv4Range': module.params.get('ipv4_range'),u'name': module.params.get('name'),u'autoCreateSubnetworks': module.params.get('auto_create_subnetworks'),u'routingConfig': NetworkRoutingconfig(module.params.get('routing_config', {}), module).to_request() }
+    request = {
+        u'kind': 'compute#network',
+        u'description': module.params.get('description'),
+        u'IPv4Range': module.params.get('ipv4_range'),
+        u'name': module.params.get('name'),
+        u'autoCreateSubnetworks': module.params.get('auto_create_subnetworks'),
+        u'routingConfig': NetworkRoutingconfig(module.params.get('routing_config', {}), module).to_request(),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -387,7 +399,17 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'description': module.params.get('description'),u'gatewayIPv4': response.get(u'gatewayIPv4'),u'id': response.get(u'id'),u'IPv4Range': module.params.get('ipv4_range'),u'name': module.params.get('name'),u'subnetworks': response.get(u'subnetworks'),u'autoCreateSubnetworks': module.params.get('auto_create_subnetworks'),u'creationTimestamp': response.get(u'creationTimestamp'),u'routingConfig': NetworkRoutingconfig(response.get(u'routingConfig', {}), module).from_response() }
+    return {
+        u'description': module.params.get('description'),
+        u'gatewayIPv4': response.get(u'gatewayIPv4'),
+        u'id': response.get(u'id'),
+        u'IPv4Range': module.params.get('ipv4_range'),
+        u'name': module.params.get('name'),
+        u'subnetworks': response.get(u'subnetworks'),
+        u'autoCreateSubnetworks': module.params.get('auto_create_subnetworks'),
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'routingConfig': NetworkRoutingconfig(response.get(u'routingConfig', {}), module).from_response(),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -406,6 +428,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#network')
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
@@ -433,12 +456,10 @@ class NetworkRoutingconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'routingMode': self.request.get('routing_mode') }
-)
+        return remove_nones_from_dict({u'routingMode': self.request.get('routing_mode')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'routingMode': self.request.get(u'routingMode') }
-)
+        return remove_nones_from_dict({u'routingMode': self.request.get(u'routingMode')})
 
 
 if __name__ == '__main__':

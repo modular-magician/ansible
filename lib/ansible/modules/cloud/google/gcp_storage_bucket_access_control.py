@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -219,7 +218,13 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), bucket=dict(required=True, type='dict'), entity=dict(required=True, type='str'), role=dict(type='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            bucket=dict(required=True, type='dict'),
+            entity=dict(required=True, type='str'),
+            role=dict(type='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/devstorage.full_control']
@@ -268,7 +273,12 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'storage#bucketAccessControl',u'bucket': replace_resource_dict(module.params.get(u'bucket', {}), 'name'),u'entity': module.params.get('entity'),u'role': module.params.get('role') }
+    request = {
+        u'kind': 'storage#bucketAccessControl',
+        u'bucket': replace_resource_dict(module.params.get(u'bucket', {}), 'name'),
+        u'entity': module.params.get('entity'),
+        u'role': module.params.get('role'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -283,17 +293,12 @@ def fetch_resource(module, link, kind, allow_not_found=True):
 
 
 def self_link(module):
-    res = {
-        'bucket': replace_resource_dict(module.params['bucket'], 'name'),
-        'entity': module.params['entity']
-    }
+    res = {'bucket': replace_resource_dict(module.params['bucket'], 'name'), 'entity': module.params['entity']}
     return "https://www.googleapis.com/storage/v1/b/{bucket}/acl/{entity}".format(**res)
 
 
 def collection(module):
-    res = {
-        'bucket': replace_resource_dict(module.params['bucket'], 'name')
-    }
+    res = {'bucket': replace_resource_dict(module.params['bucket'], 'name')}
     return "https://www.googleapis.com/storage/v1/b/{bucket}/acl".format(**res)
 
 
@@ -339,7 +344,16 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'bucket': replace_resource_dict(module.params.get(u'bucket', {}), 'name'),u'domain': response.get(u'domain'),u'email': response.get(u'email'),u'entity': module.params.get('entity'),u'entityId': response.get(u'entityId'),u'id': response.get(u'id'),u'projectTeam': BucketAccessControlProjectteam(response.get(u'projectTeam', {}), module).from_response(),u'role': response.get(u'role') }
+    return {
+        u'bucket': replace_resource_dict(module.params.get(u'bucket', {}), 'name'),
+        u'domain': response.get(u'domain'),
+        u'email': response.get(u'email'),
+        u'entity': module.params.get('entity'),
+        u'entityId': response.get(u'entityId'),
+        u'id': response.get(u'id'),
+        u'projectTeam': BucketAccessControlProjectteam(response.get(u'projectTeam', {}), module).from_response(),
+        u'role': response.get(u'role'),
+    }
 
 
 class BucketAccessControlProjectteam(object):
@@ -351,12 +365,10 @@ class BucketAccessControlProjectteam(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'projectNumber': self.request.get('project_number'),u'team': self.request.get('team') }
-)
+        return remove_nones_from_dict({u'projectNumber': self.request.get('project_number'), u'team': self.request.get('team')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'projectNumber': self.request.get(u'projectNumber'),u'team': self.request.get(u'team') }
-)
+        return remove_nones_from_dict({u'projectNumber': self.request.get(u'projectNumber'), u'team': self.request.get(u'team')})
 
 
 if __name__ == '__main__':

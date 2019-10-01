@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -245,7 +244,15 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), bucket_name=dict(required=True, type='str'), cdn_policy=dict(type='dict', options=dict(signed_url_cache_max_age_sec=dict(default=3600, type='int'))), description=dict(type='str'), enable_cdn=dict(type='bool'), name=dict(required=True, type='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            bucket_name=dict(required=True, type='str'),
+            cdn_policy=dict(type='dict', options=dict(signed_url_cache_max_age_sec=dict(default=3600, type='int'))),
+            description=dict(type='str'),
+            enable_cdn=dict(type='bool'),
+            name=dict(required=True, type='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -294,7 +301,14 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#backendBucket',u'bucketName': module.params.get('bucket_name'),u'cdnPolicy': BackendBucketCdnpolicy(module.params.get('cdn_policy', {}), module).to_request(),u'description': module.params.get('description'),u'enableCdn': module.params.get('enable_cdn'),u'name': module.params.get('name') }
+    request = {
+        u'kind': 'compute#backendBucket',
+        u'bucketName': module.params.get('bucket_name'),
+        u'cdnPolicy': BackendBucketCdnpolicy(module.params.get('cdn_policy', {}), module).to_request(),
+        u'description': module.params.get('description'),
+        u'enableCdn': module.params.get('enable_cdn'),
+        u'name': module.params.get('name'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -358,7 +372,15 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'bucketName': response.get(u'bucketName'),u'cdnPolicy': BackendBucketCdnpolicy(response.get(u'cdnPolicy', {}), module).from_response(),u'creationTimestamp': response.get(u'creationTimestamp'),u'description': response.get(u'description'),u'enableCdn': response.get(u'enableCdn'),u'id': response.get(u'id'),u'name': module.params.get('name') }
+    return {
+        u'bucketName': response.get(u'bucketName'),
+        u'cdnPolicy': BackendBucketCdnpolicy(response.get(u'cdnPolicy', {}), module).from_response(),
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'description': response.get(u'description'),
+        u'enableCdn': response.get(u'enableCdn'),
+        u'id': response.get(u'id'),
+        u'name': module.params.get('name'),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -377,6 +399,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#backendBucket')
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
@@ -404,12 +427,10 @@ class BackendBucketCdnpolicy(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'signedUrlCacheMaxAgeSec': self.request.get('signed_url_cache_max_age_sec') }
-)
+        return remove_nones_from_dict({u'signedUrlCacheMaxAgeSec': self.request.get('signed_url_cache_max_age_sec')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'signedUrlCacheMaxAgeSec': self.request.get(u'signedUrlCacheMaxAgeSec') }
-)
+        return remove_nones_from_dict({u'signedUrlCacheMaxAgeSec': self.request.get(u'signedUrlCacheMaxAgeSec')})
 
 
 if __name__ == '__main__':

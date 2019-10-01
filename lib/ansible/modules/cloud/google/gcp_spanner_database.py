@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -189,7 +188,13 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), extra_statements=dict(type='list', elements='str'), instance=dict(required=True, type='dict')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            name=dict(required=True, type='str'),
+            extra_statements=dict(type='list', elements='str'),
+            instance=dict(required=True, type='dict'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/spanner.admin']
@@ -200,7 +205,7 @@ def main():
     changed = False
 
     if 'instance' in module.params and 'name' in module.params['instance']:
-      module.params['instance']['name'] = module.params['instance']['name'].split('/')[-1]
+        module.params['instance']['name'] = module.params['instance']['name'].split('/')[-1]
 
     if fetch:
         if state == 'present':
@@ -239,7 +244,7 @@ def delete(module, link):
 
 
 def resource_to_request(module):
-    request = { u'name': module.params.get('name'),u'extraStatements': module.params.get('extra_statements') }
+    request = {u'name': module.params.get('name'), u'extraStatements': module.params.get('extra_statements')}
     request = encode_request(request, module)
     return_vals = {}
     for k, v in request.items():
@@ -255,19 +260,12 @@ def fetch_resource(module, link, allow_not_found=True):
 
 
 def self_link(module):
-    res = {
-        'project': module.params['project'],
-        'instance': replace_resource_dict(module.params['instance'], 'name'),
-        'name': module.params['name']
-    }
+    res = {'project': module.params['project'], 'instance': replace_resource_dict(module.params['instance'], 'name'), 'name': module.params['name']}
     return "https://spanner.googleapis.com/v1/projects/{project}/instances/{instance}/databases/{name}".format(**res)
 
 
 def collection(module):
-    res = {
-        'project': module.params['project'],
-        'instance': replace_resource_dict(module.params['instance'], 'name')
-    }
+    res = {'project': module.params['project'], 'instance': replace_resource_dict(module.params['instance'], 'name')}
     return "https://spanner.googleapis.com/v1/projects/{project}/instances/{instance}/databases".format(**res)
 
 
@@ -316,7 +314,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'name': module.params.get('name'),u'extraStatements': module.params.get('extra_statements') }
+    return {u'name': module.params.get('name'), u'extraStatements': module.params.get('extra_statements')}
 
 
 def async_op_url(module, extra_data=None):

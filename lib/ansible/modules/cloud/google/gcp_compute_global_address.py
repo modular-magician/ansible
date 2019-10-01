@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -270,7 +269,18 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), address=dict(type='str'), description=dict(type='str'), name=dict(required=True, type='str'), ip_version=dict(type='str'), prefix_length=dict(type='int'), address_type=dict(default='EXTERNAL', type='str'), purpose=dict(type='str'), network=dict(type='dict')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            address=dict(type='str'),
+            description=dict(type='str'),
+            name=dict(required=True, type='str'),
+            ip_version=dict(type='str'),
+            prefix_length=dict(type='int'),
+            address_type=dict(default='EXTERNAL', type='str'),
+            purpose=dict(type='str'),
+            network=dict(type='dict'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -319,7 +329,17 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#address',u'address': module.params.get('address'),u'description': module.params.get('description'),u'name': module.params.get('name'),u'ipVersion': module.params.get('ip_version'),u'prefixLength': module.params.get('prefix_length'),u'addressType': module.params.get('address_type'),u'purpose': module.params.get('purpose'),u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink') }
+    request = {
+        u'kind': 'compute#address',
+        u'address': module.params.get('address'),
+        u'description': module.params.get('description'),
+        u'name': module.params.get('name'),
+        u'ipVersion': module.params.get('ip_version'),
+        u'prefixLength': module.params.get('prefix_length'),
+        u'addressType': module.params.get('address_type'),
+        u'purpose': module.params.get('purpose'),
+        u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -383,7 +403,19 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'address': response.get(u'address'),u'creationTimestamp': response.get(u'creationTimestamp'),u'description': response.get(u'description'),u'id': response.get(u'id'),u'name': response.get(u'name'),u'ipVersion': response.get(u'ipVersion'),u'region': response.get(u'region'),u'prefixLength': response.get(u'prefixLength'),u'addressType': response.get(u'addressType'),u'purpose': response.get(u'purpose'),u'network': response.get(u'network') }
+    return {
+        u'address': response.get(u'address'),
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'description': response.get(u'description'),
+        u'id': response.get(u'id'),
+        u'name': response.get(u'name'),
+        u'ipVersion': response.get(u'ipVersion'),
+        u'region': response.get(u'region'),
+        u'prefixLength': response.get(u'prefixLength'),
+        u'addressType': response.get(u'addressType'),
+        u'purpose': response.get(u'purpose'),
+        u'network': response.get(u'network'),
+    }
 
 
 def region_selflink(name, params):
@@ -411,6 +443,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#address')
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])

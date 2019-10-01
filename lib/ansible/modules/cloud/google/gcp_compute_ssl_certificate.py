@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -222,7 +221,14 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), certificate=dict(required=True, type='str'), description=dict(type='str'), name=dict(type='str'), private_key=dict(required=True, type='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            certificate=dict(required=True, type='str'),
+            description=dict(type='str'),
+            name=dict(type='str'),
+            private_key=dict(required=True, type='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -271,7 +277,13 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#sslCertificate',u'certificate': module.params.get('certificate'),u'description': module.params.get('description'),u'name': module.params.get('name'),u'privateKey': module.params.get('private_key') }
+    request = {
+        u'kind': 'compute#sslCertificate',
+        u'certificate': module.params.get('certificate'),
+        u'description': module.params.get('description'),
+        u'name': module.params.get('name'),
+        u'privateKey': module.params.get('private_key'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -335,7 +347,14 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'certificate': response.get(u'certificate'),u'creationTimestamp': response.get(u'creationTimestamp'),u'description': response.get(u'description'),u'id': response.get(u'id'),u'name': response.get(u'name'),u'privateKey': module.params.get('private_key') }
+    return {
+        u'certificate': response.get(u'certificate'),
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'description': response.get(u'description'),
+        u'id': response.get(u'id'),
+        u'name': response.get(u'name'),
+        u'privateKey': module.params.get('private_key'),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -354,6 +373,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#sslCertificate')
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])

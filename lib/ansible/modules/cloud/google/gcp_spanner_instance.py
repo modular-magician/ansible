@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -203,7 +202,15 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), config=dict(required=True, type='str'), display_name=dict(required=True, type='str'), node_count=dict(default=1, type='int'), labels=dict(type='dict')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            name=dict(required=True, type='str'),
+            config=dict(required=True, type='str'),
+            display_name=dict(required=True, type='str'),
+            node_count=dict(default=1, type='int'),
+            labels=dict(type='dict'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/spanner.admin']
@@ -250,7 +257,13 @@ def delete(module, link):
 
 
 def resource_to_request(module):
-    request = { u'name': module.params.get('name'),u'config': module.params.get('config'),u'displayName': module.params.get('display_name'),u'nodeCount': module.params.get('node_count'),u'labels': module.params.get('labels') }
+    request = {
+        u'name': module.params.get('name'),
+        u'config': module.params.get('config'),
+        u'displayName': module.params.get('display_name'),
+        u'nodeCount': module.params.get('node_count'),
+        u'labels': module.params.get('labels'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -317,7 +330,13 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'name': module.params.get('name'),u'config': response.get(u'config'),u'displayName': response.get(u'displayName'),u'nodeCount': response.get(u'nodeCount'),u'labels': response.get(u'labels') }
+    return {
+        u'name': module.params.get('name'),
+        u'config': response.get(u'config'),
+        u'displayName': response.get(u'displayName'),
+        u'nodeCount': response.get(u'nodeCount'),
+        u'labels': response.get(u'labels'),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -358,26 +377,16 @@ def raise_if_errors(response, err_path, module):
 
 def resource_to_create(module):
     instance = resource_to_request(module)
-    instance['name'] = "projects/{0}/instances/{1}".format(module.params['project'],
-                                                           module.params['name'])
-    instance['config'] = "projects/{0}/instanceConfigs/{1}".format(module.params['project'],
-                                                                   instance['config'])
-    return {
-        'instanceId': module.params['name'],
-        'instance': instance
-    }
+    instance['name'] = "projects/{0}/instances/{1}".format(module.params['project'], module.params['name'])
+    instance['config'] = "projects/{0}/instanceConfigs/{1}".format(module.params['project'], instance['config'])
+    return {'instanceId': module.params['name'], 'instance': instance}
 
 
 def resource_to_update(module):
     instance = resource_to_request(module)
-    instance['name'] = "projects/{0}/instances/{1}".format(module.params['project'],
-                                                           module.params['name'])
-    instance['config'] = "projects/{0}/instanceConfigs/{1}".format(module.params['project'],
-                                                                   instance['config'])
-    return {
-        'instance': instance,
-        'fieldMask': "'name' ,'config' ,'displayName' ,'nodeCount' ,'labels'"
-    }
+    instance['name'] = "projects/{0}/instances/{1}".format(module.params['project'], module.params['name'])
+    instance['config'] = "projects/{0}/instanceConfigs/{1}".format(module.params['project'], instance['config'])
+    return {'instance': instance, 'fieldMask': "'name' ,'config' ,'displayName' ,'nodeCount' ,'labels'"}
 
 
 def decode_response(response, module):

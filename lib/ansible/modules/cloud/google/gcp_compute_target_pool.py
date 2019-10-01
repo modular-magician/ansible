@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -301,7 +300,18 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), backup_pool=dict(type='dict'), description=dict(type='str'), failover_ratio=dict(type='str'), health_check=dict(type='dict'), instances=dict(type='list', elements='dict'), name=dict(required=True, type='str'), session_affinity=dict(type='str'), region=dict(required=True, type='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            backup_pool=dict(type='dict'),
+            description=dict(type='str'),
+            failover_ratio=dict(type='str'),
+            health_check=dict(type='dict'),
+            instances=dict(type='list', elements='dict'),
+            name=dict(required=True, type='str'),
+            session_affinity=dict(type='str'),
+            region=dict(required=True, type='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -350,7 +360,16 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#targetPool',u'backupPool': replace_resource_dict(module.params.get(u'backup_pool', {}), 'selfLink'),u'description': module.params.get('description'),u'failoverRatio': module.params.get('failover_ratio'),u'healthCheck': replace_resource_dict(module.params.get(u'health_check', {}), 'selfLink'),u'instances': replace_resource_dict(module.params.get('instances', []), 'selfLink'),u'name': module.params.get('name'),u'sessionAffinity': module.params.get('session_affinity') }
+    request = {
+        u'kind': 'compute#targetPool',
+        u'backupPool': replace_resource_dict(module.params.get(u'backup_pool', {}), 'selfLink'),
+        u'description': module.params.get('description'),
+        u'failoverRatio': module.params.get('failover_ratio'),
+        u'healthCheck': replace_resource_dict(module.params.get(u'health_check', {}), 'selfLink'),
+        u'instances': replace_resource_dict(module.params.get('instances', []), 'selfLink'),
+        u'name': module.params.get('name'),
+        u'sessionAffinity': module.params.get('session_affinity'),
+    }
     request = encode_request(request, module)
     return_vals = {}
     for k, v in request.items():
@@ -418,7 +437,17 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'backupPool': replace_resource_dict(module.params.get(u'backup_pool', {}), 'selfLink'),u'creationTimestamp': response.get(u'creationTimestamp'),u'description': response.get(u'description'),u'failoverRatio': response.get(u'failoverRatio'),u'healthCheck': response.get(u'healthCheck'),u'id': response.get(u'id'),u'instances': response.get(u'instances'),u'name': module.params.get('name'),u'sessionAffinity': module.params.get('session_affinity') }
+    return {
+        u'backupPool': replace_resource_dict(module.params.get(u'backup_pool', {}), 'selfLink'),
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'description': response.get(u'description'),
+        u'failoverRatio': response.get(u'failoverRatio'),
+        u'healthCheck': response.get(u'healthCheck'),
+        u'id': response.get(u'id'),
+        u'instances': response.get(u'instances'),
+        u'name': module.params.get('name'),
+        u'sessionAffinity': module.params.get('session_affinity'),
+    }
 
 
 def async_op_url(module, extra_data=None):

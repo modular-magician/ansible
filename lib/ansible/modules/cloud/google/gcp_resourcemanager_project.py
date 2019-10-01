@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -221,7 +220,14 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(type='str'), labels=dict(type='dict'), parent=dict(type='dict', options=dict(type=dict(type='str'), id=dict(type='str'))), id=dict(required=True, type='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            name=dict(type='str'),
+            labels=dict(type='dict'),
+            parent=dict(type='dict', options=dict(type=dict(type='str'), id=dict(type='str'))),
+            id=dict(required=True, type='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
@@ -269,7 +275,12 @@ def delete(module, link):
 
 
 def resource_to_request(module):
-    request = { u'projectId': module.params.get('id'),u'name': module.params.get('name'),u'labels': module.params.get('labels'),u'parent': ProjectParent(module.params.get('parent', {}), module).to_request() }
+    request = {
+        u'projectId': module.params.get('id'),
+        u'name': module.params.get('name'),
+        u'labels': module.params.get('labels'),
+        u'parent': ProjectParent(module.params.get('parent', {}), module).to_request(),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -336,7 +347,14 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'projectNumber': response.get(u'projectNumber'),u'lifecycleState': response.get(u'lifecycleState'),u'name': response.get(u'name'),u'createTime': response.get(u'createTime'),u'labels': response.get(u'labels'),u'parent': ProjectParent(response.get(u'parent', {}), module).from_response() }
+    return {
+        u'projectNumber': response.get(u'projectNumber'),
+        u'lifecycleState': response.get(u'lifecycleState'),
+        u'name': response.get(u'name'),
+        u'createTime': response.get(u'createTime'),
+        u'labels': response.get(u'labels'),
+        u'parent': ProjectParent(response.get(u'parent', {}), module).from_response(),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -384,12 +402,10 @@ class ProjectParent(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'type': self.request.get('type'),u'id': self.request.get('id') }
-)
+        return remove_nones_from_dict({u'type': self.request.get('type'), u'id': self.request.get('id')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'type': self.request.get(u'type'),u'id': self.request.get(u'id') }
-)
+        return remove_nones_from_dict({u'type': self.request.get(u'type'), u'id': self.request.get(u'id')})
 
 
 if __name__ == '__main__':

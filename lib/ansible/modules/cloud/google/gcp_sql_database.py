@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -190,7 +189,14 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), charset=dict(type='str'), collation=dict(type='str'), name=dict(required=True, type='str'), instance=dict(required=True, type='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            charset=dict(type='str'),
+            collation=dict(type='str'),
+            name=dict(required=True, type='str'),
+            instance=dict(required=True, type='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/sqlservice.admin']
@@ -238,7 +244,13 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'sql#database',u'instance': module.params.get('instance'),u'charset': module.params.get('charset'),u'collation': module.params.get('collation'),u'name': module.params.get('name') }
+    request = {
+        u'kind': 'sql#database',
+        u'instance': module.params.get('instance'),
+        u'charset': module.params.get('charset'),
+        u'collation': module.params.get('collation'),
+        u'name': module.params.get('name'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -305,7 +317,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'charset': response.get(u'charset'),u'collation': response.get(u'collation'),u'name': module.params.get('name') }
+    return {u'charset': response.get(u'charset'), u'collation': response.get(u'collation'), u'name': module.params.get('name')}
 
 
 def async_op_url(module, extra_data=None):
@@ -324,6 +336,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'sql#database')
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])

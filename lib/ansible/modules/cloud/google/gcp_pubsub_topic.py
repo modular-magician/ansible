@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -203,7 +202,14 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), kms_key_name=dict(type='str'), labels=dict(type='dict'), message_storage_policy=dict(type='dict', options=dict(allowed_persistence_regions=dict(required=True, type='list', elements='str')))))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            name=dict(required=True, type='str'),
+            kms_key_name=dict(type='str'),
+            labels=dict(type='dict'),
+            message_storage_policy=dict(type='dict', options=dict(allowed_persistence_regions=dict(required=True, type='list', elements='str'))),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/pubsub']
@@ -242,9 +248,7 @@ def create(module, link):
 
 def update(module, link, fetch):
     auth = GcpSession(module, 'pubsub')
-    params = {
-        'updateMask': updateMask(resource_to_request(module), response_to_hash(module, fetch))
-    }
+    params = {'updateMask': updateMask(resource_to_request(module), response_to_hash(module, fetch))}
     request = resource_to_request(module)
     del request['name']
     return return_if_object(module, auth.patch(link, request, params=params))
@@ -257,13 +261,20 @@ def updateMask(request, response):
     if request.get('messageStoragePolicy') != response.get('messageStoragePolicy'):
         update_mask.append('messageStoragePolicy')
     return ','.join(update_mask)
+
+
 def delete(module, link):
     auth = GcpSession(module, 'pubsub')
     return return_if_object(module, auth.delete(link))
 
 
 def resource_to_request(module):
-    request = { u'name': name_pattern(module.params.get('name'), module),u'kmsKeyName': module.params.get('kms_key_name'),u'labels': module.params.get('labels'),u'messageStoragePolicy': TopicMessagestoragepolicy(module.params.get('message_storage_policy', {}), module).to_request() }
+    request = {
+        u'name': name_pattern(module.params.get('name'), module),
+        u'kmsKeyName': module.params.get('kms_key_name'),
+        u'labels': module.params.get('labels'),
+        u'messageStoragePolicy': TopicMessagestoragepolicy(module.params.get('message_storage_policy', {}), module).to_request(),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -327,7 +338,14 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'name': name_pattern(module.params.get('name'), module),u'kmsKeyName': module.params.get('kms_key_name'),u'labels': response.get(u'labels'),u'messageStoragePolicy': TopicMessagestoragepolicy(response.get(u'messageStoragePolicy', {}), module).from_response() }
+    return {
+        u'name': name_pattern(module.params.get('name'), module),
+        u'kmsKeyName': module.params.get('kms_key_name'),
+        u'labels': response.get(u'labels'),
+        u'messageStoragePolicy': TopicMessagestoragepolicy(response.get(u'messageStoragePolicy', {}), module).from_response(),
+    }
+
+
 def name_pattern(name, module):
     if name is None:
         return
@@ -349,12 +367,10 @@ class TopicMessagestoragepolicy(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'allowedPersistenceRegions': self.request.get('allowed_persistence_regions') }
-)
+        return remove_nones_from_dict({u'allowedPersistenceRegions': self.request.get('allowed_persistence_regions')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'allowedPersistenceRegions': self.request.get(u'allowedPersistenceRegions') }
-)
+        return remove_nones_from_dict({u'allowedPersistenceRegions': self.request.get(u'allowedPersistenceRegions')})
 
 
 if __name__ == '__main__':

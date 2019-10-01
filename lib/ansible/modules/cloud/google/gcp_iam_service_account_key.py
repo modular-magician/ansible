@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -210,7 +209,14 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), private_key_type=dict(type='str'), key_algorithm=dict(type='str'), service_account=dict(type='dict'), path=dict(type='path')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            private_key_type=dict(type='str'),
+            key_algorithm=dict(type='str'),
+            service_account=dict(type='dict'),
+            path=dict(type='path'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/iam']
@@ -250,10 +256,7 @@ def delete(module):
 
 
 def resource_to_request(module):
-    request = {
-        u'privateKeyType': module.params.get('private_key_type'),
-        u'keyAlgorithm': module.params.get('key_algorithm')
-    }
+    request = {u'privateKeyType': module.params.get('private_key_type'), u'keyAlgorithm': module.params.get('key_algorithm')}
     return_vals = {}
     for k, v in request.items():
         if v:
@@ -282,10 +285,7 @@ def self_link_from_file(module):
 
 
 def self_link(module):
-    results = {
-        'project': module.params['project'],
-        'service_account': replace_resource_dict(module.params['service_account'], 'name')
-    }
+    results = {'project': module.params['project'], 'service_account': replace_resource_dict(module.params['service_account'], 'name')}
     return "https://iam.googleapis.com/v1/projects/{project}/serviceAccounts/{service_account}/keys".format(**results)
 
 

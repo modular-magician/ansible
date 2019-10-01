@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -318,7 +317,20 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), dest_range=dict(required=True, type='str'), description=dict(type='str'), name=dict(required=True, type='str'), network=dict(required=True, type='dict'), priority=dict(type='int'), tags=dict(type='list', elements='str'), next_hop_gateway=dict(type='str'), next_hop_instance=dict(type='dict'), next_hop_ip=dict(type='str'), next_hop_vpn_tunnel=dict(type='dict')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            dest_range=dict(required=True, type='str'),
+            description=dict(type='str'),
+            name=dict(required=True, type='str'),
+            network=dict(required=True, type='dict'),
+            priority=dict(type='int'),
+            tags=dict(type='list', elements='str'),
+            next_hop_gateway=dict(type='str'),
+            next_hop_instance=dict(type='dict'),
+            next_hop_ip=dict(type='str'),
+            next_hop_vpn_tunnel=dict(type='dict'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -367,7 +379,19 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#route',u'destRange': module.params.get('dest_range'),u'description': module.params.get('description'),u'name': module.params.get('name'),u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),u'priority': module.params.get('priority'),u'tags': module.params.get('tags'),u'nextHopGateway': module.params.get('next_hop_gateway'),u'nextHopInstance': replace_resource_dict(module.params.get(u'next_hop_instance', {}), 'selfLink'),u'nextHopIp': module.params.get('next_hop_ip'),u'nextHopVpnTunnel': replace_resource_dict(module.params.get(u'next_hop_vpn_tunnel', {}), 'selfLink') }
+    request = {
+        u'kind': 'compute#route',
+        u'destRange': module.params.get('dest_range'),
+        u'description': module.params.get('description'),
+        u'name': module.params.get('name'),
+        u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
+        u'priority': module.params.get('priority'),
+        u'tags': module.params.get('tags'),
+        u'nextHopGateway': module.params.get('next_hop_gateway'),
+        u'nextHopInstance': replace_resource_dict(module.params.get(u'next_hop_instance', {}), 'selfLink'),
+        u'nextHopIp': module.params.get('next_hop_ip'),
+        u'nextHopVpnTunnel': replace_resource_dict(module.params.get(u'next_hop_vpn_tunnel', {}), 'selfLink'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -431,7 +455,19 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'destRange': response.get(u'destRange'),u'description': response.get(u'description'),u'name': response.get(u'name'),u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),u'priority': module.params.get('priority'),u'tags': module.params.get('tags'),u'nextHopGateway': module.params.get('next_hop_gateway'),u'nextHopInstance': replace_resource_dict(module.params.get(u'next_hop_instance', {}), 'selfLink'),u'nextHopIp': module.params.get('next_hop_ip'),u'nextHopVpnTunnel': replace_resource_dict(module.params.get(u'next_hop_vpn_tunnel', {}), 'selfLink'),u'nextHopNetwork': response.get(u'nextHopNetwork') }
+    return {
+        u'destRange': response.get(u'destRange'),
+        u'description': response.get(u'description'),
+        u'name': response.get(u'name'),
+        u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
+        u'priority': module.params.get('priority'),
+        u'tags': module.params.get('tags'),
+        u'nextHopGateway': module.params.get('next_hop_gateway'),
+        u'nextHopInstance': replace_resource_dict(module.params.get(u'next_hop_instance', {}), 'selfLink'),
+        u'nextHopIp': module.params.get('next_hop_ip'),
+        u'nextHopVpnTunnel': replace_resource_dict(module.params.get(u'next_hop_vpn_tunnel', {}), 'selfLink'),
+        u'nextHopNetwork': response.get(u'nextHopNetwork'),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -450,6 +486,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#route')
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])

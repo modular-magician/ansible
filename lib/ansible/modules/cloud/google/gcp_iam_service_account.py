@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -158,7 +157,8 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(type='str'), display_name=dict(type='str')))
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(type='str'), display_name=dict(type='str'))
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/iam']
@@ -206,7 +206,7 @@ def delete(module, link):
 
 
 def resource_to_request(module):
-    request = { u'name': module.params.get('name'),u'displayName': module.params.get('display_name') }
+    request = {u'name': module.params.get('name'), u'displayName': module.params.get('display_name')}
     request = encode_request(request, module)
     return_vals = {}
     for k, v in request.items():
@@ -274,17 +274,21 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'name': response.get(u'name'),u'projectId': response.get(u'projectId'),u'uniqueId': response.get(u'uniqueId'),u'email': response.get(u'email'),u'displayName': response.get(u'displayName'),u'oauth2ClientId': response.get(u'oauth2ClientId') }
+    return {
+        u'name': response.get(u'name'),
+        u'projectId': response.get(u'projectId'),
+        u'uniqueId': response.get(u'uniqueId'),
+        u'email': response.get(u'email'),
+        u'displayName': response.get(u'displayName'),
+        u'oauth2ClientId': response.get(u'oauth2ClientId'),
+    }
 
 
 def encode_request(resource_request, module):
     """Structures the request as accountId + rest of request"""
     account_id = resource_request['name'].split('@')[0]
     del resource_request['name']
-    return {
-        'accountId': account_id,
-        'serviceAccount': resource_request
-    }
+    return {'accountId': account_id, 'serviceAccount': resource_request}
 
 
 def decode_response(response, module):

@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -283,8 +282,7 @@ import json
 
 
 def main():
-    module = GcpModule(
-            argument_spec=dict(filters=dict(type='list', elements='str'), zone=dict(required=True, type='str'))    )
+    module = GcpModule(argument_spec=dict(filters=dict(type='list', elements='str'), zone=dict(required=True, type='str')))
 
     if module._name == 'gcp_compute_instance_group_manager_facts':
         module.deprecate("The 'gcp_compute_instance_group_manager_facts' module has been renamed to 'gcp_compute_instance_group_manager_info'", version='2.13')
@@ -292,9 +290,7 @@ def main():
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
 
-    return_value = {
-        'resources': fetch_list(module, collection(module), query_options(module.params['filters']))
-    }
+    return_value = {'resources': fetch_list(module, collection(module), query_options(module.params['filters']))}
     module.exit_json(**return_value)
 
 

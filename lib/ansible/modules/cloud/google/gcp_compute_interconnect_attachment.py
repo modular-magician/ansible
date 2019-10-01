@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -360,7 +359,21 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), admin_enabled=dict(type='bool'), interconnect=dict(type='str'), description=dict(type='str'), bandwidth=dict(type='str'), edge_availability_domain=dict(type='str'), type=dict(type='str'), router=dict(required=True, type='dict'), name=dict(required=True, type='str'), candidate_subnets=dict(type='list', elements='str'), vlan_tag8021q=dict(type='int'), region=dict(required=True, type='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            admin_enabled=dict(type='bool'),
+            interconnect=dict(type='str'),
+            description=dict(type='str'),
+            bandwidth=dict(type='str'),
+            edge_availability_domain=dict(type='str'),
+            type=dict(type='str'),
+            router=dict(required=True, type='dict'),
+            name=dict(required=True, type='str'),
+            candidate_subnets=dict(type='list', elements='str'),
+            vlan_tag8021q=dict(type='int'),
+            region=dict(required=True, type='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -409,7 +422,19 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#interconnectAttachment',u'adminEnabled': module.params.get('admin_enabled'),u'interconnect': module.params.get('interconnect'),u'description': module.params.get('description'),u'bandwidth': module.params.get('bandwidth'),u'edgeAvailabilityDomain': module.params.get('edge_availability_domain'),u'type': module.params.get('type'),u'router': replace_resource_dict(module.params.get(u'router', {}), 'selfLink'),u'name': module.params.get('name'),u'candidateSubnets': module.params.get('candidate_subnets'),u'vlanTag8021q': module.params.get('vlan_tag8021q') }
+    request = {
+        u'kind': 'compute#interconnectAttachment',
+        u'adminEnabled': module.params.get('admin_enabled'),
+        u'interconnect': module.params.get('interconnect'),
+        u'description': module.params.get('description'),
+        u'bandwidth': module.params.get('bandwidth'),
+        u'edgeAvailabilityDomain': module.params.get('edge_availability_domain'),
+        u'type': module.params.get('type'),
+        u'router': replace_resource_dict(module.params.get(u'router', {}), 'selfLink'),
+        u'name': module.params.get('name'),
+        u'candidateSubnets': module.params.get('candidate_subnets'),
+        u'vlanTag8021q': module.params.get('vlan_tag8021q'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -473,7 +498,27 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'adminEnabled': response.get(u'adminEnabled'),u'cloudRouterIpAddress': response.get(u'cloudRouterIpAddress'),u'customerRouterIpAddress': response.get(u'customerRouterIpAddress'),u'interconnect': response.get(u'interconnect'),u'description': response.get(u'description'),u'bandwidth': response.get(u'bandwidth'),u'edgeAvailabilityDomain': response.get(u'edgeAvailabilityDomain'),u'pairingKey': response.get(u'pairingKey'),u'partnerAsn': response.get(u'partnerAsn'),u'privateInterconnectInfo': InterconnectAttachmentPrivateinterconnectinfo(response.get(u'privateInterconnectInfo', {}), module).from_response(),u'type': response.get(u'type'),u'state': response.get(u'state'),u'googleReferenceId': response.get(u'googleReferenceId'),u'router': response.get(u'router'),u'creationTimestamp': response.get(u'creationTimestamp'),u'id': response.get(u'id'),u'name': response.get(u'name'),u'candidateSubnets': response.get(u'candidateSubnets'),u'vlanTag8021q': response.get(u'vlanTag8021q') }
+    return {
+        u'adminEnabled': response.get(u'adminEnabled'),
+        u'cloudRouterIpAddress': response.get(u'cloudRouterIpAddress'),
+        u'customerRouterIpAddress': response.get(u'customerRouterIpAddress'),
+        u'interconnect': response.get(u'interconnect'),
+        u'description': response.get(u'description'),
+        u'bandwidth': response.get(u'bandwidth'),
+        u'edgeAvailabilityDomain': response.get(u'edgeAvailabilityDomain'),
+        u'pairingKey': response.get(u'pairingKey'),
+        u'partnerAsn': response.get(u'partnerAsn'),
+        u'privateInterconnectInfo': InterconnectAttachmentPrivateinterconnectinfo(response.get(u'privateInterconnectInfo', {}), module).from_response(),
+        u'type': response.get(u'type'),
+        u'state': response.get(u'state'),
+        u'googleReferenceId': response.get(u'googleReferenceId'),
+        u'router': response.get(u'router'),
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'id': response.get(u'id'),
+        u'name': response.get(u'name'),
+        u'candidateSubnets': response.get(u'candidateSubnets'),
+        u'vlanTag8021q': response.get(u'vlanTag8021q'),
+    }
 
 
 def region_selflink(name, params):
@@ -502,6 +547,7 @@ def wait_for_operation(module, response):
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#interconnectAttachment')
 
+
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
     op_uri = async_op_url(module, {'op_id': op_id})
@@ -528,12 +574,10 @@ class InterconnectAttachmentPrivateinterconnectinfo(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({  }
-)
+        return remove_nones_from_dict({})
 
     def from_response(self):
-        return remove_nones_from_dict({  }
-)
+        return remove_nones_from_dict({})
 
 
 if __name__ == '__main__':

@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -283,7 +282,18 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), description=dict(type='str'), name=dict(type='str'), named_ports=dict(type='list', elements='dict', options=dict(name=dict(type='str'), port=dict(type='int'))), network=dict(type='dict'), region=dict(type='str'), subnetwork=dict(type='dict'), zone=dict(required=True, type='str'), instances=dict(type='list', elements='dict')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            description=dict(type='str'),
+            name=dict(type='str'),
+            named_ports=dict(type='list', elements='dict', options=dict(name=dict(type='str'), port=dict(type='int'))),
+            network=dict(type='dict'),
+            region=dict(type='str'),
+            subnetwork=dict(type='dict'),
+            zone=dict(required=True, type='str'),
+            instances=dict(type='list', elements='dict'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -336,7 +346,15 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#instanceGroup',u'description': module.params.get('description'),u'name': module.params.get('name'),u'namedPorts': InstanceGroupNamedportsArray(module.params.get('named_ports', []), module).to_request(),u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),u'region': region_selflink(module.params.get('region'), module.params),u'subnetwork': replace_resource_dict(module.params.get(u'subnetwork', {}), 'selfLink') }
+    request = {
+        u'kind': 'compute#instanceGroup',
+        u'description': module.params.get('description'),
+        u'name': module.params.get('name'),
+        u'namedPorts': InstanceGroupNamedportsArray(module.params.get('named_ports', []), module).to_request(),
+        u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
+        u'region': region_selflink(module.params.get('region'), module.params),
+        u'subnetwork': replace_resource_dict(module.params.get(u'subnetwork', {}), 'selfLink'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -400,7 +418,16 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'creationTimestamp': response.get(u'creationTimestamp'),u'description': response.get(u'description'),u'id': response.get(u'id'),u'name': response.get(u'name'),u'namedPorts': InstanceGroupNamedportsArray(response.get(u'namedPorts', []), module).from_response(),u'network': response.get(u'network'),u'region': response.get(u'region'),u'subnetwork': response.get(u'subnetwork') }
+    return {
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'description': response.get(u'description'),
+        u'id': response.get(u'id'),
+        u'name': response.get(u'name'),
+        u'namedPorts': InstanceGroupNamedportsArray(response.get(u'namedPorts', []), module).from_response(),
+        u'network': response.get(u'network'),
+        u'region': response.get(u'region'),
+        u'subnetwork': response.get(u'subnetwork'),
+    }
 
 
 def region_selflink(name, params):
@@ -428,6 +455,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#instanceGroup')
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
@@ -471,8 +499,7 @@ class InstanceLogic(object):
 
     def list_instances(self):
         auth = GcpSession(self.module, 'compute')
-        response = return_if_object(self.module, auth.post(self._list_instances_url(), {'instanceState': 'ALL'}),
-                                    'compute#instanceGroupsListInstances')
+        response = return_if_object(self.module, auth.post(self._list_instances_url(), {'instanceState': 'ALL'}), 'compute#instanceGroupsListInstances')
 
         # Transform instance list into a list of selfLinks for diffing with module parameters
         instances = []
@@ -498,9 +525,7 @@ class InstanceLogic(object):
         return "https://www.googleapis.com/compute/v1/projects/{project}/zones/{zone}/instanceGroups/{name}/addInstances".format(**self.module.params)
 
     def _build_request(self, instances):
-        request = {
-            'instances': []
-        }
+        request = {'instances': []}
         for instance in instances:
             request['instances'].append({'instance': instance})
         return request
@@ -527,12 +552,10 @@ class InstanceGroupNamedportsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({ u'name': item.get('name'),u'port': item.get('port') }
-)
+        return remove_nones_from_dict({u'name': item.get('name'), u'port': item.get('port')})
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({ u'name': item.get(u'name'),u'port': item.get(u'port') }
-)
+        return remove_nones_from_dict({u'name': item.get(u'name'), u'port': item.get(u'port')})
 
 
 if __name__ == '__main__':

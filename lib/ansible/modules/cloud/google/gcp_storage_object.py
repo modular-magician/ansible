@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -177,7 +176,15 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), action=dict(type='str'), overwrite=dict(type='bool'), src=dict(type='path'), dest=dict(type='path'), bucket=dict(type='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            action=dict(type='str'),
+            overwrite=dict(type='bool'),
+            src=dict(type='path'),
+            dest=dict(type='path'),
+            bucket=dict(type='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/devstorage.full_control']
@@ -307,7 +314,7 @@ def object_headers(module):
     return {
         "name": module.params['dest'],
         "Content-Type": mimetypes.guess_type(module.params['src'])[0],
-        "Content-Length": str(os.path.getsize(module.params['src']))
+        "Content-Length": str(os.path.getsize(module.params['src'])),
     }
 
 

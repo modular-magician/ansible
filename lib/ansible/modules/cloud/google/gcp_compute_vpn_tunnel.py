@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -325,7 +324,20 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), description=dict(type='str'), target_vpn_gateway=dict(type='dict'), router=dict(type='dict'), peer_ip=dict(type='str'), shared_secret=dict(required=True, type='str'), ike_version=dict(default=2, type='int'), local_traffic_selector=dict(type='list', elements='str'), remote_traffic_selector=dict(type='list', elements='str'), region=dict(required=True, type='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            name=dict(required=True, type='str'),
+            description=dict(type='str'),
+            target_vpn_gateway=dict(type='dict'),
+            router=dict(type='dict'),
+            peer_ip=dict(type='str'),
+            shared_secret=dict(required=True, type='str'),
+            ike_version=dict(default=2, type='int'),
+            local_traffic_selector=dict(type='list', elements='str'),
+            remote_traffic_selector=dict(type='list', elements='str'),
+            region=dict(required=True, type='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -374,7 +386,18 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#vpnTunnel',u'name': module.params.get('name'),u'description': module.params.get('description'),u'targetVpnGateway': replace_resource_dict(module.params.get(u'target_vpn_gateway', {}), 'selfLink'),u'router': replace_resource_dict(module.params.get(u'router', {}), 'selfLink'),u'peerIp': module.params.get('peer_ip'),u'sharedSecret': module.params.get('shared_secret'),u'ikeVersion': module.params.get('ike_version'),u'localTrafficSelector': module.params.get('local_traffic_selector'),u'remoteTrafficSelector': module.params.get('remote_traffic_selector') }
+    request = {
+        u'kind': 'compute#vpnTunnel',
+        u'name': module.params.get('name'),
+        u'description': module.params.get('description'),
+        u'targetVpnGateway': replace_resource_dict(module.params.get(u'target_vpn_gateway', {}), 'selfLink'),
+        u'router': replace_resource_dict(module.params.get(u'router', {}), 'selfLink'),
+        u'peerIp': module.params.get('peer_ip'),
+        u'sharedSecret': module.params.get('shared_secret'),
+        u'ikeVersion': module.params.get('ike_version'),
+        u'localTrafficSelector': module.params.get('local_traffic_selector'),
+        u'remoteTrafficSelector': module.params.get('remote_traffic_selector'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -438,7 +461,20 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'id': response.get(u'id'),u'creationTimestamp': response.get(u'creationTimestamp'),u'name': response.get(u'name'),u'description': module.params.get('description'),u'targetVpnGateway': replace_resource_dict(module.params.get(u'target_vpn_gateway', {}), 'selfLink'),u'router': replace_resource_dict(module.params.get(u'router', {}), 'selfLink'),u'peerIp': response.get(u'peerIp'),u'sharedSecret': response.get(u'sharedSecret'),u'sharedSecretHash': response.get(u'sharedSecretHash'),u'ikeVersion': response.get(u'ikeVersion'),u'localTrafficSelector': response.get(u'localTrafficSelector'),u'remoteTrafficSelector': response.get(u'remoteTrafficSelector') }
+    return {
+        u'id': response.get(u'id'),
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'name': response.get(u'name'),
+        u'description': module.params.get('description'),
+        u'targetVpnGateway': replace_resource_dict(module.params.get(u'target_vpn_gateway', {}), 'selfLink'),
+        u'router': replace_resource_dict(module.params.get(u'router', {}), 'selfLink'),
+        u'peerIp': response.get(u'peerIp'),
+        u'sharedSecret': response.get(u'sharedSecret'),
+        u'sharedSecretHash': response.get(u'sharedSecretHash'),
+        u'ikeVersion': response.get(u'ikeVersion'),
+        u'localTrafficSelector': response.get(u'localTrafficSelector'),
+        u'remoteTrafficSelector': response.get(u'remoteTrafficSelector'),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -457,6 +493,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#vpnTunnel')
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])

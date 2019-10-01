@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -423,7 +422,44 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), default_service=dict(required=True, type='dict'), description=dict(type='str'), host_rules=dict(type='list', elements='dict', options=dict(description=dict(type='str'), hosts=dict(required=True, type='list', elements='str'), path_matcher=dict(required=True, type='str'))), name=dict(required=True, type='str'), path_matchers=dict(type='list', elements='dict', options=dict(default_service=dict(required=True, type='dict'), description=dict(type='str'), name=dict(required=True, type='str'), path_rules=dict(type='list', elements='dict', options=dict(paths=dict(required=True, type='list', elements='str'), service=dict(required=True, type='dict'))))), tests=dict(type='list', elements='dict', options=dict(description=dict(type='str'), host=dict(required=True, type='str'), path=dict(required=True, type='str'), service=dict(required=True, type='dict')))))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            default_service=dict(required=True, type='dict'),
+            description=dict(type='str'),
+            host_rules=dict(
+                type='list',
+                elements='dict',
+                options=dict(
+                    description=dict(type='str'), hosts=dict(required=True, type='list', elements='str'), path_matcher=dict(required=True, type='str')
+                ),
+            ),
+            name=dict(required=True, type='str'),
+            path_matchers=dict(
+                type='list',
+                elements='dict',
+                options=dict(
+                    default_service=dict(required=True, type='dict'),
+                    description=dict(type='str'),
+                    name=dict(required=True, type='str'),
+                    path_rules=dict(
+                        type='list',
+                        elements='dict',
+                        options=dict(paths=dict(required=True, type='list', elements='str'), service=dict(required=True, type='dict')),
+                    ),
+                ),
+            ),
+            tests=dict(
+                type='list',
+                elements='dict',
+                options=dict(
+                    description=dict(type='str'),
+                    host=dict(required=True, type='str'),
+                    path=dict(required=True, type='str'),
+                    service=dict(required=True, type='dict'),
+                ),
+            ),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -472,7 +508,15 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#urlMap',u'defaultService': replace_resource_dict(module.params.get(u'default_service', {}), 'selfLink'),u'description': module.params.get('description'),u'hostRules': UrlMapHostrulesArray(module.params.get('host_rules', []), module).to_request(),u'name': module.params.get('name'),u'pathMatchers': UrlMapPathmatchersArray(module.params.get('path_matchers', []), module).to_request(),u'tests': UrlMapTestsArray(module.params.get('tests', []), module).to_request() }
+    request = {
+        u'kind': 'compute#urlMap',
+        u'defaultService': replace_resource_dict(module.params.get(u'default_service', {}), 'selfLink'),
+        u'description': module.params.get('description'),
+        u'hostRules': UrlMapHostrulesArray(module.params.get('host_rules', []), module).to_request(),
+        u'name': module.params.get('name'),
+        u'pathMatchers': UrlMapPathmatchersArray(module.params.get('path_matchers', []), module).to_request(),
+        u'tests': UrlMapTestsArray(module.params.get('tests', []), module).to_request(),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -536,7 +580,17 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'creationTimestamp': response.get(u'creationTimestamp'),u'defaultService': response.get(u'defaultService'),u'description': response.get(u'description'),u'hostRules': UrlMapHostrulesArray(response.get(u'hostRules', []), module).from_response(),u'id': response.get(u'id'),u'fingerprint': response.get(u'fingerprint'),u'name': module.params.get('name'),u'pathMatchers': UrlMapPathmatchersArray(response.get(u'pathMatchers', []), module).from_response(),u'tests': UrlMapTestsArray(response.get(u'tests', []), module).from_response() }
+    return {
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'defaultService': response.get(u'defaultService'),
+        u'description': response.get(u'description'),
+        u'hostRules': UrlMapHostrulesArray(response.get(u'hostRules', []), module).from_response(),
+        u'id': response.get(u'id'),
+        u'fingerprint': response.get(u'fingerprint'),
+        u'name': module.params.get('name'),
+        u'pathMatchers': UrlMapPathmatchersArray(response.get(u'pathMatchers', []), module).from_response(),
+        u'tests': UrlMapTestsArray(response.get(u'tests', []), module).from_response(),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -555,6 +609,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#urlMap')
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
@@ -594,12 +649,10 @@ class UrlMapHostrulesArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({ u'description': item.get('description'),u'hosts': item.get('hosts'),u'pathMatcher': item.get('path_matcher') }
-)
+        return remove_nones_from_dict({u'description': item.get('description'), u'hosts': item.get('hosts'), u'pathMatcher': item.get('path_matcher')})
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({ u'description': item.get(u'description'),u'hosts': item.get(u'hosts'),u'pathMatcher': item.get(u'pathMatcher') }
-)
+        return remove_nones_from_dict({u'description': item.get(u'description'), u'hosts': item.get(u'hosts'), u'pathMatcher': item.get(u'pathMatcher')})
 
 
 class UrlMapPathmatchersArray(object):
@@ -623,12 +676,24 @@ class UrlMapPathmatchersArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({ u'defaultService': replace_resource_dict(item.get(u'default_service', {}), 'selfLink'),u'description': item.get('description'),u'name': item.get('name'),u'pathRules': UrlMapPathrulesArray(item.get('path_rules', []), self.module).to_request() }
-)
+        return remove_nones_from_dict(
+            {
+                u'defaultService': replace_resource_dict(item.get(u'default_service', {}), 'selfLink'),
+                u'description': item.get('description'),
+                u'name': item.get('name'),
+                u'pathRules': UrlMapPathrulesArray(item.get('path_rules', []), self.module).to_request(),
+            }
+        )
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({ u'defaultService': item.get(u'defaultService'),u'description': item.get(u'description'),u'name': item.get(u'name'),u'pathRules': UrlMapPathrulesArray(item.get(u'pathRules', []), self.module).from_response() }
-)
+        return remove_nones_from_dict(
+            {
+                u'defaultService': item.get(u'defaultService'),
+                u'description': item.get(u'description'),
+                u'name': item.get(u'name'),
+                u'pathRules': UrlMapPathrulesArray(item.get(u'pathRules', []), self.module).from_response(),
+            }
+        )
 
 
 class UrlMapPathrulesArray(object):
@@ -652,12 +717,10 @@ class UrlMapPathrulesArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({ u'paths': item.get('paths'),u'service': replace_resource_dict(item.get(u'service', {}), 'selfLink') }
-)
+        return remove_nones_from_dict({u'paths': item.get('paths'), u'service': replace_resource_dict(item.get(u'service', {}), 'selfLink')})
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({ u'paths': item.get(u'paths'),u'service': item.get(u'service') }
-)
+        return remove_nones_from_dict({u'paths': item.get(u'paths'), u'service': item.get(u'service')})
 
 
 class UrlMapTestsArray(object):
@@ -681,12 +744,19 @@ class UrlMapTestsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({ u'description': item.get('description'),u'host': item.get('host'),u'path': item.get('path'),u'service': replace_resource_dict(item.get(u'service', {}), 'selfLink') }
-)
+        return remove_nones_from_dict(
+            {
+                u'description': item.get('description'),
+                u'host': item.get('host'),
+                u'path': item.get('path'),
+                u'service': replace_resource_dict(item.get(u'service', {}), 'selfLink'),
+            }
+        )
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({ u'description': item.get(u'description'),u'host': item.get(u'host'),u'path': item.get(u'path'),u'service': item.get(u'service') }
-)
+        return remove_nones_from_dict(
+            {u'description': item.get(u'description'), u'host': item.get(u'host'), u'path': item.get(u'path'), u'service': item.get(u'service')}
+        )
 
 
 if __name__ == '__main__':

@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -325,7 +324,16 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), description=dict(type='str'), name=dict(required=True, type='str'), quic_override=dict(type='str'), ssl_certificates=dict(required=True, type='list', elements='dict'), ssl_policy=dict(type='dict'), url_map=dict(required=True, type='dict')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            description=dict(type='str'),
+            name=dict(required=True, type='str'),
+            quic_override=dict(type='str'),
+            ssl_certificates=dict(required=True, type='list', elements='dict'),
+            ssl_policy=dict(type='dict'),
+            url_map=dict(required=True, type='dict'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -364,8 +372,7 @@ def create(module, link, kind):
 
 
 def update(module, link, kind, fetch):
-    update_fields(module, resource_to_request(module),
-                  response_to_hash(module, fetch))
+    update_fields(module, resource_to_request(module), response_to_hash(module, fetch))
     return fetch_resource(module, self_link(module), kind)
 
 
@@ -383,42 +390,34 @@ def update_fields(module, request, response):
 def quic_override_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join([
-            "https://www.googleapis.com/compute/v1/",
-            "projects/{project}/global/targetHttpsProxies/{name}/setQuicOverride"
-        ]).format(**module.params),
-{ u'quicOverride': module.params.get('quic_override') }
+        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/global/targetHttpsProxies/{name}/setQuicOverride"]).format(**module.params),
+        {u'quicOverride': module.params.get('quic_override')},
     )
+
 
 def ssl_certificates_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join([
-            "https://www.googleapis.com/compute/v1/",
-            "projects/{project}/targetHttpsProxies/{name}/setSslCertificates"
-        ]).format(**module.params),
-{ u'sslCertificates': replace_resource_dict(module.params.get('ssl_certificates', []), 'selfLink') }
+        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/targetHttpsProxies/{name}/setSslCertificates"]).format(**module.params),
+        {u'sslCertificates': replace_resource_dict(module.params.get('ssl_certificates', []), 'selfLink')},
     )
+
 
 def ssl_policy_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join([
-            "https://www.googleapis.com/compute/v1/",
-            "projects/{project}/global/targetHttpsProxies/{name}/setSslPolicy"
-        ]).format(**module.params),
-{ u'sslPolicy': replace_resource_dict(module.params.get(u'ssl_policy', {}), 'selfLink') }
+        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/global/targetHttpsProxies/{name}/setSslPolicy"]).format(**module.params),
+        {u'sslPolicy': replace_resource_dict(module.params.get(u'ssl_policy', {}), 'selfLink')},
     )
+
 
 def url_map_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join([
-            "https://www.googleapis.com/compute/v1/",
-            "projects/{project}/targetHttpsProxies/{name}/setUrlMap"
-        ]).format(**module.params),
-{ u'urlMap': replace_resource_dict(module.params.get(u'url_map', {}), 'selfLink') }
+        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/targetHttpsProxies/{name}/setUrlMap"]).format(**module.params),
+        {u'urlMap': replace_resource_dict(module.params.get(u'url_map', {}), 'selfLink')},
     )
+
 
 def delete(module, link, kind):
     auth = GcpSession(module, 'compute')
@@ -426,7 +425,15 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#targetHttpsProxy',u'description': module.params.get('description'),u'name': module.params.get('name'),u'quicOverride': module.params.get('quic_override'),u'sslCertificates': replace_resource_dict(module.params.get('ssl_certificates', []), 'selfLink'),u'sslPolicy': replace_resource_dict(module.params.get(u'ssl_policy', {}), 'selfLink'),u'urlMap': replace_resource_dict(module.params.get(u'url_map', {}), 'selfLink') }
+    request = {
+        u'kind': 'compute#targetHttpsProxy',
+        u'description': module.params.get('description'),
+        u'name': module.params.get('name'),
+        u'quicOverride': module.params.get('quic_override'),
+        u'sslCertificates': replace_resource_dict(module.params.get('ssl_certificates', []), 'selfLink'),
+        u'sslPolicy': replace_resource_dict(module.params.get(u'ssl_policy', {}), 'selfLink'),
+        u'urlMap': replace_resource_dict(module.params.get(u'url_map', {}), 'selfLink'),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -490,7 +497,16 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'creationTimestamp': response.get(u'creationTimestamp'),u'description': module.params.get('description'),u'id': response.get(u'id'),u'name': module.params.get('name'),u'quicOverride': response.get(u'quicOverride'),u'sslCertificates': response.get(u'sslCertificates'),u'sslPolicy': response.get(u'sslPolicy'),u'urlMap': response.get(u'urlMap') }
+    return {
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'description': module.params.get('description'),
+        u'id': response.get(u'id'),
+        u'name': module.params.get('name'),
+        u'quicOverride': response.get(u'quicOverride'),
+        u'sslCertificates': response.get(u'sslCertificates'),
+        u'sslPolicy': response.get(u'sslPolicy'),
+        u'urlMap': response.get(u'urlMap'),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -509,6 +525,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#targetHttpsProxy')
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])

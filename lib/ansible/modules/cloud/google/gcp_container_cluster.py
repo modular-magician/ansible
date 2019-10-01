@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -1261,7 +1260,88 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(type='str'), description=dict(type='str'), initial_node_count=dict(type='int'), node_config=dict(type='dict', options=dict(machine_type=dict(type='str'), disk_size_gb=dict(type='int'), oauth_scopes=dict(type='list', elements='str'), service_account=dict(type='str'), metadata=dict(type='dict'), image_type=dict(type='str'), labels=dict(type='dict'), local_ssd_count=dict(type='int'), tags=dict(type='list', elements='str'), preemptible=dict(type='bool'), accelerators=dict(type='list', elements='dict', options=dict(accelerator_count=dict(type='str'), accelerator_type=dict(type='str'))), disk_type=dict(type='str'), min_cpu_platform=dict(type='str'), taints=dict(type='list', elements='dict', options=dict(key=dict(type='str'), value=dict(type='str'), effect=dict(type='str'))))), master_auth=dict(type='dict', options=dict(username=dict(type='str'), password=dict(type='str'), client_certificate_config=dict(type='dict', options=dict(issue_client_certificate=dict(type='bool'))))), logging_service=dict(type='str'), monitoring_service=dict(type='str'), network=dict(type='str'), private_cluster_config=dict(type='dict', options=dict(enable_private_nodes=dict(type='bool'), enable_private_endpoint=dict(type='bool'), master_ipv4_cidr_block=dict(type='str'))), cluster_ipv4_cidr=dict(type='str'), addons_config=dict(type='dict', options=dict(http_load_balancing=dict(type='dict', options=dict(disabled=dict(type='bool'))), horizontal_pod_autoscaling=dict(type='dict', options=dict(disabled=dict(type='bool'))), network_policy_config=dict(type='dict', options=dict(disabled=dict(type='bool'))))), subnetwork=dict(type='str'), locations=dict(type='list', elements='str', aliases=['nodeLocations']), resource_labels=dict(type='dict'), legacy_abac=dict(type='dict', options=dict(enabled=dict(type='bool'))), network_policy=dict(type='dict', options=dict(provider=dict(type='str'), enabled=dict(type='bool'))), default_max_pods_constraint=dict(type='dict', options=dict(max_pods_per_node=dict(type='str'))), ip_allocation_policy=dict(type='dict', options=dict(use_ip_aliases=dict(type='bool'), create_subnetwork=dict(type='bool'), subnetwork_name=dict(type='str'), cluster_secondary_range_name=dict(type='str'), services_secondary_range_name=dict(type='str'), cluster_ipv4_cidr_block=dict(type='str'), node_ipv4_cidr_block=dict(type='str'), services_ipv4_cidr_block=dict(type='str'), tpu_ipv4_cidr_block=dict(type='str'))), enable_tpu=dict(type='bool'), tpu_ipv4_cidr_block=dict(type='str'), master_authorized_networks_config=dict(type='dict', options=dict(enabled=dict(type='bool'), cidr_blocks=dict(type='list', elements='dict', options=dict(display_name=dict(type='str'), cidr_block=dict(type='str'))))), location=dict(required=True, type='str', aliases=['zone']), kubectl_path=dict(type='str'), kubectl_context=dict(type='str')))
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            name=dict(type='str'),
+            description=dict(type='str'),
+            initial_node_count=dict(type='int'),
+            node_config=dict(
+                type='dict',
+                options=dict(
+                    machine_type=dict(type='str'),
+                    disk_size_gb=dict(type='int'),
+                    oauth_scopes=dict(type='list', elements='str'),
+                    service_account=dict(type='str'),
+                    metadata=dict(type='dict'),
+                    image_type=dict(type='str'),
+                    labels=dict(type='dict'),
+                    local_ssd_count=dict(type='int'),
+                    tags=dict(type='list', elements='str'),
+                    preemptible=dict(type='bool'),
+                    accelerators=dict(type='list', elements='dict', options=dict(accelerator_count=dict(type='str'), accelerator_type=dict(type='str'))),
+                    disk_type=dict(type='str'),
+                    min_cpu_platform=dict(type='str'),
+                    taints=dict(type='list', elements='dict', options=dict(key=dict(type='str'), value=dict(type='str'), effect=dict(type='str'))),
+                ),
+            ),
+            master_auth=dict(
+                type='dict',
+                options=dict(
+                    username=dict(type='str'),
+                    password=dict(type='str'),
+                    client_certificate_config=dict(type='dict', options=dict(issue_client_certificate=dict(type='bool'))),
+                ),
+            ),
+            logging_service=dict(type='str'),
+            monitoring_service=dict(type='str'),
+            network=dict(type='str'),
+            private_cluster_config=dict(
+                type='dict',
+                options=dict(enable_private_nodes=dict(type='bool'), enable_private_endpoint=dict(type='bool'), master_ipv4_cidr_block=dict(type='str')),
+            ),
+            cluster_ipv4_cidr=dict(type='str'),
+            addons_config=dict(
+                type='dict',
+                options=dict(
+                    http_load_balancing=dict(type='dict', options=dict(disabled=dict(type='bool'))),
+                    horizontal_pod_autoscaling=dict(type='dict', options=dict(disabled=dict(type='bool'))),
+                    network_policy_config=dict(type='dict', options=dict(disabled=dict(type='bool'))),
+                ),
+            ),
+            subnetwork=dict(type='str'),
+            locations=dict(type='list', elements='str', aliases=['nodeLocations']),
+            resource_labels=dict(type='dict'),
+            legacy_abac=dict(type='dict', options=dict(enabled=dict(type='bool'))),
+            network_policy=dict(type='dict', options=dict(provider=dict(type='str'), enabled=dict(type='bool'))),
+            default_max_pods_constraint=dict(type='dict', options=dict(max_pods_per_node=dict(type='str'))),
+            ip_allocation_policy=dict(
+                type='dict',
+                options=dict(
+                    use_ip_aliases=dict(type='bool'),
+                    create_subnetwork=dict(type='bool'),
+                    subnetwork_name=dict(type='str'),
+                    cluster_secondary_range_name=dict(type='str'),
+                    services_secondary_range_name=dict(type='str'),
+                    cluster_ipv4_cidr_block=dict(type='str'),
+                    node_ipv4_cidr_block=dict(type='str'),
+                    services_ipv4_cidr_block=dict(type='str'),
+                    tpu_ipv4_cidr_block=dict(type='str'),
+                ),
+            ),
+            enable_tpu=dict(type='bool'),
+            tpu_ipv4_cidr_block=dict(type='str'),
+            master_authorized_networks_config=dict(
+                type='dict',
+                options=dict(
+                    enabled=dict(type='bool'),
+                    cidr_blocks=dict(type='list', elements='dict', options=dict(display_name=dict(type='str'), cidr_block=dict(type='str'))),
+                ),
+            ),
+            location=dict(required=True, type='str', aliases=['zone']),
+            kubectl_path=dict(type='str'),
+            kubectl_context=dict(type='str'),
+        )
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
@@ -1312,7 +1392,31 @@ def delete(module, link):
 
 
 def resource_to_request(module):
-    request = { u'name': module.params.get('name'),u'description': module.params.get('description'),u'initialNodeCount': module.params.get('initial_node_count'),u'nodeConfig': ClusterNodeconfig(module.params.get('node_config', {}), module).to_request(),u'masterAuth': ClusterMasterauth(module.params.get('master_auth', {}), module).to_request(),u'loggingService': module.params.get('logging_service'),u'monitoringService': module.params.get('monitoring_service'),u'network': module.params.get('network'),u'privateClusterConfig': ClusterPrivateclusterconfig(module.params.get('private_cluster_config', {}), module).to_request(),u'clusterIpv4Cidr': module.params.get('cluster_ipv4_cidr'),u'addonsConfig': ClusterAddonsconfig(module.params.get('addons_config', {}), module).to_request(),u'subnetwork': module.params.get('subnetwork'),u'locations': module.params.get('locations'),u'resourceLabels': module.params.get('resource_labels'),u'legacyAbac': ClusterLegacyabac(module.params.get('legacy_abac', {}), module).to_request(),u'networkPolicy': ClusterNetworkpolicy(module.params.get('network_policy', {}), module).to_request(),u'defaultMaxPodsConstraint': ClusterDefaultmaxpodsconstraint(module.params.get('default_max_pods_constraint', {}), module).to_request(),u'ipAllocationPolicy': ClusterIpallocationpolicy(module.params.get('ip_allocation_policy', {}), module).to_request(),u'enableTpu': module.params.get('enable_tpu'),u'tpuIpv4CidrBlock': module.params.get('tpu_ipv4_cidr_block'),u'masterAuthorizedNetworksConfig': ClusterMasterauthorizednetworksconfig(module.params.get('master_authorized_networks_config', {}), module).to_request() }
+    request = {
+        u'name': module.params.get('name'),
+        u'description': module.params.get('description'),
+        u'initialNodeCount': module.params.get('initial_node_count'),
+        u'nodeConfig': ClusterNodeconfig(module.params.get('node_config', {}), module).to_request(),
+        u'masterAuth': ClusterMasterauth(module.params.get('master_auth', {}), module).to_request(),
+        u'loggingService': module.params.get('logging_service'),
+        u'monitoringService': module.params.get('monitoring_service'),
+        u'network': module.params.get('network'),
+        u'privateClusterConfig': ClusterPrivateclusterconfig(module.params.get('private_cluster_config', {}), module).to_request(),
+        u'clusterIpv4Cidr': module.params.get('cluster_ipv4_cidr'),
+        u'addonsConfig': ClusterAddonsconfig(module.params.get('addons_config', {}), module).to_request(),
+        u'subnetwork': module.params.get('subnetwork'),
+        u'locations': module.params.get('locations'),
+        u'resourceLabels': module.params.get('resource_labels'),
+        u'legacyAbac': ClusterLegacyabac(module.params.get('legacy_abac', {}), module).to_request(),
+        u'networkPolicy': ClusterNetworkpolicy(module.params.get('network_policy', {}), module).to_request(),
+        u'defaultMaxPodsConstraint': ClusterDefaultmaxpodsconstraint(module.params.get('default_max_pods_constraint', {}), module).to_request(),
+        u'ipAllocationPolicy': ClusterIpallocationpolicy(module.params.get('ip_allocation_policy', {}), module).to_request(),
+        u'enableTpu': module.params.get('enable_tpu'),
+        u'tpuIpv4CidrBlock': module.params.get('tpu_ipv4_cidr_block'),
+        u'masterAuthorizedNetworksConfig': ClusterMasterauthorizednetworksconfig(
+            module.params.get('master_authorized_networks_config', {}), module
+        ).to_request(),
+    }
     request = encode_request(request, module)
     return_vals = {}
     for k, v in request.items():
@@ -1377,7 +1481,42 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'name': response.get(u'name'),u'description': response.get(u'description'),u'initialNodeCount': module.params.get('initial_node_count'),u'nodeConfig': ClusterNodeconfig(module.params.get('node_config', {}), module).to_request(),u'masterAuth': ClusterMasterauth(response.get(u'masterAuth', {}), module).from_response(),u'loggingService': response.get(u'loggingService'),u'monitoringService': response.get(u'monitoringService'),u'network': response.get(u'network'),u'privateClusterConfig': ClusterPrivateclusterconfig(response.get(u'privateClusterConfig', {}), module).from_response(),u'clusterIpv4Cidr': response.get(u'clusterIpv4Cidr'),u'addonsConfig': ClusterAddonsconfig(response.get(u'addonsConfig', {}), module).from_response(),u'subnetwork': response.get(u'subnetwork'),u'locations': response.get(u'locations'),u'resourceLabels': response.get(u'resourceLabels'),u'labelFingerprint': response.get(u'labelFingerprint'),u'legacyAbac': ClusterLegacyabac(response.get(u'legacyAbac', {}), module).from_response(),u'networkPolicy': ClusterNetworkpolicy(response.get(u'networkPolicy', {}), module).from_response(),u'defaultMaxPodsConstraint': ClusterDefaultmaxpodsconstraint(response.get(u'defaultMaxPodsConstraint', {}), module).from_response(),u'ipAllocationPolicy': ClusterIpallocationpolicy(response.get(u'ipAllocationPolicy', {}), module).from_response(),u'endpoint': response.get(u'endpoint'),u'initialClusterVersion': response.get(u'initialClusterVersion'),u'currentMasterVersion': response.get(u'currentMasterVersion'),u'currentNodeVersion': response.get(u'currentNodeVersion'),u'createTime': response.get(u'createTime'),u'status': response.get(u'status'),u'statusMessage': response.get(u'statusMessage'),u'nodeIpv4CidrSize': response.get(u'nodeIpv4CidrSize'),u'servicesIpv4Cidr': response.get(u'servicesIpv4Cidr'),u'currentNodeCount': response.get(u'currentNodeCount'),u'expireTime': response.get(u'expireTime'),u'enableTpu': response.get(u'enableTpu'),u'tpuIpv4CidrBlock': response.get(u'tpuIpv4CidrBlock'),u'conditions': ClusterConditionsArray(response.get(u'conditions', []), module).from_response(),u'masterAuthorizedNetworksConfig': ClusterMasterauthorizednetworksconfig(response.get(u'masterAuthorizedNetworksConfig', {}), module).from_response() }
+    return {
+        u'name': response.get(u'name'),
+        u'description': response.get(u'description'),
+        u'initialNodeCount': module.params.get('initial_node_count'),
+        u'nodeConfig': ClusterNodeconfig(module.params.get('node_config', {}), module).to_request(),
+        u'masterAuth': ClusterMasterauth(response.get(u'masterAuth', {}), module).from_response(),
+        u'loggingService': response.get(u'loggingService'),
+        u'monitoringService': response.get(u'monitoringService'),
+        u'network': response.get(u'network'),
+        u'privateClusterConfig': ClusterPrivateclusterconfig(response.get(u'privateClusterConfig', {}), module).from_response(),
+        u'clusterIpv4Cidr': response.get(u'clusterIpv4Cidr'),
+        u'addonsConfig': ClusterAddonsconfig(response.get(u'addonsConfig', {}), module).from_response(),
+        u'subnetwork': response.get(u'subnetwork'),
+        u'locations': response.get(u'locations'),
+        u'resourceLabels': response.get(u'resourceLabels'),
+        u'labelFingerprint': response.get(u'labelFingerprint'),
+        u'legacyAbac': ClusterLegacyabac(response.get(u'legacyAbac', {}), module).from_response(),
+        u'networkPolicy': ClusterNetworkpolicy(response.get(u'networkPolicy', {}), module).from_response(),
+        u'defaultMaxPodsConstraint': ClusterDefaultmaxpodsconstraint(response.get(u'defaultMaxPodsConstraint', {}), module).from_response(),
+        u'ipAllocationPolicy': ClusterIpallocationpolicy(response.get(u'ipAllocationPolicy', {}), module).from_response(),
+        u'endpoint': response.get(u'endpoint'),
+        u'initialClusterVersion': response.get(u'initialClusterVersion'),
+        u'currentMasterVersion': response.get(u'currentMasterVersion'),
+        u'currentNodeVersion': response.get(u'currentNodeVersion'),
+        u'createTime': response.get(u'createTime'),
+        u'status': response.get(u'status'),
+        u'statusMessage': response.get(u'statusMessage'),
+        u'nodeIpv4CidrSize': response.get(u'nodeIpv4CidrSize'),
+        u'servicesIpv4Cidr': response.get(u'servicesIpv4Cidr'),
+        u'currentNodeCount': response.get(u'currentNodeCount'),
+        u'expireTime': response.get(u'expireTime'),
+        u'enableTpu': response.get(u'enableTpu'),
+        u'tpuIpv4CidrBlock': response.get(u'tpuIpv4CidrBlock'),
+        u'conditions': ClusterConditionsArray(response.get(u'conditions', []), module).from_response(),
+        u'masterAuthorizedNetworksConfig': ClusterMasterauthorizednetworksconfig(response.get(u'masterAuthorizedNetworksConfig', {}), module).from_response(),
+    }
 
 
 def async_op_url(module, extra_data=None):
@@ -1396,6 +1535,7 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']))
+
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
@@ -1425,15 +1565,17 @@ def raise_if_errors(response, err_path, module):
 #
 # Format the request to match the expected input by the API
 def encode_request(resource_request, module):
-    return {
-        'cluster': resource_request
-    }
+    return {'cluster': resource_request}
+
 
 # Deletes the default node pool on default creation.
 def delete_default_node_pool(module):
     auth = GcpSession(module, 'container')
-    link = "https://container.googleapis.com/v1/projects/%s/locations/%s/clusters/%s/nodePools/default-pool" % \
-        (module.params['project'], module.params['location'], module.params['name'])
+    link = "https://container.googleapis.com/v1/projects/%s/locations/%s/clusters/%s/nodePools/default-pool" % (
+        module.params['project'],
+        module.params['location'],
+        module.params['name'],
+    )
     return wait_for_operation(module, auth.delete(link))
 
 
@@ -1445,6 +1587,7 @@ class Kubectl(object):
     Writes a kubectl config file
     kubectl_path must be set or this will fail.
     """
+
     def write_file(self):
         try:
             import yaml
@@ -1457,6 +1600,7 @@ class Kubectl(object):
     """
     Returns the contents of a kubectl file
     """
+
     def _contents(self):
         token = self._auth_token()
         endpoint = "https://%s" % self.fetch["endpoint"]
@@ -1465,54 +1609,40 @@ class Kubectl(object):
             context = self.module.params['name']
 
         return {
-          'apiVersion': 'v1',
-          'clusters': [
-            {
-              'name': context,
-              'cluster': {
-                'certificate-authority-data':
-                  str(self.fetch['masterAuth']['clusterCaCertificate']),
-                'server': endpoint,
-              }
-            }
-          ],
-          'contexts': [
-            {
-              'name': context,
-              'context': {
-                'cluster': context,
-                'user': context
-              }
-            }
-          ],
-          'current-context': context,
-          'kind': 'Config',
-          'preferences': {},
-          'users': [
-            {
-              'name': context,
-              'user': {
-                'auth-provider': {
-                  'config': {
-                    'access-token': token,
-                    'cmd-args': 'config config-helper --format=json',
-                    'cmd-path': '/usr/lib64/google-cloud-sdk/bin/gcloud',
-                    'expiry-key': '{.credential.token_expiry}',
-                    'token-key': '{.credential.access_token}'
-                  },
-                  'name': 'gcp'
-                },
-                'username': str(self.fetch['masterAuth']['username']),
-                'password': str(self.fetch['masterAuth']['password'])
-              }
-            }
-          ]
+            'apiVersion': 'v1',
+            'clusters': [
+                {'name': context, 'cluster': {'certificate-authority-data': str(self.fetch['masterAuth']['clusterCaCertificate']), 'server': endpoint}}
+            ],
+            'contexts': [{'name': context, 'context': {'cluster': context, 'user': context}}],
+            'current-context': context,
+            'kind': 'Config',
+            'preferences': {},
+            'users': [
+                {
+                    'name': context,
+                    'user': {
+                        'auth-provider': {
+                            'config': {
+                                'access-token': token,
+                                'cmd-args': 'config config-helper --format=json',
+                                'cmd-path': '/usr/lib64/google-cloud-sdk/bin/gcloud',
+                                'expiry-key': '{.credential.token_expiry}',
+                                'token-key': '{.credential.access_token}',
+                            },
+                            'name': 'gcp',
+                        },
+                        'username': str(self.fetch['masterAuth']['username']),
+                        'password': str(self.fetch['masterAuth']['password']),
+                    },
+                }
+            ],
         }
 
     """
     Returns the auth token used in kubectl
     This also sets the 'fetch' variable used in creating the kubectl
     """
+
     def _auth_token(self):
         auth = GcpSession(self.module, 'auth')
         response = auth.get(self_link(self.module))
@@ -1529,12 +1659,44 @@ class ClusterNodeconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'machineType': self.request.get('machine_type'),u'diskSizeGb': self.request.get('disk_size_gb'),u'oauthScopes': self.request.get('oauth_scopes'),u'serviceAccount': self.request.get('service_account'),u'metadata': self.request.get('metadata'),u'imageType': self.request.get('image_type'),u'labels': self.request.get('labels'),u'localSsdCount': self.request.get('local_ssd_count'),u'tags': self.request.get('tags'),u'preemptible': self.request.get('preemptible'),u'accelerators': ClusterAcceleratorsArray(self.request.get('accelerators', []), self.module).to_request(),u'diskType': self.request.get('disk_type'),u'minCpuPlatform': self.request.get('min_cpu_platform'),u'taints': ClusterTaintsArray(self.request.get('taints', []), self.module).to_request() }
-)
+        return remove_nones_from_dict(
+            {
+                u'machineType': self.request.get('machine_type'),
+                u'diskSizeGb': self.request.get('disk_size_gb'),
+                u'oauthScopes': self.request.get('oauth_scopes'),
+                u'serviceAccount': self.request.get('service_account'),
+                u'metadata': self.request.get('metadata'),
+                u'imageType': self.request.get('image_type'),
+                u'labels': self.request.get('labels'),
+                u'localSsdCount': self.request.get('local_ssd_count'),
+                u'tags': self.request.get('tags'),
+                u'preemptible': self.request.get('preemptible'),
+                u'accelerators': ClusterAcceleratorsArray(self.request.get('accelerators', []), self.module).to_request(),
+                u'diskType': self.request.get('disk_type'),
+                u'minCpuPlatform': self.request.get('min_cpu_platform'),
+                u'taints': ClusterTaintsArray(self.request.get('taints', []), self.module).to_request(),
+            }
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({ u'machineType': self.request.get(u'machineType'),u'diskSizeGb': self.request.get(u'diskSizeGb'),u'oauthScopes': self.request.get(u'oauthScopes'),u'serviceAccount': self.request.get(u'serviceAccount'),u'metadata': self.request.get(u'metadata'),u'imageType': self.request.get(u'imageType'),u'labels': self.request.get(u'labels'),u'localSsdCount': self.request.get(u'localSsdCount'),u'tags': self.request.get(u'tags'),u'preemptible': self.request.get(u'preemptible'),u'accelerators': ClusterAcceleratorsArray(self.request.get(u'accelerators', []), self.module).from_response(),u'diskType': self.request.get(u'diskType'),u'minCpuPlatform': self.request.get(u'minCpuPlatform'),u'taints': ClusterTaintsArray(self.request.get(u'taints', []), self.module).from_response() }
-)
+        return remove_nones_from_dict(
+            {
+                u'machineType': self.request.get(u'machineType'),
+                u'diskSizeGb': self.request.get(u'diskSizeGb'),
+                u'oauthScopes': self.request.get(u'oauthScopes'),
+                u'serviceAccount': self.request.get(u'serviceAccount'),
+                u'metadata': self.request.get(u'metadata'),
+                u'imageType': self.request.get(u'imageType'),
+                u'labels': self.request.get(u'labels'),
+                u'localSsdCount': self.request.get(u'localSsdCount'),
+                u'tags': self.request.get(u'tags'),
+                u'preemptible': self.request.get(u'preemptible'),
+                u'accelerators': ClusterAcceleratorsArray(self.request.get(u'accelerators', []), self.module).from_response(),
+                u'diskType': self.request.get(u'diskType'),
+                u'minCpuPlatform': self.request.get(u'minCpuPlatform'),
+                u'taints': ClusterTaintsArray(self.request.get(u'taints', []), self.module).from_response(),
+            }
+        )
 
 
 class ClusterAcceleratorsArray(object):
@@ -1558,12 +1720,10 @@ class ClusterAcceleratorsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({ u'acceleratorCount': item.get('accelerator_count'),u'acceleratorType': item.get('accelerator_type') }
-)
+        return remove_nones_from_dict({u'acceleratorCount': item.get('accelerator_count'), u'acceleratorType': item.get('accelerator_type')})
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({ u'acceleratorCount': item.get(u'acceleratorCount'),u'acceleratorType': item.get(u'acceleratorType') }
-)
+        return remove_nones_from_dict({u'acceleratorCount': item.get(u'acceleratorCount'), u'acceleratorType': item.get(u'acceleratorType')})
 
 
 class ClusterTaintsArray(object):
@@ -1587,12 +1747,10 @@ class ClusterTaintsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({ u'key': item.get('key'),u'value': item.get('value'),u'effect': item.get('effect') }
-)
+        return remove_nones_from_dict({u'key': item.get('key'), u'value': item.get('value'), u'effect': item.get('effect')})
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({ u'key': item.get(u'key'),u'value': item.get(u'value'),u'effect': item.get(u'effect') }
-)
+        return remove_nones_from_dict({u'key': item.get(u'key'), u'value': item.get(u'value'), u'effect': item.get(u'effect')})
 
 
 class ClusterMasterauth(object):
@@ -1604,12 +1762,22 @@ class ClusterMasterauth(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'username': self.request.get('username'),u'password': self.request.get('password'),u'clientCertificateConfig': ClusterClientcertificateconfig(self.request.get('client_certificate_config', {}), self.module).to_request() }
-)
+        return remove_nones_from_dict(
+            {
+                u'username': self.request.get('username'),
+                u'password': self.request.get('password'),
+                u'clientCertificateConfig': ClusterClientcertificateconfig(self.request.get('client_certificate_config', {}), self.module).to_request(),
+            }
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({ u'username': self.request.get(u'username'),u'password': self.request.get(u'password'),u'clientCertificateConfig': ClusterClientcertificateconfig(self.request.get(u'clientCertificateConfig', {}), self.module).from_response() }
-)
+        return remove_nones_from_dict(
+            {
+                u'username': self.request.get(u'username'),
+                u'password': self.request.get(u'password'),
+                u'clientCertificateConfig': ClusterClientcertificateconfig(self.request.get(u'clientCertificateConfig', {}), self.module).from_response(),
+            }
+        )
 
 
 class ClusterClientcertificateconfig(object):
@@ -1621,12 +1789,10 @@ class ClusterClientcertificateconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'issueClientCertificate': self.request.get('issue_client_certificate') }
-)
+        return remove_nones_from_dict({u'issueClientCertificate': self.request.get('issue_client_certificate')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'issueClientCertificate': self.request.get(u'issueClientCertificate') }
-)
+        return remove_nones_from_dict({u'issueClientCertificate': self.request.get(u'issueClientCertificate')})
 
 
 class ClusterPrivateclusterconfig(object):
@@ -1638,12 +1804,22 @@ class ClusterPrivateclusterconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'enablePrivateNodes': self.request.get('enable_private_nodes'),u'enablePrivateEndpoint': self.request.get('enable_private_endpoint'),u'masterIpv4CidrBlock': self.request.get('master_ipv4_cidr_block') }
-)
+        return remove_nones_from_dict(
+            {
+                u'enablePrivateNodes': self.request.get('enable_private_nodes'),
+                u'enablePrivateEndpoint': self.request.get('enable_private_endpoint'),
+                u'masterIpv4CidrBlock': self.request.get('master_ipv4_cidr_block'),
+            }
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({ u'enablePrivateNodes': self.request.get(u'enablePrivateNodes'),u'enablePrivateEndpoint': self.request.get(u'enablePrivateEndpoint'),u'masterIpv4CidrBlock': self.request.get(u'masterIpv4CidrBlock') }
-)
+        return remove_nones_from_dict(
+            {
+                u'enablePrivateNodes': self.request.get(u'enablePrivateNodes'),
+                u'enablePrivateEndpoint': self.request.get(u'enablePrivateEndpoint'),
+                u'masterIpv4CidrBlock': self.request.get(u'masterIpv4CidrBlock'),
+            }
+        )
 
 
 class ClusterAddonsconfig(object):
@@ -1655,12 +1831,22 @@ class ClusterAddonsconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'httpLoadBalancing': ClusterHttploadbalancing(self.request.get('http_load_balancing', {}), self.module).to_request(),u'horizontalPodAutoscaling': ClusterHorizontalpodautoscaling(self.request.get('horizontal_pod_autoscaling', {}), self.module).to_request(),u'networkPolicyConfig': ClusterNetworkpolicyconfig(self.request.get('network_policy_config', {}), self.module).to_request() }
-)
+        return remove_nones_from_dict(
+            {
+                u'httpLoadBalancing': ClusterHttploadbalancing(self.request.get('http_load_balancing', {}), self.module).to_request(),
+                u'horizontalPodAutoscaling': ClusterHorizontalpodautoscaling(self.request.get('horizontal_pod_autoscaling', {}), self.module).to_request(),
+                u'networkPolicyConfig': ClusterNetworkpolicyconfig(self.request.get('network_policy_config', {}), self.module).to_request(),
+            }
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({ u'httpLoadBalancing': ClusterHttploadbalancing(self.request.get(u'httpLoadBalancing', {}), self.module).from_response(),u'horizontalPodAutoscaling': ClusterHorizontalpodautoscaling(self.request.get(u'horizontalPodAutoscaling', {}), self.module).from_response(),u'networkPolicyConfig': ClusterNetworkpolicyconfig(self.request.get(u'networkPolicyConfig', {}), self.module).from_response() }
-)
+        return remove_nones_from_dict(
+            {
+                u'httpLoadBalancing': ClusterHttploadbalancing(self.request.get(u'httpLoadBalancing', {}), self.module).from_response(),
+                u'horizontalPodAutoscaling': ClusterHorizontalpodautoscaling(self.request.get(u'horizontalPodAutoscaling', {}), self.module).from_response(),
+                u'networkPolicyConfig': ClusterNetworkpolicyconfig(self.request.get(u'networkPolicyConfig', {}), self.module).from_response(),
+            }
+        )
 
 
 class ClusterHttploadbalancing(object):
@@ -1672,12 +1858,10 @@ class ClusterHttploadbalancing(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'disabled': self.request.get('disabled') }
-)
+        return remove_nones_from_dict({u'disabled': self.request.get('disabled')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'disabled': self.request.get(u'disabled') }
-)
+        return remove_nones_from_dict({u'disabled': self.request.get(u'disabled')})
 
 
 class ClusterHorizontalpodautoscaling(object):
@@ -1689,12 +1873,10 @@ class ClusterHorizontalpodautoscaling(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'disabled': self.request.get('disabled') }
-)
+        return remove_nones_from_dict({u'disabled': self.request.get('disabled')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'disabled': self.request.get(u'disabled') }
-)
+        return remove_nones_from_dict({u'disabled': self.request.get(u'disabled')})
 
 
 class ClusterNetworkpolicyconfig(object):
@@ -1706,12 +1888,10 @@ class ClusterNetworkpolicyconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'disabled': self.request.get('disabled') }
-)
+        return remove_nones_from_dict({u'disabled': self.request.get('disabled')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'disabled': self.request.get(u'disabled') }
-)
+        return remove_nones_from_dict({u'disabled': self.request.get(u'disabled')})
 
 
 class ClusterLegacyabac(object):
@@ -1723,12 +1903,10 @@ class ClusterLegacyabac(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'enabled': self.request.get('enabled') }
-)
+        return remove_nones_from_dict({u'enabled': self.request.get('enabled')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'enabled': self.request.get(u'enabled') }
-)
+        return remove_nones_from_dict({u'enabled': self.request.get(u'enabled')})
 
 
 class ClusterNetworkpolicy(object):
@@ -1740,12 +1918,10 @@ class ClusterNetworkpolicy(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'provider': self.request.get('provider'),u'enabled': self.request.get('enabled') }
-)
+        return remove_nones_from_dict({u'provider': self.request.get('provider'), u'enabled': self.request.get('enabled')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'provider': self.request.get(u'provider'),u'enabled': self.request.get(u'enabled') }
-)
+        return remove_nones_from_dict({u'provider': self.request.get(u'provider'), u'enabled': self.request.get(u'enabled')})
 
 
 class ClusterDefaultmaxpodsconstraint(object):
@@ -1757,12 +1933,10 @@ class ClusterDefaultmaxpodsconstraint(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'maxPodsPerNode': self.request.get('max_pods_per_node') }
-)
+        return remove_nones_from_dict({u'maxPodsPerNode': self.request.get('max_pods_per_node')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'maxPodsPerNode': self.request.get(u'maxPodsPerNode') }
-)
+        return remove_nones_from_dict({u'maxPodsPerNode': self.request.get(u'maxPodsPerNode')})
 
 
 class ClusterIpallocationpolicy(object):
@@ -1774,12 +1948,34 @@ class ClusterIpallocationpolicy(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'useIpAliases': self.request.get('use_ip_aliases'),u'createSubnetwork': self.request.get('create_subnetwork'),u'subnetworkName': self.request.get('subnetwork_name'),u'clusterSecondaryRangeName': self.request.get('cluster_secondary_range_name'),u'servicesSecondaryRangeName': self.request.get('services_secondary_range_name'),u'clusterIpv4CidrBlock': self.request.get('cluster_ipv4_cidr_block'),u'nodeIpv4CidrBlock': self.request.get('node_ipv4_cidr_block'),u'servicesIpv4CidrBlock': self.request.get('services_ipv4_cidr_block'),u'tpuIpv4CidrBlock': self.request.get('tpu_ipv4_cidr_block') }
-)
+        return remove_nones_from_dict(
+            {
+                u'useIpAliases': self.request.get('use_ip_aliases'),
+                u'createSubnetwork': self.request.get('create_subnetwork'),
+                u'subnetworkName': self.request.get('subnetwork_name'),
+                u'clusterSecondaryRangeName': self.request.get('cluster_secondary_range_name'),
+                u'servicesSecondaryRangeName': self.request.get('services_secondary_range_name'),
+                u'clusterIpv4CidrBlock': self.request.get('cluster_ipv4_cidr_block'),
+                u'nodeIpv4CidrBlock': self.request.get('node_ipv4_cidr_block'),
+                u'servicesIpv4CidrBlock': self.request.get('services_ipv4_cidr_block'),
+                u'tpuIpv4CidrBlock': self.request.get('tpu_ipv4_cidr_block'),
+            }
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({ u'useIpAliases': self.request.get(u'useIpAliases'),u'createSubnetwork': self.request.get(u'createSubnetwork'),u'subnetworkName': self.request.get(u'subnetworkName'),u'clusterSecondaryRangeName': self.request.get(u'clusterSecondaryRangeName'),u'servicesSecondaryRangeName': self.request.get(u'servicesSecondaryRangeName'),u'clusterIpv4CidrBlock': self.request.get(u'clusterIpv4CidrBlock'),u'nodeIpv4CidrBlock': self.request.get(u'nodeIpv4CidrBlock'),u'servicesIpv4CidrBlock': self.request.get(u'servicesIpv4CidrBlock'),u'tpuIpv4CidrBlock': self.request.get(u'tpuIpv4CidrBlock') }
-)
+        return remove_nones_from_dict(
+            {
+                u'useIpAliases': self.request.get(u'useIpAliases'),
+                u'createSubnetwork': self.request.get(u'createSubnetwork'),
+                u'subnetworkName': self.request.get(u'subnetworkName'),
+                u'clusterSecondaryRangeName': self.request.get(u'clusterSecondaryRangeName'),
+                u'servicesSecondaryRangeName': self.request.get(u'servicesSecondaryRangeName'),
+                u'clusterIpv4CidrBlock': self.request.get(u'clusterIpv4CidrBlock'),
+                u'nodeIpv4CidrBlock': self.request.get(u'nodeIpv4CidrBlock'),
+                u'servicesIpv4CidrBlock': self.request.get(u'servicesIpv4CidrBlock'),
+                u'tpuIpv4CidrBlock': self.request.get(u'tpuIpv4CidrBlock'),
+            }
+        )
 
 
 class ClusterConditionsArray(object):
@@ -1803,12 +1999,10 @@ class ClusterConditionsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({ u'code': item.get('code'),u'message': item.get('message') }
-)
+        return remove_nones_from_dict({u'code': item.get('code'), u'message': item.get('message')})
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({ u'code': item.get(u'code'),u'message': item.get(u'message') }
-)
+        return remove_nones_from_dict({u'code': item.get(u'code'), u'message': item.get(u'message')})
 
 
 class ClusterMasterauthorizednetworksconfig(object):
@@ -1820,12 +2014,14 @@ class ClusterMasterauthorizednetworksconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'enabled': self.request.get('enabled'),u'cidrBlocks': ClusterCidrblocksArray(self.request.get('cidr_blocks', []), self.module).to_request() }
-)
+        return remove_nones_from_dict(
+            {u'enabled': self.request.get('enabled'), u'cidrBlocks': ClusterCidrblocksArray(self.request.get('cidr_blocks', []), self.module).to_request()}
+        )
 
     def from_response(self):
-        return remove_nones_from_dict({ u'enabled': self.request.get(u'enabled'),u'cidrBlocks': ClusterCidrblocksArray(self.request.get(u'cidrBlocks', []), self.module).from_response() }
-)
+        return remove_nones_from_dict(
+            {u'enabled': self.request.get(u'enabled'), u'cidrBlocks': ClusterCidrblocksArray(self.request.get(u'cidrBlocks', []), self.module).from_response()}
+        )
 
 
 class ClusterCidrblocksArray(object):
@@ -1849,12 +2045,10 @@ class ClusterCidrblocksArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({ u'displayName': item.get('display_name'),u'cidrBlock': item.get('cidr_block') }
-)
+        return remove_nones_from_dict({u'displayName': item.get('display_name'), u'cidrBlock': item.get('cidr_block')})
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({ u'displayName': item.get(u'displayName'),u'cidrBlock': item.get(u'cidrBlock') }
-)
+        return remove_nones_from_dict({u'displayName': item.get(u'displayName'), u'cidrBlock': item.get(u'cidrBlock')})
 
 
 if __name__ == '__main__':

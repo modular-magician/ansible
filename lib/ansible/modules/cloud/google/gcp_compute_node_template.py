@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -234,7 +233,17 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), description=dict(type='str'), name=dict(type='str'), node_affinity_labels=dict(type='dict'), node_type=dict(type='str'), node_type_flexibility=dict(type='dict', options=dict(cpus=dict(type='str'), memory=dict(type='str'))), region=dict(required=True, type='str')), mutually_exclusive=[['node_type', 'node_type_flexibility']])
+        argument_spec=dict(
+            state=dict(default='present', choices=['present', 'absent'], type='str'),
+            description=dict(type='str'),
+            name=dict(type='str'),
+            node_affinity_labels=dict(type='dict'),
+            node_type=dict(type='str'),
+            node_type_flexibility=dict(type='dict', options=dict(cpus=dict(type='str'), memory=dict(type='str'))),
+            region=dict(required=True, type='str'),
+        ),
+        mutually_exclusive=[['node_type', 'node_type_flexibility']],
+    )
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -283,7 +292,14 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = { u'kind': 'compute#nodeTemplate',u'description': module.params.get('description'),u'name': module.params.get('name'),u'nodeAffinityLabels': module.params.get('node_affinity_labels'),u'nodeType': module.params.get('node_type'),u'nodeTypeFlexibility': NodeTemplateNodetypeflexibility(module.params.get('node_type_flexibility', {}), module).to_request() }
+    request = {
+        u'kind': 'compute#nodeTemplate',
+        u'description': module.params.get('description'),
+        u'name': module.params.get('name'),
+        u'nodeAffinityLabels': module.params.get('node_affinity_labels'),
+        u'nodeType': module.params.get('node_type'),
+        u'nodeTypeFlexibility': NodeTemplateNodetypeflexibility(module.params.get('node_type_flexibility', {}), module).to_request(),
+    }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -347,7 +363,14 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return { u'creationTimestamp': response.get(u'creationTimestamp'),u'description': response.get(u'description'),u'name': response.get(u'name'),u'nodeAffinityLabels': response.get(u'nodeAffinityLabels'),u'nodeType': response.get(u'nodeType'),u'nodeTypeFlexibility': NodeTemplateNodetypeflexibility(response.get(u'nodeTypeFlexibility', {}), module).from_response() }
+    return {
+        u'creationTimestamp': response.get(u'creationTimestamp'),
+        u'description': response.get(u'description'),
+        u'name': response.get(u'name'),
+        u'nodeAffinityLabels': response.get(u'nodeAffinityLabels'),
+        u'nodeType': response.get(u'nodeType'),
+        u'nodeTypeFlexibility': NodeTemplateNodetypeflexibility(response.get(u'nodeTypeFlexibility', {}), module).from_response(),
+    }
 
 
 def region_selflink(name, params):
@@ -376,6 +399,7 @@ def wait_for_operation(module, response):
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#nodeTemplate')
 
+
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
     op_uri = async_op_url(module, {'op_id': op_id})
@@ -402,12 +426,10 @@ class NodeTemplateNodetypeflexibility(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({ u'cpus': self.request.get('cpus'),u'memory': self.request.get('memory') }
-)
+        return remove_nones_from_dict({u'cpus': self.request.get('cpus'), u'memory': self.request.get('memory')})
 
     def from_response(self):
-        return remove_nones_from_dict({ u'cpus': self.request.get(u'cpus'),u'memory': self.request.get(u'memory') }
-)
+        return remove_nones_from_dict({u'cpus': self.request.get(u'cpus'), u'memory': self.request.get(u'memory')})
 
 
 if __name__ == '__main__':

@@ -18,15 +18,14 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ["preview"],
-                    'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -254,8 +253,7 @@ import json
 
 
 def main():
-    module = GcpModule(
-            argument_spec=dict(dns_name=dict(type='list', elements='str'))    )
+    module = GcpModule(argument_spec=dict(dns_name=dict(type='list', elements='str')))
 
     if module._name == 'gcp_dns_managed_zone_facts':
         module.deprecate("The 'gcp_dns_managed_zone_facts' module has been renamed to 'gcp_dns_managed_zone_info'", version='2.13')
@@ -263,9 +261,7 @@ def main():
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/ndev.clouddns.readwrite']
 
-    return_value = {
-        'resources': fetch_list(module, collection(module), module.params['dns_name'])
-    }
+    return_value = {'resources': fetch_list(module, collection(module), module.params['dns_name'])}
     module.exit_json(**return_value)
 
 
