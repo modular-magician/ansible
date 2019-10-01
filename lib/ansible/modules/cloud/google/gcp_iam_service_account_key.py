@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -77,7 +78,43 @@ options:
     - File path must be absolute.
     required: false
     type: path
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 '''
 
 EXAMPLES = '''
@@ -173,14 +210,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            private_key_type=dict(type='str'),
-            key_algorithm=dict(type='str'),
-            service_account=dict(type='dict'),
-            path=dict(type='path'),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), private_key_type=dict(type='str'), key_algorithm=dict(type='str'), service_account=dict(type='dict'), path=dict(type='path')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/iam']
@@ -220,7 +250,10 @@ def delete(module):
 
 
 def resource_to_request(module):
-    request = {u'privateKeyType': module.params.get('private_key_type'), u'keyAlgorithm': module.params.get('key_algorithm')}
+    request = {
+        u'privateKeyType': module.params.get('private_key_type'),
+        u'keyAlgorithm': module.params.get('key_algorithm')
+    }
     return_vals = {}
     for k, v in request.items():
         if v:
@@ -249,7 +282,10 @@ def self_link_from_file(module):
 
 
 def self_link(module):
-    results = {'project': module.params['project'], 'service_account': replace_resource_dict(module.params['service_account'], 'name')}
+    results = {
+        'project': module.params['project'],
+        'service_account': replace_resource_dict(module.params['service_account'], 'name')
+    }
     return "https://iam.googleapis.com/v1/projects/{project}/serviceAccounts/{service_account}/keys".format(**results)
 
 

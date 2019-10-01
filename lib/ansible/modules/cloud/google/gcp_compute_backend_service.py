@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -324,10 +325,10 @@ options:
     version_added: '2.8'
   session_affinity:
     description:
-    - Type of session affinity to use. The default is NONE.
-    - When the load balancing scheme is EXTERNAL, can be NONE, CLIENT_IP, or GENERATED_COOKIE.
-    - When the protocol is UDP, this field is not used.
-    - 'Some valid choices include: "NONE", "CLIENT_IP", "GENERATED_COOKIE"'
+    - Type of session affinity to use. The default is NONE. Session affinity is not
+      applicable if the protocol is UDP.
+    - 'Some valid choices include: "NONE", "CLIENT_IP", "CLIENT_IP_PORT_PROTO", "CLIENT_IP_PROTO",
+      "GENERATED_COOKIE", "HEADER_FIELD", "HTTP_COOKIE"'
     required: false
     type: str
   timeout_sec:
@@ -338,10 +339,56 @@ options:
     type: int
     aliases:
     - timeout_seconds
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 notes:
 - 'API Reference: U(https://cloud.google.com/compute/docs/reference/v1/backendServices)'
 - 'Official Documentation: U(https://cloud.google.com/compute/docs/load-balancing/http/backend-service)'
+- for authentication, you can set service_account_file using the c(gcp_service_account_file)
+  env variable.
+- for authentication, you can set service_account_contents using the c(GCP_SERVICE_ACCOUNT_CONTENTS)
+  env variable.
+- For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL)
+  env variable.
+- For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.
+- For authentication, you can set scopes using the C(GCP_SCOPES) env variable.
+- Environment variables values will only be used if the playbook values are not set.
+- The I(service_account_email) and I(service_account_file) options are mutually exclusive.
 '''
 
 EXAMPLES = '''
@@ -660,9 +707,8 @@ securityPolicy:
   type: str
 sessionAffinity:
   description:
-  - Type of session affinity to use. The default is NONE.
-  - When the load balancing scheme is EXTERNAL, can be NONE, CLIENT_IP, or GENERATED_COOKIE.
-  - When the protocol is UDP, this field is not used.
+  - Type of session affinity to use. The default is NONE. Session affinity is not
+    applicable if the protocol is UDP.
   returned: success
   type: str
 timeoutSec:
@@ -690,59 +736,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            affinity_cookie_ttl_sec=dict(type='int'),
-            backends=dict(
-                type='list',
-                elements='dict',
-                options=dict(
-                    balancing_mode=dict(default='UTILIZATION', type='str'),
-                    capacity_scaler=dict(default=1.0, type='str'),
-                    description=dict(type='str'),
-                    group=dict(type='str'),
-                    max_connections=dict(type='int'),
-                    max_connections_per_instance=dict(type='int'),
-                    max_connections_per_endpoint=dict(type='int'),
-                    max_rate=dict(type='int'),
-                    max_rate_per_instance=dict(type='str'),
-                    max_rate_per_endpoint=dict(type='str'),
-                    max_utilization=dict(default=0.8, type='str'),
-                ),
-            ),
-            cdn_policy=dict(
-                type='dict',
-                options=dict(
-                    cache_key_policy=dict(
-                        type='dict',
-                        options=dict(
-                            include_host=dict(type='bool'),
-                            include_protocol=dict(type='bool'),
-                            include_query_string=dict(type='bool'),
-                            query_string_blacklist=dict(type='list', elements='str'),
-                            query_string_whitelist=dict(type='list', elements='str'),
-                        ),
-                    ),
-                    signed_url_cache_max_age_sec=dict(default=3600, type='int'),
-                ),
-            ),
-            connection_draining=dict(type='dict', options=dict(draining_timeout_sec=dict(default=300, type='int'))),
-            description=dict(type='str'),
-            enable_cdn=dict(type='bool'),
-            health_checks=dict(required=True, type='list', elements='str'),
-            iap=dict(
-                type='dict',
-                options=dict(enabled=dict(type='bool'), oauth2_client_id=dict(required=True, type='str'), oauth2_client_secret=dict(required=True, type='str')),
-            ),
-            load_balancing_scheme=dict(default='EXTERNAL', type='str'),
-            name=dict(required=True, type='str'),
-            port_name=dict(type='str'),
-            protocol=dict(type='str'),
-            security_policy=dict(type='str'),
-            session_affinity=dict(type='str'),
-            timeout_sec=dict(type='int', aliases=['timeout_seconds']),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), affinity_cookie_ttl_sec=dict(type='int'), backends=dict(type='list', elements='dict', options=dict(balancing_mode=dict(default='UTILIZATION', type='str'), capacity_scaler=dict(default=1.0, type='str'), description=dict(type='str'), group=dict(type='str'), max_connections=dict(type='int'), max_connections_per_instance=dict(type='int'), max_connections_per_endpoint=dict(type='int'), max_rate=dict(type='int'), max_rate_per_instance=dict(type='str'), max_rate_per_endpoint=dict(type='str'), max_utilization=dict(default=0.8, type='str'))), cdn_policy=dict(type='dict', options=dict(cache_key_policy=dict(type='dict', options=dict(include_host=dict(type='bool'), include_protocol=dict(type='bool'), include_query_string=dict(type='bool'), query_string_blacklist=dict(type='list', elements='str'), query_string_whitelist=dict(type='list', elements='str'))), signed_url_cache_max_age_sec=dict(default=3600, type='int'))), connection_draining=dict(type='dict', options=dict(draining_timeout_sec=dict(default=300, type='int'))), description=dict(type='str'), enable_cdn=dict(type='bool'), health_checks=dict(required=True, type='list', elements='str'), iap=dict(type='dict', options=dict(enabled=dict(type='bool'), oauth2_client_id=dict(required=True, type='str'), oauth2_client_secret=dict(required=True, type='str'))), load_balancing_scheme=dict(default='EXTERNAL', type='str'), name=dict(required=True, type='str'), port_name=dict(type='str'), protocol=dict(type='str'), security_policy=dict(type='str'), session_affinity=dict(type='str'), timeout_sec=dict(type='int', aliases=['timeout_seconds'])))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -781,7 +775,8 @@ def create(module, link, kind):
 
 
 def update(module, link, kind, fetch):
-    update_fields(module, resource_to_request(module), response_to_hash(module, fetch))
+    update_fields(module, resource_to_request(module),
+                  response_to_hash(module, fetch))
     auth = GcpSession(module, 'compute')
     return wait_for_operation(module, auth.put(link, resource_to_request(module)))
 
@@ -794,10 +789,12 @@ def update_fields(module, request, response):
 def security_policy_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/global/backendServices/{name}/setSecurityPolicy"]).format(**module.params),
-        {u'securityPolicy': module.params.get('security_policy')},
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "projects/{project}/global/backendServices/{name}/setSecurityPolicy"
+        ]).format(**module.params),
+{ u'securityPolicy': module.params.get('security_policy') }
     )
-
 
 def delete(module, link, kind):
     auth = GcpSession(module, 'compute')
@@ -805,24 +802,7 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = {
-        u'kind': 'compute#backendService',
-        u'affinityCookieTtlSec': module.params.get('affinity_cookie_ttl_sec'),
-        u'backends': BackendServiceBackendsArray(module.params.get('backends', []), module).to_request(),
-        u'cdnPolicy': BackendServiceCdnpolicy(module.params.get('cdn_policy', {}), module).to_request(),
-        u'connectionDraining': BackendServiceConnectiondraining(module.params.get('connection_draining', {}), module).to_request(),
-        u'description': module.params.get('description'),
-        u'enableCDN': module.params.get('enable_cdn'),
-        u'healthChecks': module.params.get('health_checks'),
-        u'iap': BackendServiceIap(module.params.get('iap', {}), module).to_request(),
-        u'loadBalancingScheme': module.params.get('load_balancing_scheme'),
-        u'name': module.params.get('name'),
-        u'portName': module.params.get('port_name'),
-        u'protocol': module.params.get('protocol'),
-        u'securityPolicy': module.params.get('security_policy'),
-        u'sessionAffinity': module.params.get('session_affinity'),
-        u'timeoutSec': module.params.get('timeout_sec'),
-    }
+    request = { u'kind': 'compute#backendService',u'affinityCookieTtlSec': module.params.get('affinity_cookie_ttl_sec'),u'backends': BackendServiceBackendsArray(module.params.get('backends', []), module).to_request(),u'cdnPolicy': BackendServiceCdnpolicy(module.params.get('cdn_policy', {}), module).to_request(),u'connectionDraining': BackendServiceConnectiondraining(module.params.get('connection_draining', {}), module).to_request(),u'description': module.params.get('description'),u'enableCDN': module.params.get('enable_cdn'),u'healthChecks': module.params.get('health_checks'),u'iap': BackendServiceIap(module.params.get('iap', {}), module).to_request(),u'loadBalancingScheme': module.params.get('load_balancing_scheme'),u'name': module.params.get('name'),u'portName': module.params.get('port_name'),u'protocol': module.params.get('protocol'),u'securityPolicy': module.params.get('security_policy'),u'sessionAffinity': module.params.get('session_affinity'),u'timeoutSec': module.params.get('timeout_sec') }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -886,26 +866,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'affinityCookieTtlSec': response.get(u'affinityCookieTtlSec'),
-        u'backends': BackendServiceBackendsArray(response.get(u'backends', []), module).from_response(),
-        u'cdnPolicy': BackendServiceCdnpolicy(response.get(u'cdnPolicy', {}), module).from_response(),
-        u'connectionDraining': BackendServiceConnectiondraining(response.get(u'connectionDraining', {}), module).from_response(),
-        u'creationTimestamp': response.get(u'creationTimestamp'),
-        u'fingerprint': response.get(u'fingerprint'),
-        u'description': response.get(u'description'),
-        u'enableCDN': response.get(u'enableCDN'),
-        u'healthChecks': response.get(u'healthChecks'),
-        u'id': response.get(u'id'),
-        u'iap': BackendServiceIap(response.get(u'iap', {}), module).from_response(),
-        u'loadBalancingScheme': module.params.get('load_balancing_scheme'),
-        u'name': module.params.get('name'),
-        u'portName': response.get(u'portName'),
-        u'protocol': response.get(u'protocol'),
-        u'securityPolicy': response.get(u'securityPolicy'),
-        u'sessionAffinity': response.get(u'sessionAffinity'),
-        u'timeoutSec': response.get(u'timeoutSec'),
-    }
+    return { u'affinityCookieTtlSec': response.get(u'affinityCookieTtlSec'),u'backends': BackendServiceBackendsArray(response.get(u'backends', []), module).from_response(),u'cdnPolicy': BackendServiceCdnpolicy(response.get(u'cdnPolicy', {}), module).from_response(),u'connectionDraining': BackendServiceConnectiondraining(response.get(u'connectionDraining', {}), module).from_response(),u'creationTimestamp': response.get(u'creationTimestamp'),u'fingerprint': response.get(u'fingerprint'),u'description': response.get(u'description'),u'enableCDN': response.get(u'enableCDN'),u'healthChecks': response.get(u'healthChecks'),u'id': response.get(u'id'),u'iap': BackendServiceIap(response.get(u'iap', {}), module).from_response(),u'loadBalancingScheme': module.params.get('load_balancing_scheme'),u'name': module.params.get('name'),u'portName': response.get(u'portName'),u'protocol': response.get(u'protocol'),u'securityPolicy': response.get(u'securityPolicy'),u'sessionAffinity': response.get(u'sessionAffinity'),u'timeoutSec': response.get(u'timeoutSec') }
 
 
 def async_op_url(module, extra_data=None):
@@ -924,7 +885,6 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#backendService')
-
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
@@ -964,38 +924,12 @@ class BackendServiceBackendsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict(
-            {
-                u'balancingMode': item.get('balancing_mode'),
-                u'capacityScaler': item.get('capacity_scaler'),
-                u'description': item.get('description'),
-                u'group': item.get('group'),
-                u'maxConnections': item.get('max_connections'),
-                u'maxConnectionsPerInstance': item.get('max_connections_per_instance'),
-                u'maxConnectionsPerEndpoint': item.get('max_connections_per_endpoint'),
-                u'maxRate': item.get('max_rate'),
-                u'maxRatePerInstance': item.get('max_rate_per_instance'),
-                u'maxRatePerEndpoint': item.get('max_rate_per_endpoint'),
-                u'maxUtilization': item.get('max_utilization'),
-            }
-        )
+        return remove_nones_from_dict({ u'balancingMode': item.get('balancing_mode'),u'capacityScaler': item.get('capacity_scaler'),u'description': item.get('description'),u'group': item.get('group'),u'maxConnections': item.get('max_connections'),u'maxConnectionsPerInstance': item.get('max_connections_per_instance'),u'maxConnectionsPerEndpoint': item.get('max_connections_per_endpoint'),u'maxRate': item.get('max_rate'),u'maxRatePerInstance': item.get('max_rate_per_instance'),u'maxRatePerEndpoint': item.get('max_rate_per_endpoint'),u'maxUtilization': item.get('max_utilization') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict(
-            {
-                u'balancingMode': item.get(u'balancingMode'),
-                u'capacityScaler': item.get(u'capacityScaler'),
-                u'description': item.get(u'description'),
-                u'group': item.get(u'group'),
-                u'maxConnections': item.get(u'maxConnections'),
-                u'maxConnectionsPerInstance': item.get(u'maxConnectionsPerInstance'),
-                u'maxConnectionsPerEndpoint': item.get(u'maxConnectionsPerEndpoint'),
-                u'maxRate': item.get(u'maxRate'),
-                u'maxRatePerInstance': item.get(u'maxRatePerInstance'),
-                u'maxRatePerEndpoint': item.get(u'maxRatePerEndpoint'),
-                u'maxUtilization': item.get(u'maxUtilization'),
-            }
-        )
+        return remove_nones_from_dict({ u'balancingMode': item.get(u'balancingMode'),u'capacityScaler': item.get(u'capacityScaler'),u'description': item.get(u'description'),u'group': item.get(u'group'),u'maxConnections': item.get(u'maxConnections'),u'maxConnectionsPerInstance': item.get(u'maxConnectionsPerInstance'),u'maxConnectionsPerEndpoint': item.get(u'maxConnectionsPerEndpoint'),u'maxRate': item.get(u'maxRate'),u'maxRatePerInstance': item.get(u'maxRatePerInstance'),u'maxRatePerEndpoint': item.get(u'maxRatePerEndpoint'),u'maxUtilization': item.get(u'maxUtilization') }
+)
 
 
 class BackendServiceCdnpolicy(object):
@@ -1007,20 +941,12 @@ class BackendServiceCdnpolicy(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {
-                u'cacheKeyPolicy': BackendServiceCachekeypolicy(self.request.get('cache_key_policy', {}), self.module).to_request(),
-                u'signedUrlCacheMaxAgeSec': self.request.get('signed_url_cache_max_age_sec'),
-            }
-        )
+        return remove_nones_from_dict({ u'cacheKeyPolicy': BackendServiceCachekeypolicy(self.request.get('cache_key_policy', {}), self.module).to_request(),u'signedUrlCacheMaxAgeSec': self.request.get('signed_url_cache_max_age_sec') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {
-                u'cacheKeyPolicy': BackendServiceCachekeypolicy(self.request.get(u'cacheKeyPolicy', {}), self.module).from_response(),
-                u'signedUrlCacheMaxAgeSec': self.request.get(u'signedUrlCacheMaxAgeSec'),
-            }
-        )
+        return remove_nones_from_dict({ u'cacheKeyPolicy': BackendServiceCachekeypolicy(self.request.get(u'cacheKeyPolicy', {}), self.module).from_response(),u'signedUrlCacheMaxAgeSec': self.request.get(u'signedUrlCacheMaxAgeSec') }
+)
 
 
 class BackendServiceCachekeypolicy(object):
@@ -1032,26 +958,12 @@ class BackendServiceCachekeypolicy(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {
-                u'includeHost': self.request.get('include_host'),
-                u'includeProtocol': self.request.get('include_protocol'),
-                u'includeQueryString': self.request.get('include_query_string'),
-                u'queryStringBlacklist': self.request.get('query_string_blacklist'),
-                u'queryStringWhitelist': self.request.get('query_string_whitelist'),
-            }
-        )
+        return remove_nones_from_dict({ u'includeHost': self.request.get('include_host'),u'includeProtocol': self.request.get('include_protocol'),u'includeQueryString': self.request.get('include_query_string'),u'queryStringBlacklist': self.request.get('query_string_blacklist'),u'queryStringWhitelist': self.request.get('query_string_whitelist') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {
-                u'includeHost': self.request.get(u'includeHost'),
-                u'includeProtocol': self.request.get(u'includeProtocol'),
-                u'includeQueryString': self.request.get(u'includeQueryString'),
-                u'queryStringBlacklist': self.request.get(u'queryStringBlacklist'),
-                u'queryStringWhitelist': self.request.get(u'queryStringWhitelist'),
-            }
-        )
+        return remove_nones_from_dict({ u'includeHost': self.request.get(u'includeHost'),u'includeProtocol': self.request.get(u'includeProtocol'),u'includeQueryString': self.request.get(u'includeQueryString'),u'queryStringBlacklist': self.request.get(u'queryStringBlacklist'),u'queryStringWhitelist': self.request.get(u'queryStringWhitelist') }
+)
 
 
 class BackendServiceConnectiondraining(object):
@@ -1063,10 +975,12 @@ class BackendServiceConnectiondraining(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'drainingTimeoutSec': self.request.get('draining_timeout_sec')})
+        return remove_nones_from_dict({ u'drainingTimeoutSec': self.request.get('draining_timeout_sec') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({u'drainingTimeoutSec': self.request.get(u'drainingTimeoutSec')})
+        return remove_nones_from_dict({ u'drainingTimeoutSec': self.request.get(u'drainingTimeoutSec') }
+)
 
 
 class BackendServiceIap(object):
@@ -1078,22 +992,12 @@ class BackendServiceIap(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {
-                u'enabled': self.request.get('enabled'),
-                u'oauth2ClientId': self.request.get('oauth2_client_id'),
-                u'oauth2ClientSecret': self.request.get('oauth2_client_secret'),
-            }
-        )
+        return remove_nones_from_dict({ u'enabled': self.request.get('enabled'),u'oauth2ClientId': self.request.get('oauth2_client_id'),u'oauth2ClientSecret': self.request.get('oauth2_client_secret') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {
-                u'enabled': self.request.get(u'enabled'),
-                u'oauth2ClientId': self.request.get(u'oauth2ClientId'),
-                u'oauth2ClientSecret': self.request.get(u'oauth2ClientSecret'),
-            }
-        )
+        return remove_nones_from_dict({ u'enabled': self.request.get(u'enabled'),u'oauth2ClientId': self.request.get(u'oauth2ClientId'),u'oauth2ClientSecret': self.request.get(u'oauth2ClientSecret') }
+)
 
 
 if __name__ == '__main__':

@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -88,10 +89,56 @@ options:
       if the profile is not CUSTOM.
     required: false
     type: list
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 notes:
 - 'API Reference: U(https://cloud.google.com/compute/docs/reference/rest/v1/sslPolicies)'
 - 'Using SSL Policies: U(https://cloud.google.com/compute/docs/load-balancing/ssl-policies)'
+- for authentication, you can set service_account_file using the c(gcp_service_account_file)
+  env variable.
+- for authentication, you can set service_account_contents using the c(GCP_SERVICE_ACCOUNT_CONTENTS)
+  env variable.
+- For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL)
+  env variable.
+- For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.
+- For authentication, you can set scopes using the C(GCP_SCOPES) env variable.
+- Environment variables values will only be used if the playbook values are not set.
+- The I(service_account_email) and I(service_account_file) options are mutually exclusive.
 '''
 
 EXAMPLES = '''
@@ -204,15 +251,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            description=dict(type='str'),
-            name=dict(required=True, type='str'),
-            profile=dict(type='str'),
-            min_tls_version=dict(type='str'),
-            custom_features=dict(type='list', elements='str'),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), description=dict(type='str'), name=dict(required=True, type='str'), profile=dict(type='str'), min_tls_version=dict(type='str'), custom_features=dict(type='list', elements='str')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -261,14 +300,7 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = {
-        u'kind': 'compute#sslPolicy',
-        u'description': module.params.get('description'),
-        u'name': module.params.get('name'),
-        u'profile': module.params.get('profile'),
-        u'minTlsVersion': module.params.get('min_tls_version'),
-        u'customFeatures': module.params.get('custom_features'),
-    }
+    request = { u'kind': 'compute#sslPolicy',u'description': module.params.get('description'),u'name': module.params.get('name'),u'profile': module.params.get('profile'),u'minTlsVersion': module.params.get('min_tls_version'),u'customFeatures': module.params.get('custom_features') }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -332,18 +364,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'creationTimestamp': response.get(u'creationTimestamp'),
-        u'description': module.params.get('description'),
-        u'id': response.get(u'id'),
-        u'name': module.params.get('name'),
-        u'profile': response.get(u'profile'),
-        u'minTlsVersion': response.get(u'minTlsVersion'),
-        u'enabledFeatures': response.get(u'enabledFeatures'),
-        u'customFeatures': response.get(u'customFeatures'),
-        u'fingerprint': response.get(u'fingerprint'),
-        u'warnings': SslPolicyWarningsArray(response.get(u'warnings', []), module).from_response(),
-    }
+    return { u'creationTimestamp': response.get(u'creationTimestamp'),u'description': module.params.get('description'),u'id': response.get(u'id'),u'name': module.params.get('name'),u'profile': response.get(u'profile'),u'minTlsVersion': response.get(u'minTlsVersion'),u'enabledFeatures': response.get(u'enabledFeatures'),u'customFeatures': response.get(u'customFeatures'),u'fingerprint': response.get(u'fingerprint'),u'warnings': SslPolicyWarningsArray(response.get(u'warnings', []), module).from_response() }
 
 
 def async_op_url(module, extra_data=None):
@@ -362,7 +383,6 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#sslPolicy')
-
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
@@ -402,10 +422,12 @@ class SslPolicyWarningsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({})
+        return remove_nones_from_dict({  }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({})
+        return remove_nones_from_dict({  }
+)
 
 
 if __name__ == '__main__':

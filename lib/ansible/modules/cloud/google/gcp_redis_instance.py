@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -125,10 +126,56 @@ options:
     - The name of the Redis region of the instance.
     required: true
     type: str
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 notes:
 - 'API Reference: U(https://cloud.google.com/memorystore/docs/redis/reference/rest/)'
 - 'Official Documentation: U(https://cloud.google.com/memorystore/docs/redis/)'
+- for authentication, you can set service_account_file using the c(gcp_service_account_file)
+  env variable.
+- for authentication, you can set service_account_contents using the c(GCP_SERVICE_ACCOUNT_CONTENTS)
+  env variable.
+- For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL)
+  env variable.
+- For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.
+- For authentication, you can set scopes using the C(GCP_SCOPES) env variable.
+- Environment variables values will only be used if the playbook values are not set.
+- The I(service_account_email) and I(service_account_file) options are mutually exclusive.
 '''
 
 EXAMPLES = '''
@@ -279,22 +326,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            alternative_location_id=dict(type='str'),
-            authorized_network=dict(type='str'),
-            display_name=dict(type='str'),
-            labels=dict(type='dict'),
-            redis_configs=dict(type='dict'),
-            location_id=dict(type='str'),
-            name=dict(required=True, type='str'),
-            memory_size_gb=dict(required=True, type='int'),
-            redis_version=dict(type='str'),
-            reserved_ip_range=dict(type='str'),
-            tier=dict(default='BASIC', type='str'),
-            region=dict(required=True, type='str'),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), alternative_location_id=dict(type='str'), authorized_network=dict(type='str'), display_name=dict(type='str'), labels=dict(type='dict'), redis_configs=dict(type='dict'), location_id=dict(type='str'), name=dict(required=True, type='str'), memory_size_gb=dict(required=True, type='int'), redis_version=dict(type='str'), reserved_ip_range=dict(type='str'), tier=dict(default='BASIC', type='str'), region=dict(required=True, type='str')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
@@ -333,7 +365,9 @@ def create(module, link):
 
 def update(module, link, fetch):
     auth = GcpSession(module, 'redis')
-    params = {'updateMask': updateMask(resource_to_request(module), response_to_hash(module, fetch))}
+    params = {
+        'updateMask': updateMask(resource_to_request(module), response_to_hash(module, fetch))
+    }
     request = resource_to_request(module)
     del request['name']
     return wait_for_operation(module, auth.patch(link, request, params=params))
@@ -350,27 +384,13 @@ def updateMask(request, response):
     if request.get('memorySizeGb') != response.get('memorySizeGb'):
         update_mask.append('memorySizeGb')
     return ','.join(update_mask)
-
-
 def delete(module, link):
     auth = GcpSession(module, 'redis')
     return wait_for_operation(module, auth.delete(link))
 
 
 def resource_to_request(module):
-    request = {
-        u'alternativeLocationId': module.params.get('alternative_location_id'),
-        u'authorizedNetwork': module.params.get('authorized_network'),
-        u'displayName': module.params.get('display_name'),
-        u'labels': module.params.get('labels'),
-        u'redisConfigs': module.params.get('redis_configs'),
-        u'locationId': module.params.get('location_id'),
-        u'name': module.params.get('name'),
-        u'memorySizeGb': module.params.get('memory_size_gb'),
-        u'redisVersion': module.params.get('redis_version'),
-        u'reservedIpRange': module.params.get('reserved_ip_range'),
-        u'tier': module.params.get('tier'),
-    }
+    request = { u'alternativeLocationId': module.params.get('alternative_location_id'),u'authorizedNetwork': module.params.get('authorized_network'),u'displayName': module.params.get('display_name'),u'labels': module.params.get('labels'),u'redisConfigs': module.params.get('redis_configs'),u'locationId': module.params.get('location_id'),u'name': module.params.get('name'),u'memorySizeGb': module.params.get('memory_size_gb'),u'redisVersion': module.params.get('redis_version'),u'reservedIpRange': module.params.get('reserved_ip_range'),u'tier': module.params.get('tier') }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -438,23 +458,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'alternativeLocationId': module.params.get('alternative_location_id'),
-        u'authorizedNetwork': module.params.get('authorized_network'),
-        u'createTime': response.get(u'createTime'),
-        u'currentLocationId': module.params.get('current_location_id'),
-        u'displayName': response.get(u'displayName'),
-        u'host': response.get(u'host'),
-        u'labels': response.get(u'labels'),
-        u'redisConfigs': response.get(u'redisConfigs'),
-        u'locationId': module.params.get('location_id'),
-        u'name': module.params.get('name'),
-        u'memorySizeGb': response.get(u'memorySizeGb'),
-        u'port': response.get(u'port'),
-        u'redisVersion': module.params.get('redis_version'),
-        u'reservedIpRange': module.params.get('reserved_ip_range'),
-        u'tier': module.params.get('tier'),
-    }
+    return { u'alternativeLocationId': module.params.get('alternative_location_id'),u'authorizedNetwork': module.params.get('authorized_network'),u'createTime': response.get(u'createTime'),u'currentLocationId': module.params.get('current_location_id'),u'displayName': response.get(u'displayName'),u'host': response.get(u'host'),u'labels': response.get(u'labels'),u'redisConfigs': response.get(u'redisConfigs'),u'locationId': module.params.get('location_id'),u'name': module.params.get('name'),u'memorySizeGb': response.get(u'memorySizeGb'),u'port': response.get(u'port'),u'redisVersion': module.params.get('redis_version'),u'reservedIpRange': module.params.get('reserved_ip_range'),u'tier': module.params.get('tier') }
 
 
 def async_op_url(module, extra_data=None):

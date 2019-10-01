@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -162,7 +163,43 @@ options:
     - The location of the queue.
     required: true
     type: str
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 '''
 
 EXAMPLES = '''
@@ -328,25 +365,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            name=dict(type='str'),
-            app_engine_routing_override=dict(type='dict', options=dict(service=dict(type='str'), version=dict(type='str'), instance=dict(type='str'))),
-            rate_limits=dict(type='dict', options=dict(max_dispatches_per_second=dict(type='int'), max_concurrent_dispatches=dict(type='int'))),
-            retry_config=dict(
-                type='dict',
-                options=dict(
-                    max_attempts=dict(type='int'),
-                    max_retry_duration=dict(type='str'),
-                    min_backoff=dict(type='str'),
-                    max_backoff=dict(type='str'),
-                    max_doublings=dict(type='int'),
-                ),
-            ),
-            status=dict(type='str'),
-            location=dict(required=True, type='str'),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(type='str'), app_engine_routing_override=dict(type='dict', options=dict(service=dict(type='str'), version=dict(type='str'), instance=dict(type='str'))), rate_limits=dict(type='dict', options=dict(max_dispatches_per_second=dict(type='int'), max_concurrent_dispatches=dict(type='int'))), retry_config=dict(type='dict', options=dict(max_attempts=dict(type='int'), max_retry_duration=dict(type='str'), min_backoff=dict(type='str'), max_backoff=dict(type='str'), max_doublings=dict(type='int'))), status=dict(type='str'), location=dict(required=True, type='str')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
@@ -399,12 +418,7 @@ def delete(module, link):
 
 
 def resource_to_request(module):
-    request = {
-        u'name': name_pattern(module.params.get('name'), module),
-        u'appEngineRoutingOverride': QueueAppengineroutingoverride(module.params.get('app_engine_routing_override', {}), module).to_request(),
-        u'rateLimits': QueueRatelimits(module.params.get('rate_limits', {}), module).to_request(),
-        u'retryConfig': QueueRetryconfig(module.params.get('retry_config', {}), module).to_request(),
-    }
+    request = { u'name': name_pattern(module.params.get('name'), module),u'appEngineRoutingOverride': QueueAppengineroutingoverride(module.params.get('app_engine_routing_override', {}), module).to_request(),u'rateLimits': QueueRatelimits(module.params.get('rate_limits', {}), module).to_request(),u'retryConfig': QueueRetryconfig(module.params.get('retry_config', {}), module).to_request() }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -468,14 +482,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'name': response.get(u'name'),
-        u'appEngineRoutingOverride': QueueAppengineroutingoverride(response.get(u'appEngineRoutingOverride', {}), module).from_response(),
-        u'rateLimits': QueueRatelimits(response.get(u'rateLimits', {}), module).from_response(),
-        u'retryConfig': QueueRetryconfig(response.get(u'retryConfig', {}), module).from_response(),
-    }
-
-
+    return { u'name': response.get(u'name'),u'appEngineRoutingOverride': QueueAppengineroutingoverride(response.get(u'appEngineRoutingOverride', {}), module).from_response(),u'rateLimits': QueueRatelimits(response.get(u'rateLimits', {}), module).from_response(),u'retryConfig': QueueRetryconfig(response.get(u'retryConfig', {}), module).from_response() }
 def name_pattern(name, module):
     if name is None:
         return
@@ -527,14 +534,12 @@ class QueueAppengineroutingoverride(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {u'service': self.request.get('service'), u'version': self.request.get('version'), u'instance': self.request.get('instance')}
-        )
+        return remove_nones_from_dict({ u'service': self.request.get('service'),u'version': self.request.get('version'),u'instance': self.request.get('instance') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {u'service': self.request.get(u'service'), u'version': self.request.get(u'version'), u'instance': self.request.get(u'instance')}
-        )
+        return remove_nones_from_dict({ u'service': self.request.get(u'service'),u'version': self.request.get(u'version'),u'instance': self.request.get(u'instance') }
+)
 
 
 class QueueRatelimits(object):
@@ -546,17 +551,12 @@ class QueueRatelimits(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {
-                u'maxDispatchesPerSecond': self.request.get('max_dispatches_per_second'),
-                u'maxConcurrentDispatches': self.request.get('max_concurrent_dispatches'),
-            }
-        )
+        return remove_nones_from_dict({ u'maxDispatchesPerSecond': self.request.get('max_dispatches_per_second'),u'maxConcurrentDispatches': self.request.get('max_concurrent_dispatches') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {u'maxDispatchesPerSecond': self.request.get(u'maxDispatchesPerSecond'), u'maxConcurrentDispatches': self.request.get(u'maxConcurrentDispatches')}
-        )
+        return remove_nones_from_dict({ u'maxDispatchesPerSecond': self.request.get(u'maxDispatchesPerSecond'),u'maxConcurrentDispatches': self.request.get(u'maxConcurrentDispatches') }
+)
 
 
 class QueueRetryconfig(object):
@@ -568,26 +568,12 @@ class QueueRetryconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {
-                u'maxAttempts': self.request.get('max_attempts'),
-                u'maxRetryDuration': self.request.get('max_retry_duration'),
-                u'minBackoff': self.request.get('min_backoff'),
-                u'maxBackoff': self.request.get('max_backoff'),
-                u'maxDoublings': self.request.get('max_doublings'),
-            }
-        )
+        return remove_nones_from_dict({ u'maxAttempts': self.request.get('max_attempts'),u'maxRetryDuration': self.request.get('max_retry_duration'),u'minBackoff': self.request.get('min_backoff'),u'maxBackoff': self.request.get('max_backoff'),u'maxDoublings': self.request.get('max_doublings') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {
-                u'maxAttempts': self.request.get(u'maxAttempts'),
-                u'maxRetryDuration': self.request.get(u'maxRetryDuration'),
-                u'minBackoff': self.request.get(u'minBackoff'),
-                u'maxBackoff': self.request.get(u'maxBackoff'),
-                u'maxDoublings': self.request.get(u'maxDoublings'),
-            }
-        )
+        return remove_nones_from_dict({ u'maxAttempts': self.request.get(u'maxAttempts'),u'maxRetryDuration': self.request.get(u'maxRetryDuration'),u'minBackoff': self.request.get(u'minBackoff'),u'maxBackoff': self.request.get(u'maxBackoff'),u'maxDoublings': self.request.get(u'maxDoublings') }
+)
 
 
 if __name__ == '__main__':

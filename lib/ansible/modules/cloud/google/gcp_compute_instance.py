@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -472,7 +473,43 @@ options:
     - A reference to the zone where the machine resides.
     required: true
     type: str
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 '''
 
 EXAMPLES = '''
@@ -983,69 +1020,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            can_ip_forward=dict(type='bool', aliases=['ip_forward']),
-            deletion_protection=dict(type='bool'),
-            disks=dict(
-                type='list',
-                elements='dict',
-                options=dict(
-                    auto_delete=dict(type='bool'),
-                    boot=dict(type='bool'),
-                    device_name=dict(type='str'),
-                    disk_encryption_key=dict(type='dict', options=dict(raw_key=dict(type='str'), rsa_encrypted_key=dict(type='str'))),
-                    index=dict(type='int'),
-                    initialize_params=dict(
-                        type='dict',
-                        options=dict(
-                            disk_name=dict(type='str'),
-                            disk_size_gb=dict(type='int'),
-                            disk_type=dict(type='str'),
-                            source_image=dict(type='str', aliases=['image', 'image_family']),
-                            source_image_encryption_key=dict(type='dict', options=dict(raw_key=dict(type='str'))),
-                        ),
-                    ),
-                    interface=dict(type='str'),
-                    mode=dict(type='str'),
-                    source=dict(type='dict'),
-                    type=dict(type='str'),
-                ),
-            ),
-            guest_accelerators=dict(type='list', elements='dict', options=dict(accelerator_count=dict(type='int'), accelerator_type=dict(type='str'))),
-            hostname=dict(type='str'),
-            labels=dict(type='dict'),
-            metadata=dict(type='dict'),
-            machine_type=dict(type='str'),
-            min_cpu_platform=dict(type='str'),
-            name=dict(type='str'),
-            network_interfaces=dict(
-                type='list',
-                elements='dict',
-                options=dict(
-                    access_configs=dict(
-                        type='list',
-                        elements='dict',
-                        options=dict(name=dict(required=True, type='str'), nat_ip=dict(type='dict'), type=dict(required=True, type='str')),
-                    ),
-                    alias_ip_ranges=dict(type='list', elements='dict', options=dict(ip_cidr_range=dict(type='str'), subnetwork_range_name=dict(type='str'))),
-                    network=dict(type='dict'),
-                    network_ip=dict(type='str'),
-                    subnetwork=dict(type='dict'),
-                ),
-            ),
-            scheduling=dict(
-                type='dict', options=dict(automatic_restart=dict(type='bool'), on_host_maintenance=dict(type='str'), preemptible=dict(type='bool'))
-            ),
-            service_accounts=dict(type='list', elements='dict', options=dict(email=dict(type='str'), scopes=dict(type='list', elements='str'))),
-            shielded_instance_config=dict(
-                type='dict', options=dict(enable_secure_boot=dict(type='bool'), enable_vtpm=dict(type='bool'), enable_integrity_monitoring=dict(type='bool'))
-            ),
-            status=dict(type='str'),
-            tags=dict(type='dict', options=dict(fingerprint=dict(type='str'), items=dict(type='list', elements='str'))),
-            zone=dict(required=True, type='str'),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), can_ip_forward=dict(type='bool', aliases=['ip_forward']), deletion_protection=dict(type='bool'), disks=dict(type='list', elements='dict', options=dict(auto_delete=dict(type='bool'), boot=dict(type='bool'), device_name=dict(type='str'), disk_encryption_key=dict(type='dict', options=dict(raw_key=dict(type='str'), rsa_encrypted_key=dict(type='str'))), index=dict(type='int'), initialize_params=dict(type='dict', options=dict(disk_name=dict(type='str'), disk_size_gb=dict(type='int'), disk_type=dict(type='str'), source_image=dict(type='str', aliases=['image', 'image_family']), source_image_encryption_key=dict(type='dict', options=dict(raw_key=dict(type='str'))))), interface=dict(type='str'), mode=dict(type='str'), source=dict(type='dict'), type=dict(type='str'))), guest_accelerators=dict(type='list', elements='dict', options=dict(accelerator_count=dict(type='int'), accelerator_type=dict(type='str'))), hostname=dict(type='str'), labels=dict(type='dict'), metadata=dict(type='dict'), machine_type=dict(type='str'), min_cpu_platform=dict(type='str'), name=dict(type='str'), network_interfaces=dict(type='list', elements='dict', options=dict(access_configs=dict(type='list', elements='dict', options=dict(name=dict(required=True, type='str'), nat_ip=dict(type='dict'), type=dict(required=True, type='str'))), alias_ip_ranges=dict(type='list', elements='dict', options=dict(ip_cidr_range=dict(type='str'), subnetwork_range_name=dict(type='str'))), network=dict(type='dict'), network_ip=dict(type='str'), subnetwork=dict(type='dict'))), scheduling=dict(type='dict', options=dict(automatic_restart=dict(type='bool'), on_host_maintenance=dict(type='str'), preemptible=dict(type='bool'))), service_accounts=dict(type='list', elements='dict', options=dict(email=dict(type='str'), scopes=dict(type='list', elements='str'))), shielded_instance_config=dict(type='dict', options=dict(enable_secure_boot=dict(type='bool'), enable_vtpm=dict(type='bool'), enable_integrity_monitoring=dict(type='bool'))), status=dict(type='str'), tags=dict(type='dict', options=dict(fingerprint=dict(type='str'), items=dict(type='list', elements='str'))), zone=dict(required=True, type='str')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -1089,7 +1064,8 @@ def create(module, link, kind):
 
 
 def update(module, link, kind, fetch):
-    update_fields(module, resource_to_request(module), response_to_hash(module, fetch))
+    update_fields(module, resource_to_request(module),
+                  response_to_hash(module, fetch))
     return fetch_resource(module, self_link(module), kind)
 
 
@@ -1107,18 +1083,22 @@ def update_fields(module, request, response):
 def label_fingerprint_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/zones/{zone}/instances/{name}/setLabels"]).format(**module.params),
-        {u'labelFingerprint': response.get('labelFingerprint'), u'labels': module.params.get('labels')},
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "projects/{project}/zones/{zone}/instances/{name}/setLabels"
+        ]).format(**module.params),
+{ u'labelFingerprint': response.get('labelFingerprint'),u'labels': module.params.get('labels') }
     )
-
 
 def machine_type_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/zones/{zone}/instances/{name}/setMachineType"]).format(**module.params),
-        {u'machineType': machine_type_selflink(module.params.get('machine_type'), module.params)},
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "projects/{project}/zones/{zone}/instances/{name}/setMachineType"
+        ]).format(**module.params),
+{ u'machineType': machine_type_selflink(module.params.get('machine_type'), module.params) }
     )
-
 
 def delete(module, link, kind):
     auth = GcpSession(module, 'compute')
@@ -1126,25 +1106,7 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = {
-        u'kind': 'compute#instance',
-        u'canIpForward': module.params.get('can_ip_forward'),
-        u'deletionProtection': module.params.get('deletion_protection'),
-        u'disks': InstanceDisksArray(module.params.get('disks', []), module).to_request(),
-        u'guestAccelerators': InstanceGuestacceleratorsArray(module.params.get('guest_accelerators', []), module).to_request(),
-        u'hostname': module.params.get('hostname'),
-        u'labels': module.params.get('labels'),
-        u'metadata': module.params.get('metadata'),
-        u'machineType': machine_type_selflink(module.params.get('machine_type'), module.params),
-        u'minCpuPlatform': module.params.get('min_cpu_platform'),
-        u'name': module.params.get('name'),
-        u'networkInterfaces': InstanceNetworkinterfacesArray(module.params.get('network_interfaces', []), module).to_request(),
-        u'scheduling': InstanceScheduling(module.params.get('scheduling', {}), module).to_request(),
-        u'serviceAccounts': InstanceServiceaccountsArray(module.params.get('service_accounts', []), module).to_request(),
-        u'shieldedInstanceConfig': InstanceShieldedinstanceconfig(module.params.get('shielded_instance_config', {}), module).to_request(),
-        u'status': module.params.get('status'),
-        u'tags': InstanceTags(module.params.get('tags', {}), module).to_request(),
-    }
+    request = { u'kind': 'compute#instance',u'canIpForward': module.params.get('can_ip_forward'),u'deletionProtection': module.params.get('deletion_protection'),u'disks': InstanceDisksArray(module.params.get('disks', []), module).to_request(),u'guestAccelerators': InstanceGuestacceleratorsArray(module.params.get('guest_accelerators', []), module).to_request(),u'hostname': module.params.get('hostname'),u'labels': module.params.get('labels'),u'metadata': module.params.get('metadata'),u'machineType': machine_type_selflink(module.params.get('machine_type'), module.params),u'minCpuPlatform': module.params.get('min_cpu_platform'),u'name': module.params.get('name'),u'networkInterfaces': InstanceNetworkinterfacesArray(module.params.get('network_interfaces', []), module).to_request(),u'scheduling': InstanceScheduling(module.params.get('scheduling', {}), module).to_request(),u'serviceAccounts': InstanceServiceaccountsArray(module.params.get('service_accounts', []), module).to_request(),u'shieldedInstanceConfig': InstanceShieldedinstanceconfig(module.params.get('shielded_instance_config', {}), module).to_request(),u'status': module.params.get('status'),u'tags': InstanceTags(module.params.get('tags', {}), module).to_request() }
     request = encode_request(request, module)
     return_vals = {}
     for k, v in request.items():
@@ -1212,29 +1174,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'canIpForward': response.get(u'canIpForward'),
-        u'cpuPlatform': response.get(u'cpuPlatform'),
-        u'creationTimestamp': response.get(u'creationTimestamp'),
-        u'deletionProtection': response.get(u'deletionProtection'),
-        u'disks': InstanceDisksArray(module.params.get('disks', []), module).to_request(),
-        u'guestAccelerators': InstanceGuestacceleratorsArray(response.get(u'guestAccelerators', []), module).from_response(),
-        u'hostname': response.get(u'hostname'),
-        u'id': response.get(u'id'),
-        u'labelFingerprint': response.get(u'labelFingerprint'),
-        u'labels': response.get(u'labels'),
-        u'metadata': response.get(u'metadata'),
-        u'machineType': response.get(u'machineType'),
-        u'minCpuPlatform': response.get(u'minCpuPlatform'),
-        u'name': response.get(u'name'),
-        u'networkInterfaces': InstanceNetworkinterfacesArray(response.get(u'networkInterfaces', []), module).from_response(),
-        u'scheduling': InstanceScheduling(response.get(u'scheduling', {}), module).from_response(),
-        u'serviceAccounts': InstanceServiceaccountsArray(response.get(u'serviceAccounts', []), module).from_response(),
-        u'shieldedInstanceConfig': InstanceShieldedinstanceconfig(response.get(u'shieldedInstanceConfig', {}), module).from_response(),
-        u'status': response.get(u'status'),
-        u'statusMessage': response.get(u'statusMessage'),
-        u'tags': InstanceTags(response.get(u'tags', {}), module).from_response(),
-    }
+    return { u'canIpForward': response.get(u'canIpForward'),u'cpuPlatform': response.get(u'cpuPlatform'),u'creationTimestamp': response.get(u'creationTimestamp'),u'deletionProtection': response.get(u'deletionProtection'),u'disks': InstanceDisksArray(module.params.get('disks', []), module).to_request(),u'guestAccelerators': InstanceGuestacceleratorsArray(response.get(u'guestAccelerators', []), module).from_response(),u'hostname': response.get(u'hostname'),u'id': response.get(u'id'),u'labelFingerprint': response.get(u'labelFingerprint'),u'labels': response.get(u'labels'),u'metadata': response.get(u'metadata'),u'machineType': response.get(u'machineType'),u'minCpuPlatform': response.get(u'minCpuPlatform'),u'name': response.get(u'name'),u'networkInterfaces': InstanceNetworkinterfacesArray(response.get(u'networkInterfaces', []), module).from_response(),u'scheduling': InstanceScheduling(response.get(u'scheduling', {}), module).from_response(),u'serviceAccounts': InstanceServiceaccountsArray(response.get(u'serviceAccounts', []), module).from_response(),u'shieldedInstanceConfig': InstanceShieldedinstanceconfig(response.get(u'shieldedInstanceConfig', {}), module).from_response(),u'status': response.get(u'status'),u'statusMessage': response.get(u'statusMessage'),u'tags': InstanceTags(response.get(u'tags', {}), module).from_response() }
 
 
 def disk_type_selflink(name, params):
@@ -1326,8 +1266,13 @@ def metadata_encoder(metadata):
     metadata_new = []
     for key in metadata:
         value = metadata[key]
-        metadata_new.append({"key": key, "value": value})
-    return {'items': metadata_new}
+        metadata_new.append({
+            "key": key,
+            "value": value
+        })
+    return {
+        'items': metadata_new
+    }
 
 
 # Map metadata.items[]{key:,value:} => metadata[key]=value
@@ -1375,27 +1320,19 @@ class InstancePower(object):
 def deletion_protection_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join(
-            [
-                "https://www.googleapis.com/compute/v1/",
-                "projects/{project}/zones/{zone}/instances/{name}/setDeletionProtection?deletionProtection={deletionProtection}",
-            ]
-        ).format(**module.params),
+        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/zones/{zone}/instances/{name}/setDeletionProtection?deletionProtection={deletionProtection}"]).format(**module.params),
         {},
     )
-
 
 def shielded_instance_config_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/zones/{zone}/instances/{name}/updateShieldedInstanceConfig"]).format(
-            **module.params
-        ),
+        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/zones/{zone}/instances/{name}/updateShieldedInstanceConfig"]).format(**module.params),
         {
             u'enableSecureBoot': navigate_hash(module.params, ['shielded_instance_config', 'enable_secure_boot']),
             u'enableVtpm': navigate_hash(module.params, ['shielded_instance_config', 'enable_vtpm']),
             u'enableIntegrityMonitoring': navigate_hash(module.params, ['shielded_instance_config', 'enable_integrity_monitoring']),
-        },
+        }
     )
 
 
@@ -1420,36 +1357,12 @@ class InstanceDisksArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict(
-            {
-                u'autoDelete': item.get('auto_delete'),
-                u'boot': item.get('boot'),
-                u'deviceName': item.get('device_name'),
-                u'diskEncryptionKey': InstanceDiskencryptionkey(item.get('disk_encryption_key', {}), self.module).to_request(),
-                u'index': item.get('index'),
-                u'initializeParams': InstanceInitializeparams(item.get('initialize_params', {}), self.module).to_request(),
-                u'interface': item.get('interface'),
-                u'mode': item.get('mode'),
-                u'source': replace_resource_dict(item.get(u'source', {}), 'selfLink'),
-                u'type': item.get('type'),
-            }
-        )
+        return remove_nones_from_dict({ u'autoDelete': item.get('auto_delete'),u'boot': item.get('boot'),u'deviceName': item.get('device_name'),u'diskEncryptionKey': InstanceDiskencryptionkey(item.get('disk_encryption_key', {}), self.module).to_request(),u'index': item.get('index'),u'initializeParams': InstanceInitializeparams(item.get('initialize_params', {}), self.module).to_request(),u'interface': item.get('interface'),u'mode': item.get('mode'),u'source': replace_resource_dict(item.get(u'source', {}), 'selfLink'),u'type': item.get('type') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict(
-            {
-                u'autoDelete': item.get(u'autoDelete'),
-                u'boot': item.get(u'boot'),
-                u'deviceName': item.get(u'deviceName'),
-                u'diskEncryptionKey': InstanceDiskencryptionkey(item.get(u'diskEncryptionKey', {}), self.module).from_response(),
-                u'index': item.get(u'index'),
-                u'initializeParams': InstanceInitializeparams(self.module.params.get('initialize_params', {}), self.module).to_request(),
-                u'interface': item.get(u'interface'),
-                u'mode': item.get(u'mode'),
-                u'source': item.get(u'source'),
-                u'type': item.get(u'type'),
-            }
-        )
+        return remove_nones_from_dict({ u'autoDelete': item.get(u'autoDelete'),u'boot': item.get(u'boot'),u'deviceName': item.get(u'deviceName'),u'diskEncryptionKey': InstanceDiskencryptionkey(item.get(u'diskEncryptionKey', {}), self.module).from_response(),u'index': item.get(u'index'),u'initializeParams': InstanceInitializeparams(self.module.params.get('initialize_params', {}), self.module).to_request(),u'interface': item.get(u'interface'),u'mode': item.get(u'mode'),u'source': item.get(u'source'),u'type': item.get(u'type') }
+)
 
 
 class InstanceDiskencryptionkey(object):
@@ -1461,10 +1374,12 @@ class InstanceDiskencryptionkey(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'rawKey': self.request.get('raw_key'), u'rsaEncryptedKey': self.request.get('rsa_encrypted_key')})
+        return remove_nones_from_dict({ u'rawKey': self.request.get('raw_key'),u'rsaEncryptedKey': self.request.get('rsa_encrypted_key') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({u'rawKey': self.request.get(u'rawKey'), u'rsaEncryptedKey': self.request.get(u'rsaEncryptedKey')})
+        return remove_nones_from_dict({ u'rawKey': self.request.get(u'rawKey'),u'rsaEncryptedKey': self.request.get(u'rsaEncryptedKey') }
+)
 
 
 class InstanceInitializeparams(object):
@@ -1476,26 +1391,12 @@ class InstanceInitializeparams(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {
-                u'diskName': self.request.get('disk_name'),
-                u'diskSizeGb': self.request.get('disk_size_gb'),
-                u'diskType': disk_type_selflink(self.request.get('disk_type'), self.module.params),
-                u'sourceImage': self.request.get('source_image'),
-                u'sourceImageEncryptionKey': InstanceSourceimageencryptionkey(self.request.get('source_image_encryption_key', {}), self.module).to_request(),
-            }
-        )
+        return remove_nones_from_dict({ u'diskName': self.request.get('disk_name'),u'diskSizeGb': self.request.get('disk_size_gb'),u'diskType': disk_type_selflink(self.request.get('disk_type'), self.module.params),u'sourceImage': self.request.get('source_image'),u'sourceImageEncryptionKey': InstanceSourceimageencryptionkey(self.request.get('source_image_encryption_key', {}), self.module).to_request() }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {
-                u'diskName': self.request.get(u'diskName'),
-                u'diskSizeGb': self.request.get(u'diskSizeGb'),
-                u'diskType': self.request.get(u'diskType'),
-                u'sourceImage': self.request.get(u'sourceImage'),
-                u'sourceImageEncryptionKey': InstanceSourceimageencryptionkey(self.request.get(u'sourceImageEncryptionKey', {}), self.module).from_response(),
-            }
-        )
+        return remove_nones_from_dict({ u'diskName': self.request.get(u'diskName'),u'diskSizeGb': self.request.get(u'diskSizeGb'),u'diskType': self.request.get(u'diskType'),u'sourceImage': self.request.get(u'sourceImage'),u'sourceImageEncryptionKey': InstanceSourceimageencryptionkey(self.request.get(u'sourceImageEncryptionKey', {}), self.module).from_response() }
+)
 
 
 class InstanceSourceimageencryptionkey(object):
@@ -1507,10 +1408,12 @@ class InstanceSourceimageencryptionkey(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'rawKey': self.request.get('raw_key')})
+        return remove_nones_from_dict({ u'rawKey': self.request.get('raw_key') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({u'rawKey': self.request.get(u'rawKey')})
+        return remove_nones_from_dict({ u'rawKey': self.request.get(u'rawKey') }
+)
 
 
 class InstanceGuestacceleratorsArray(object):
@@ -1534,10 +1437,12 @@ class InstanceGuestacceleratorsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({u'acceleratorCount': item.get('accelerator_count'), u'acceleratorType': item.get('accelerator_type')})
+        return remove_nones_from_dict({ u'acceleratorCount': item.get('accelerator_count'),u'acceleratorType': item.get('accelerator_type') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({u'acceleratorCount': item.get(u'acceleratorCount'), u'acceleratorType': item.get(u'acceleratorType')})
+        return remove_nones_from_dict({ u'acceleratorCount': item.get(u'acceleratorCount'),u'acceleratorType': item.get(u'acceleratorType') }
+)
 
 
 class InstanceNetworkinterfacesArray(object):
@@ -1561,26 +1466,12 @@ class InstanceNetworkinterfacesArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict(
-            {
-                u'accessConfigs': InstanceAccessconfigsArray(item.get('access_configs', []), self.module).to_request(),
-                u'aliasIpRanges': InstanceAliasiprangesArray(item.get('alias_ip_ranges', []), self.module).to_request(),
-                u'network': replace_resource_dict(item.get(u'network', {}), 'selfLink'),
-                u'networkIP': item.get('network_ip'),
-                u'subnetwork': replace_resource_dict(item.get(u'subnetwork', {}), 'selfLink'),
-            }
-        )
+        return remove_nones_from_dict({ u'accessConfigs': InstanceAccessconfigsArray(item.get('access_configs', []), self.module).to_request(),u'aliasIpRanges': InstanceAliasiprangesArray(item.get('alias_ip_ranges', []), self.module).to_request(),u'network': replace_resource_dict(item.get(u'network', {}), 'selfLink'),u'networkIP': item.get('network_ip'),u'subnetwork': replace_resource_dict(item.get(u'subnetwork', {}), 'selfLink') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict(
-            {
-                u'accessConfigs': InstanceAccessconfigsArray(item.get(u'accessConfigs', []), self.module).from_response(),
-                u'aliasIpRanges': InstanceAliasiprangesArray(item.get(u'aliasIpRanges', []), self.module).from_response(),
-                u'network': item.get(u'network'),
-                u'networkIP': item.get(u'networkIP'),
-                u'subnetwork': item.get(u'subnetwork'),
-            }
-        )
+        return remove_nones_from_dict({ u'accessConfigs': InstanceAccessconfigsArray(item.get(u'accessConfigs', []), self.module).from_response(),u'aliasIpRanges': InstanceAliasiprangesArray(item.get(u'aliasIpRanges', []), self.module).from_response(),u'network': item.get(u'network'),u'networkIP': item.get(u'networkIP'),u'subnetwork': item.get(u'subnetwork') }
+)
 
 
 class InstanceAccessconfigsArray(object):
@@ -1604,12 +1495,12 @@ class InstanceAccessconfigsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict(
-            {u'name': item.get('name'), u'natIP': replace_resource_dict(item.get(u'nat_ip', {}), 'address'), u'type': item.get('type')}
-        )
+        return remove_nones_from_dict({ u'name': item.get('name'),u'natIP': replace_resource_dict(item.get(u'nat_ip', {}), 'address'),u'type': item.get('type') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({u'name': item.get(u'name'), u'natIP': item.get(u'natIP'), u'type': item.get(u'type')})
+        return remove_nones_from_dict({ u'name': item.get(u'name'),u'natIP': item.get(u'natIP'),u'type': item.get(u'type') }
+)
 
 
 class InstanceAliasiprangesArray(object):
@@ -1633,10 +1524,12 @@ class InstanceAliasiprangesArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({u'ipCidrRange': item.get('ip_cidr_range'), u'subnetworkRangeName': item.get('subnetwork_range_name')})
+        return remove_nones_from_dict({ u'ipCidrRange': item.get('ip_cidr_range'),u'subnetworkRangeName': item.get('subnetwork_range_name') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({u'ipCidrRange': item.get(u'ipCidrRange'), u'subnetworkRangeName': item.get(u'subnetworkRangeName')})
+        return remove_nones_from_dict({ u'ipCidrRange': item.get(u'ipCidrRange'),u'subnetworkRangeName': item.get(u'subnetworkRangeName') }
+)
 
 
 class InstanceScheduling(object):
@@ -1648,22 +1541,12 @@ class InstanceScheduling(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {
-                u'automaticRestart': self.request.get('automatic_restart'),
-                u'onHostMaintenance': self.request.get('on_host_maintenance'),
-                u'preemptible': self.request.get('preemptible'),
-            }
-        )
+        return remove_nones_from_dict({ u'automaticRestart': self.request.get('automatic_restart'),u'onHostMaintenance': self.request.get('on_host_maintenance'),u'preemptible': self.request.get('preemptible') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {
-                u'automaticRestart': self.request.get(u'automaticRestart'),
-                u'onHostMaintenance': self.request.get(u'onHostMaintenance'),
-                u'preemptible': self.request.get(u'preemptible'),
-            }
-        )
+        return remove_nones_from_dict({ u'automaticRestart': self.request.get(u'automaticRestart'),u'onHostMaintenance': self.request.get(u'onHostMaintenance'),u'preemptible': self.request.get(u'preemptible') }
+)
 
 
 class InstanceServiceaccountsArray(object):
@@ -1687,10 +1570,12 @@ class InstanceServiceaccountsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({u'email': item.get('email'), u'scopes': item.get('scopes')})
+        return remove_nones_from_dict({ u'email': item.get('email'),u'scopes': item.get('scopes') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({u'email': item.get(u'email'), u'scopes': item.get(u'scopes')})
+        return remove_nones_from_dict({ u'email': item.get(u'email'),u'scopes': item.get(u'scopes') }
+)
 
 
 class InstanceShieldedinstanceconfig(object):
@@ -1702,22 +1587,12 @@ class InstanceShieldedinstanceconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {
-                u'enableSecureBoot': self.request.get('enable_secure_boot'),
-                u'enableVtpm': self.request.get('enable_vtpm'),
-                u'enableIntegrityMonitoring': self.request.get('enable_integrity_monitoring'),
-            }
-        )
+        return remove_nones_from_dict({ u'enableSecureBoot': self.request.get('enable_secure_boot'),u'enableVtpm': self.request.get('enable_vtpm'),u'enableIntegrityMonitoring': self.request.get('enable_integrity_monitoring') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {
-                u'enableSecureBoot': self.request.get(u'enableSecureBoot'),
-                u'enableVtpm': self.request.get(u'enableVtpm'),
-                u'enableIntegrityMonitoring': self.request.get(u'enableIntegrityMonitoring'),
-            }
-        )
+        return remove_nones_from_dict({ u'enableSecureBoot': self.request.get(u'enableSecureBoot'),u'enableVtpm': self.request.get(u'enableVtpm'),u'enableIntegrityMonitoring': self.request.get(u'enableIntegrityMonitoring') }
+)
 
 
 class InstanceTags(object):
@@ -1729,10 +1604,12 @@ class InstanceTags(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'fingerprint': self.request.get('fingerprint'), u'items': self.request.get('items')})
+        return remove_nones_from_dict({ u'fingerprint': self.request.get('fingerprint'),u'items': self.request.get('items') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({u'fingerprint': self.request.get(u'fingerprint'), u'items': self.request.get(u'items')})
+        return remove_nones_from_dict({ u'fingerprint': self.request.get(u'fingerprint'),u'items': self.request.get(u'items') }
+)
 
 
 if __name__ == '__main__':

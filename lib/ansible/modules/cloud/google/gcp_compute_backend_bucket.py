@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -35,7 +36,7 @@ description:
   balancing.
 - An HTTP(S) load balancer can direct traffic to specified URLs to a backend bucket
   rather than a backend service. It can send requests for static content to a Cloud
-  Storage bucket and requests for dynamic content a virtual machine instance.
+  Storage bucket and requests for dynamic content to a virtual machine instance.
 short_description: Creates a GCP BackendBucket
 version_added: '2.6'
 author: Google Inc. (@googlecloudplatform)
@@ -97,10 +98,56 @@ options:
       which cannot be a dash.
     required: true
     type: str
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 notes:
 - 'API Reference: U(https://cloud.google.com/compute/docs/reference/v1/backendBuckets)'
 - 'Using a Cloud Storage bucket as a load balancer backend: U(https://cloud.google.com/compute/docs/load-balancing/http/backend-bucket)'
+- for authentication, you can set service_account_file using the c(gcp_service_account_file)
+  env variable.
+- for authentication, you can set service_account_contents using the c(GCP_SERVICE_ACCOUNT_CONTENTS)
+  env variable.
+- For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL)
+  env variable.
+- For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.
+- For authentication, you can set scopes using the C(GCP_SCOPES) env variable.
+- Environment variables values will only be used if the playbook values are not set.
+- The I(service_account_email) and I(service_account_file) options are mutually exclusive.
 '''
 
 EXAMPLES = '''
@@ -198,15 +245,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            bucket_name=dict(required=True, type='str'),
-            cdn_policy=dict(type='dict', options=dict(signed_url_cache_max_age_sec=dict(default=3600, type='int'))),
-            description=dict(type='str'),
-            enable_cdn=dict(type='bool'),
-            name=dict(required=True, type='str'),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), bucket_name=dict(required=True, type='str'), cdn_policy=dict(type='dict', options=dict(signed_url_cache_max_age_sec=dict(default=3600, type='int'))), description=dict(type='str'), enable_cdn=dict(type='bool'), name=dict(required=True, type='str')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -255,14 +294,7 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = {
-        u'kind': 'compute#backendBucket',
-        u'bucketName': module.params.get('bucket_name'),
-        u'cdnPolicy': BackendBucketCdnpolicy(module.params.get('cdn_policy', {}), module).to_request(),
-        u'description': module.params.get('description'),
-        u'enableCdn': module.params.get('enable_cdn'),
-        u'name': module.params.get('name'),
-    }
+    request = { u'kind': 'compute#backendBucket',u'bucketName': module.params.get('bucket_name'),u'cdnPolicy': BackendBucketCdnpolicy(module.params.get('cdn_policy', {}), module).to_request(),u'description': module.params.get('description'),u'enableCdn': module.params.get('enable_cdn'),u'name': module.params.get('name') }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -326,15 +358,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'bucketName': response.get(u'bucketName'),
-        u'cdnPolicy': BackendBucketCdnpolicy(response.get(u'cdnPolicy', {}), module).from_response(),
-        u'creationTimestamp': response.get(u'creationTimestamp'),
-        u'description': response.get(u'description'),
-        u'enableCdn': response.get(u'enableCdn'),
-        u'id': response.get(u'id'),
-        u'name': module.params.get('name'),
-    }
+    return { u'bucketName': response.get(u'bucketName'),u'cdnPolicy': BackendBucketCdnpolicy(response.get(u'cdnPolicy', {}), module).from_response(),u'creationTimestamp': response.get(u'creationTimestamp'),u'description': response.get(u'description'),u'enableCdn': response.get(u'enableCdn'),u'id': response.get(u'id'),u'name': module.params.get('name') }
 
 
 def async_op_url(module, extra_data=None):
@@ -353,7 +377,6 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#backendBucket')
-
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
@@ -381,10 +404,12 @@ class BackendBucketCdnpolicy(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'signedUrlCacheMaxAgeSec': self.request.get('signed_url_cache_max_age_sec')})
+        return remove_nones_from_dict({ u'signedUrlCacheMaxAgeSec': self.request.get('signed_url_cache_max_age_sec') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({u'signedUrlCacheMaxAgeSec': self.request.get(u'signedUrlCacheMaxAgeSec')})
+        return remove_nones_from_dict({ u'signedUrlCacheMaxAgeSec': self.request.get(u'signedUrlCacheMaxAgeSec') }
+)
 
 
 if __name__ == '__main__':

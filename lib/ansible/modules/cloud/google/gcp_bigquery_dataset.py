@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -200,7 +201,43 @@ options:
     required: false
     default: US
     type: str
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 '''
 
 EXAMPLES = '''
@@ -404,35 +441,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            name=dict(type='str'),
-            access=dict(
-                type='list',
-                elements='dict',
-                options=dict(
-                    domain=dict(type='str'),
-                    group_by_email=dict(type='str'),
-                    role=dict(type='str'),
-                    special_group=dict(type='str'),
-                    user_by_email=dict(type='str'),
-                    view=dict(
-                        type='dict',
-                        options=dict(
-                            dataset_id=dict(required=True, type='str'), project_id=dict(required=True, type='str'), table_id=dict(required=True, type='str')
-                        ),
-                    ),
-                ),
-            ),
-            dataset_reference=dict(required=True, type='dict', options=dict(dataset_id=dict(required=True, type='str'), project_id=dict(type='str'))),
-            default_table_expiration_ms=dict(type='int'),
-            default_partition_expiration_ms=dict(type='int'),
-            description=dict(type='str'),
-            friendly_name=dict(type='str'),
-            labels=dict(type='dict'),
-            location=dict(default='US', type='str'),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(type='str'), access=dict(type='list', elements='dict', options=dict(domain=dict(type='str'), group_by_email=dict(type='str'), role=dict(type='str'), special_group=dict(type='str'), user_by_email=dict(type='str'), view=dict(type='dict', options=dict(dataset_id=dict(required=True, type='str'), project_id=dict(required=True, type='str'), table_id=dict(required=True, type='str'))))), dataset_reference=dict(required=True, type='dict', options=dict(dataset_id=dict(required=True, type='str'), project_id=dict(type='str'))), default_table_expiration_ms=dict(type='int'), default_partition_expiration_ms=dict(type='int'), description=dict(type='str'), friendly_name=dict(type='str'), labels=dict(type='dict'), location=dict(default='US', type='str')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/bigquery']
@@ -481,18 +490,7 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = {
-        u'kind': 'bigquery#dataset',
-        u'name': module.params.get('name'),
-        u'access': DatasetAccessArray(module.params.get('access', []), module).to_request(),
-        u'datasetReference': DatasetDatasetreference(module.params.get('dataset_reference', {}), module).to_request(),
-        u'defaultTableExpirationMs': module.params.get('default_table_expiration_ms'),
-        u'defaultPartitionExpirationMs': module.params.get('default_partition_expiration_ms'),
-        u'description': module.params.get('description'),
-        u'friendlyName': module.params.get('friendly_name'),
-        u'labels': module.params.get('labels'),
-        u'location': module.params.get('location'),
-    }
+    request = { u'kind': 'bigquery#dataset',u'name': module.params.get('name'),u'access': DatasetAccessArray(module.params.get('access', []), module).to_request(),u'datasetReference': DatasetDatasetreference(module.params.get('dataset_reference', {}), module).to_request(),u'defaultTableExpirationMs': module.params.get('default_table_expiration_ms'),u'defaultPartitionExpirationMs': module.params.get('default_partition_expiration_ms'),u'description': module.params.get('description'),u'friendlyName': module.params.get('friendly_name'),u'labels': module.params.get('labels'),u'location': module.params.get('location') }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -556,21 +554,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'name': response.get(u'name'),
-        u'access': DatasetAccessArray(response.get(u'access', []), module).from_response(),
-        u'creationTime': response.get(u'creationTime'),
-        u'datasetReference': DatasetDatasetreference(response.get(u'datasetReference', {}), module).from_response(),
-        u'defaultTableExpirationMs': response.get(u'defaultTableExpirationMs'),
-        u'defaultPartitionExpirationMs': response.get(u'defaultPartitionExpirationMs'),
-        u'description': response.get(u'description'),
-        u'etag': response.get(u'etag'),
-        u'friendlyName': response.get(u'friendlyName'),
-        u'id': response.get(u'id'),
-        u'labels': response.get(u'labels'),
-        u'lastModifiedTime': response.get(u'lastModifiedTime'),
-        u'location': response.get(u'location'),
-    }
+    return { u'name': response.get(u'name'),u'access': DatasetAccessArray(response.get(u'access', []), module).from_response(),u'creationTime': response.get(u'creationTime'),u'datasetReference': DatasetDatasetreference(response.get(u'datasetReference', {}), module).from_response(),u'defaultTableExpirationMs': response.get(u'defaultTableExpirationMs'),u'defaultPartitionExpirationMs': response.get(u'defaultPartitionExpirationMs'),u'description': response.get(u'description'),u'etag': response.get(u'etag'),u'friendlyName': response.get(u'friendlyName'),u'id': response.get(u'id'),u'labels': response.get(u'labels'),u'lastModifiedTime': response.get(u'lastModifiedTime'),u'location': response.get(u'location') }
 
 
 class DatasetAccessArray(object):
@@ -594,28 +578,12 @@ class DatasetAccessArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict(
-            {
-                u'domain': item.get('domain'),
-                u'groupByEmail': item.get('group_by_email'),
-                u'role': item.get('role'),
-                u'specialGroup': item.get('special_group'),
-                u'userByEmail': item.get('user_by_email'),
-                u'view': DatasetView(item.get('view', {}), self.module).to_request(),
-            }
-        )
+        return remove_nones_from_dict({ u'domain': item.get('domain'),u'groupByEmail': item.get('group_by_email'),u'role': item.get('role'),u'specialGroup': item.get('special_group'),u'userByEmail': item.get('user_by_email'),u'view': DatasetView(item.get('view', {}), self.module).to_request() }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict(
-            {
-                u'domain': item.get(u'domain'),
-                u'groupByEmail': item.get(u'groupByEmail'),
-                u'role': item.get(u'role'),
-                u'specialGroup': item.get(u'specialGroup'),
-                u'userByEmail': item.get(u'userByEmail'),
-                u'view': DatasetView(item.get(u'view', {}), self.module).from_response(),
-            }
-        )
+        return remove_nones_from_dict({ u'domain': item.get(u'domain'),u'groupByEmail': item.get(u'groupByEmail'),u'role': item.get(u'role'),u'specialGroup': item.get(u'specialGroup'),u'userByEmail': item.get(u'userByEmail'),u'view': DatasetView(item.get(u'view', {}), self.module).from_response() }
+)
 
 
 class DatasetView(object):
@@ -627,14 +595,12 @@ class DatasetView(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {u'datasetId': self.request.get('dataset_id'), u'projectId': self.request.get('project_id'), u'tableId': self.request.get('table_id')}
-        )
+        return remove_nones_from_dict({ u'datasetId': self.request.get('dataset_id'),u'projectId': self.request.get('project_id'),u'tableId': self.request.get('table_id') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {u'datasetId': self.request.get(u'datasetId'), u'projectId': self.request.get(u'projectId'), u'tableId': self.request.get(u'tableId')}
-        )
+        return remove_nones_from_dict({ u'datasetId': self.request.get(u'datasetId'),u'projectId': self.request.get(u'projectId'),u'tableId': self.request.get(u'tableId') }
+)
 
 
 class DatasetDatasetreference(object):
@@ -646,10 +612,12 @@ class DatasetDatasetreference(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'datasetId': self.request.get('dataset_id'), u'projectId': self.request.get('project_id')})
+        return remove_nones_from_dict({ u'datasetId': self.request.get('dataset_id'),u'projectId': self.request.get('project_id') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({u'datasetId': self.request.get(u'datasetId'), u'projectId': self.request.get(u'projectId')})
+        return remove_nones_from_dict({ u'datasetId': self.request.get(u'datasetId'),u'projectId': self.request.get(u'projectId') }
+)
 
 
 if __name__ == '__main__':

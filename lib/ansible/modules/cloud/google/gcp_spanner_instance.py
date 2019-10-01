@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -82,10 +83,56 @@ options:
     - 'Example: { "name": "wrench", "mass": "1.3kg", "count": "3" }.'
     required: false
     type: dict
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 notes:
 - 'API Reference: U(https://cloud.google.com/spanner/docs/reference/rest/v1/projects.instances)'
 - 'Official Documentation: U(https://cloud.google.com/spanner/)'
+- for authentication, you can set service_account_file using the c(gcp_service_account_file)
+  env variable.
+- for authentication, you can set service_account_contents using the c(GCP_SERVICE_ACCOUNT_CONTENTS)
+  env variable.
+- For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL)
+  env variable.
+- For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.
+- For authentication, you can set scopes using the C(GCP_SCOPES) env variable.
+- Environment variables values will only be used if the playbook values are not set.
+- The I(service_account_email) and I(service_account_file) options are mutually exclusive.
 '''
 
 EXAMPLES = '''
@@ -156,15 +203,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            name=dict(required=True, type='str'),
-            config=dict(required=True, type='str'),
-            display_name=dict(required=True, type='str'),
-            node_count=dict(default=1, type='int'),
-            labels=dict(type='dict'),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), config=dict(required=True, type='str'), display_name=dict(required=True, type='str'), node_count=dict(default=1, type='int'), labels=dict(type='dict')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/spanner.admin']
@@ -211,13 +250,7 @@ def delete(module, link):
 
 
 def resource_to_request(module):
-    request = {
-        u'name': module.params.get('name'),
-        u'config': module.params.get('config'),
-        u'displayName': module.params.get('display_name'),
-        u'nodeCount': module.params.get('node_count'),
-        u'labels': module.params.get('labels'),
-    }
+    request = { u'name': module.params.get('name'),u'config': module.params.get('config'),u'displayName': module.params.get('display_name'),u'nodeCount': module.params.get('node_count'),u'labels': module.params.get('labels') }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -284,13 +317,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'name': module.params.get('name'),
-        u'config': response.get(u'config'),
-        u'displayName': response.get(u'displayName'),
-        u'nodeCount': response.get(u'nodeCount'),
-        u'labels': response.get(u'labels'),
-    }
+    return { u'name': module.params.get('name'),u'config': response.get(u'config'),u'displayName': response.get(u'displayName'),u'nodeCount': response.get(u'nodeCount'),u'labels': response.get(u'labels') }
 
 
 def async_op_url(module, extra_data=None):
@@ -331,16 +358,26 @@ def raise_if_errors(response, err_path, module):
 
 def resource_to_create(module):
     instance = resource_to_request(module)
-    instance['name'] = "projects/{0}/instances/{1}".format(module.params['project'], module.params['name'])
-    instance['config'] = "projects/{0}/instanceConfigs/{1}".format(module.params['project'], instance['config'])
-    return {'instanceId': module.params['name'], 'instance': instance}
+    instance['name'] = "projects/{0}/instances/{1}".format(module.params['project'],
+                                                           module.params['name'])
+    instance['config'] = "projects/{0}/instanceConfigs/{1}".format(module.params['project'],
+                                                                   instance['config'])
+    return {
+        'instanceId': module.params['name'],
+        'instance': instance
+    }
 
 
 def resource_to_update(module):
     instance = resource_to_request(module)
-    instance['name'] = "projects/{0}/instances/{1}".format(module.params['project'], module.params['name'])
-    instance['config'] = "projects/{0}/instanceConfigs/{1}".format(module.params['project'], instance['config'])
-    return {'instance': instance, 'fieldMask': "'name' ,'config' ,'displayName' ,'nodeCount' ,'labels'"}
+    instance['name'] = "projects/{0}/instances/{1}".format(module.params['project'],
+                                                           module.params['name'])
+    instance['config'] = "projects/{0}/instanceConfigs/{1}".format(module.params['project'],
+                                                                   instance['config'])
+    return {
+        'instance': instance,
+        'fieldMask': "'name' ,'config' ,'displayName' ,'nodeCount' ,'labels'"
+    }
 
 
 def decode_response(response, module):

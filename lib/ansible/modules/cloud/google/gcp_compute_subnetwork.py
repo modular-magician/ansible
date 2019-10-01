@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -140,11 +141,57 @@ options:
     - URL of the GCP region for this subnetwork.
     required: true
     type: str
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 notes:
 - 'API Reference: U(https://cloud.google.com/compute/docs/reference/rest/beta/subnetworks)'
 - 'Private Google Access: U(https://cloud.google.com/vpc/docs/configure-private-google-access)'
 - 'Cloud Networking: U(https://cloud.google.com/vpc/docs/using-vpc)'
+- for authentication, you can set service_account_file using the c(gcp_service_account_file)
+  env variable.
+- for authentication, you can set service_account_contents using the c(GCP_SERVICE_ACCOUNT_CONTENTS)
+  env variable.
+- For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL)
+  env variable.
+- For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.
+- For authentication, you can set scopes using the C(GCP_SCOPES) env variable.
+- Environment variables values will only be used if the playbook values are not set.
+- The I(service_account_email) and I(service_account_file) options are mutually exclusive.
 '''
 
 EXAMPLES = '''
@@ -281,20 +328,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            description=dict(type='str'),
-            ip_cidr_range=dict(required=True, type='str'),
-            name=dict(required=True, type='str'),
-            network=dict(required=True, type='dict'),
-            enable_flow_logs=dict(type='bool'),
-            secondary_ip_ranges=dict(
-                type='list', elements='dict', options=dict(range_name=dict(required=True, type='str'), ip_cidr_range=dict(required=True, type='str'))
-            ),
-            private_ip_google_access=dict(type='bool'),
-            region=dict(required=True, type='str'),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), description=dict(type='str'), ip_cidr_range=dict(required=True, type='str'), name=dict(required=True, type='str'), network=dict(required=True, type='dict'), enable_flow_logs=dict(type='bool'), secondary_ip_ranges=dict(type='list', elements='dict', options=dict(range_name=dict(required=True, type='str'), ip_cidr_range=dict(required=True, type='str'))), private_ip_google_access=dict(type='bool'), region=dict(required=True, type='str')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -333,7 +367,8 @@ def create(module, link, kind):
 
 
 def update(module, link, kind, fetch):
-    update_fields(module, resource_to_request(module), response_to_hash(module, fetch))
+    update_fields(module, resource_to_request(module),
+                  response_to_hash(module, fetch))
     return fetch_resource(module, self_link(module), kind)
 
 
@@ -349,32 +384,32 @@ def update_fields(module, request, response):
 def ip_cidr_range_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/regions/{region}/subnetworks/{name}/expandIpCidrRange"]).format(**module.params),
-        {u'ipCidrRange': module.params.get('ip_cidr_range')},
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "projects/{project}/regions/{region}/subnetworks/{name}/expandIpCidrRange"
+        ]).format(**module.params),
+{ u'ipCidrRange': module.params.get('ip_cidr_range') }
     )
-
 
 def enable_flow_logs_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.patch(
-        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/regions/{region}/subnetworks/{name}"]).format(**module.params),
-        {
-            u'enableFlowLogs': module.params.get('enable_flow_logs'),
-            u'fingerprint': response.get('fingerprint'),
-            u'secondaryIpRanges': SubnetworkSecondaryiprangesArray(module.params.get('secondary_ip_ranges', []), module).to_request(),
-        },
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "projects/{project}/regions/{region}/subnetworks/{name}"
+        ]).format(**module.params),
+{ u'enableFlowLogs': module.params.get('enable_flow_logs'),u'fingerprint': response.get('fingerprint'),u'secondaryIpRanges': SubnetworkSecondaryiprangesArray(module.params.get('secondary_ip_ranges', []), module).to_request() }
     )
-
 
 def private_ip_google_access_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/regions/{region}/subnetworks/{name}/setPrivateIpGoogleAccess"]).format(
-            **module.params
-        ),
-        {u'privateIpGoogleAccess': module.params.get('private_ip_google_access')},
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "projects/{project}/regions/{region}/subnetworks/{name}/setPrivateIpGoogleAccess"
+        ]).format(**module.params),
+{ u'privateIpGoogleAccess': module.params.get('private_ip_google_access') }
     )
-
 
 def delete(module, link, kind):
     auth = GcpSession(module, 'compute')
@@ -382,17 +417,7 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = {
-        u'kind': 'compute#subnetwork',
-        u'description': module.params.get('description'),
-        u'ipCidrRange': module.params.get('ip_cidr_range'),
-        u'name': module.params.get('name'),
-        u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
-        u'enableFlowLogs': module.params.get('enable_flow_logs'),
-        u'secondaryIpRanges': SubnetworkSecondaryiprangesArray(module.params.get('secondary_ip_ranges', []), module).to_request(),
-        u'privateIpGoogleAccess': module.params.get('private_ip_google_access'),
-        u'region': module.params.get('region'),
-    }
+    request = { u'kind': 'compute#subnetwork',u'description': module.params.get('description'),u'ipCidrRange': module.params.get('ip_cidr_range'),u'name': module.params.get('name'),u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),u'enableFlowLogs': module.params.get('enable_flow_logs'),u'secondaryIpRanges': SubnetworkSecondaryiprangesArray(module.params.get('secondary_ip_ranges', []), module).to_request(),u'privateIpGoogleAccess': module.params.get('private_ip_google_access'),u'region': module.params.get('region') }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -456,20 +481,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'creationTimestamp': response.get(u'creationTimestamp'),
-        u'description': response.get(u'description'),
-        u'gatewayAddress': response.get(u'gatewayAddress'),
-        u'id': response.get(u'id'),
-        u'ipCidrRange': response.get(u'ipCidrRange'),
-        u'name': response.get(u'name'),
-        u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),
-        u'enableFlowLogs': response.get(u'enableFlowLogs'),
-        u'fingerprint': response.get(u'fingerprint'),
-        u'secondaryIpRanges': SubnetworkSecondaryiprangesArray(response.get(u'secondaryIpRanges', []), module).from_response(),
-        u'privateIpGoogleAccess': response.get(u'privateIpGoogleAccess'),
-        u'region': module.params.get('region'),
-    }
+    return { u'creationTimestamp': response.get(u'creationTimestamp'),u'description': response.get(u'description'),u'gatewayAddress': response.get(u'gatewayAddress'),u'id': response.get(u'id'),u'ipCidrRange': response.get(u'ipCidrRange'),u'name': response.get(u'name'),u'network': replace_resource_dict(module.params.get(u'network', {}), 'selfLink'),u'enableFlowLogs': response.get(u'enableFlowLogs'),u'fingerprint': response.get(u'fingerprint'),u'secondaryIpRanges': SubnetworkSecondaryiprangesArray(response.get(u'secondaryIpRanges', []), module).from_response(),u'privateIpGoogleAccess': response.get(u'privateIpGoogleAccess'),u'region': module.params.get('region') }
 
 
 def async_op_url(module, extra_data=None):
@@ -488,7 +500,6 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#subnetwork')
-
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
@@ -528,10 +539,12 @@ class SubnetworkSecondaryiprangesArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({u'rangeName': item.get('range_name'), u'ipCidrRange': item.get('ip_cidr_range')})
+        return remove_nones_from_dict({ u'rangeName': item.get('range_name'),u'ipCidrRange': item.get('ip_cidr_range') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({u'rangeName': item.get(u'rangeName'), u'ipCidrRange': item.get(u'ipCidrRange')})
+        return remove_nones_from_dict({ u'rangeName': item.get(u'rangeName'),u'ipCidrRange': item.get(u'ipCidrRange') }
+)
 
 
 if __name__ == '__main__':

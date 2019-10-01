@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -312,7 +313,43 @@ options:
     - region
     - zone
     version_added: '2.8'
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 '''
 
 EXAMPLES = '''
@@ -627,40 +664,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            name=dict(type='str'),
-            config=dict(
-                type='dict',
-                options=dict(
-                    machine_type=dict(type='str'),
-                    disk_size_gb=dict(type='int'),
-                    oauth_scopes=dict(type='list', elements='str'),
-                    service_account=dict(type='str'),
-                    metadata=dict(type='dict'),
-                    image_type=dict(type='str'),
-                    labels=dict(type='dict'),
-                    local_ssd_count=dict(type='int'),
-                    tags=dict(type='list', elements='str'),
-                    preemptible=dict(type='bool'),
-                    accelerators=dict(type='list', elements='dict', options=dict(accelerator_count=dict(type='int'), accelerator_type=dict(type='str'))),
-                    disk_type=dict(type='str'),
-                    min_cpu_platform=dict(type='str'),
-                    taints=dict(type='list', elements='dict', options=dict(key=dict(type='str'), value=dict(type='str'), effect=dict(type='str'))),
-                ),
-            ),
-            initial_node_count=dict(required=True, type='int'),
-            version=dict(type='str'),
-            autoscaling=dict(type='dict', options=dict(enabled=dict(type='bool'), min_node_count=dict(type='int'), max_node_count=dict(type='int'))),
-            management=dict(
-                type='dict', options=dict(auto_upgrade=dict(type='bool'), auto_repair=dict(type='bool'), upgrade_options=dict(type='dict', options=dict()))
-            ),
-            max_pods_constraint=dict(type='dict', options=dict(max_pods_per_node=dict(type='int'))),
-            conditions=dict(type='list', elements='dict', options=dict(code=dict(type='str'))),
-            cluster=dict(required=True, type='dict'),
-            location=dict(required=True, type='str', aliases=['region', 'zone']),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(type='str'), config=dict(type='dict', options=dict(machine_type=dict(type='str'), disk_size_gb=dict(type='int'), oauth_scopes=dict(type='list', elements='str'), service_account=dict(type='str'), metadata=dict(type='dict'), image_type=dict(type='str'), labels=dict(type='dict'), local_ssd_count=dict(type='int'), tags=dict(type='list', elements='str'), preemptible=dict(type='bool'), accelerators=dict(type='list', elements='dict', options=dict(accelerator_count=dict(type='int'), accelerator_type=dict(type='str'))), disk_type=dict(type='str'), min_cpu_platform=dict(type='str'), taints=dict(type='list', elements='dict', options=dict(key=dict(type='str'), value=dict(type='str'), effect=dict(type='str'))))), initial_node_count=dict(required=True, type='int'), version=dict(type='str'), autoscaling=dict(type='dict', options=dict(enabled=dict(type='bool'), min_node_count=dict(type='int'), max_node_count=dict(type='int'))), management=dict(type='dict', options=dict(auto_upgrade=dict(type='bool'), auto_repair=dict(type='bool'), upgrade_options=dict(type='dict', options=dict()))), max_pods_constraint=dict(type='dict', options=dict(max_pods_per_node=dict(type='int'))), conditions=dict(type='list', elements='dict', options=dict(code=dict(type='str'))), cluster=dict(required=True, type='dict'), location=dict(required=True, type='str', aliases=['region', 'zone'])))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
@@ -708,16 +712,7 @@ def delete(module, link):
 
 
 def resource_to_request(module):
-    request = {
-        u'name': module.params.get('name'),
-        u'config': NodePoolConfig(module.params.get('config', {}), module).to_request(),
-        u'initialNodeCount': module.params.get('initial_node_count'),
-        u'version': module.params.get('version'),
-        u'autoscaling': NodePoolAutoscaling(module.params.get('autoscaling', {}), module).to_request(),
-        u'management': NodePoolManagement(module.params.get('management', {}), module).to_request(),
-        u'maxPodsConstraint': NodePoolMaxpodsconstraint(module.params.get('max_pods_constraint', {}), module).to_request(),
-        u'conditions': NodePoolConditionsArray(module.params.get('conditions', []), module).to_request(),
-    }
+    request = { u'name': module.params.get('name'),u'config': NodePoolConfig(module.params.get('config', {}), module).to_request(),u'initialNodeCount': module.params.get('initial_node_count'),u'version': module.params.get('version'),u'autoscaling': NodePoolAutoscaling(module.params.get('autoscaling', {}), module).to_request(),u'management': NodePoolManagement(module.params.get('management', {}), module).to_request(),u'maxPodsConstraint': NodePoolMaxpodsconstraint(module.params.get('max_pods_constraint', {}), module).to_request(),u'conditions': NodePoolConditionsArray(module.params.get('conditions', []), module).to_request() }
     request = encode_request(request, module)
     return_vals = {}
     for k, v in request.items():
@@ -737,13 +732,17 @@ def self_link(module):
         'project': module.params['project'],
         'location': module.params['location'],
         'cluster': replace_resource_dict(module.params['cluster'], 'name'),
-        'name': module.params['name'],
+        'name': module.params['name']
     }
     return "https://container.googleapis.com/v1/projects/{project}/locations/{location}/clusters/{cluster}/nodePools/{name}".format(**res)
 
 
 def collection(module):
-    res = {'project': module.params['project'], 'location': module.params['location'], 'cluster': replace_resource_dict(module.params['cluster'], 'name')}
+    res = {
+        'project': module.params['project'],
+        'location': module.params['location'],
+        'cluster': replace_resource_dict(module.params['cluster'], 'name')
+    }
     return "https://container.googleapis.com/v1/projects/{project}/locations/{location}/clusters/{cluster}/nodePools".format(**res)
 
 
@@ -789,19 +788,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'name': response.get(u'name'),
-        u'config': NodePoolConfig(response.get(u'config', {}), module).from_response(),
-        u'initialNodeCount': module.params.get('initial_node_count'),
-        u'status': response.get(u'status'),
-        u'statusMessage': response.get(u'statusMessage'),
-        u'version': module.params.get('version'),
-        u'autoscaling': NodePoolAutoscaling(response.get(u'autoscaling', {}), module).from_response(),
-        u'management': NodePoolManagement(response.get(u'management', {}), module).from_response(),
-        u'maxPodsConstraint': NodePoolMaxpodsconstraint(response.get(u'maxPodsConstraint', {}), module).from_response(),
-        u'conditions': NodePoolConditionsArray(response.get(u'conditions', []), module).from_response(),
-        u'podIpv4CidrSize': response.get(u'podIpv4CidrSize'),
-    }
+    return { u'name': response.get(u'name'),u'config': NodePoolConfig(response.get(u'config', {}), module).from_response(),u'initialNodeCount': module.params.get('initial_node_count'),u'status': response.get(u'status'),u'statusMessage': response.get(u'statusMessage'),u'version': module.params.get('version'),u'autoscaling': NodePoolAutoscaling(response.get(u'autoscaling', {}), module).from_response(),u'management': NodePoolManagement(response.get(u'management', {}), module).from_response(),u'maxPodsConstraint': NodePoolMaxpodsconstraint(response.get(u'maxPodsConstraint', {}), module).from_response(),u'conditions': NodePoolConditionsArray(response.get(u'conditions', []), module).from_response(),u'podIpv4CidrSize': response.get(u'podIpv4CidrSize') }
 
 
 def async_op_url(module, extra_data=None):
@@ -820,7 +807,6 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']))
-
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
@@ -850,7 +836,9 @@ def raise_if_errors(response, err_path, module):
 #
 # Format the request to match the expected input by the API
 def encode_request(resource_request, module):
-    return {'nodePool': resource_request}
+    return {
+        'nodePool': resource_request
+    }
 
 
 class NodePoolConfig(object):
@@ -862,44 +850,12 @@ class NodePoolConfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {
-                u'machineType': self.request.get('machine_type'),
-                u'diskSizeGb': self.request.get('disk_size_gb'),
-                u'oauthScopes': self.request.get('oauth_scopes'),
-                u'serviceAccount': self.request.get('service_account'),
-                u'metadata': self.request.get('metadata'),
-                u'imageType': self.request.get('image_type'),
-                u'labels': self.request.get('labels'),
-                u'localSsdCount': self.request.get('local_ssd_count'),
-                u'tags': self.request.get('tags'),
-                u'preemptible': self.request.get('preemptible'),
-                u'accelerators': NodePoolAcceleratorsArray(self.request.get('accelerators', []), self.module).to_request(),
-                u'diskType': self.request.get('disk_type'),
-                u'minCpuPlatform': self.request.get('min_cpu_platform'),
-                u'taints': NodePoolTaintsArray(self.request.get('taints', []), self.module).to_request(),
-            }
-        )
+        return remove_nones_from_dict({ u'machineType': self.request.get('machine_type'),u'diskSizeGb': self.request.get('disk_size_gb'),u'oauthScopes': self.request.get('oauth_scopes'),u'serviceAccount': self.request.get('service_account'),u'metadata': self.request.get('metadata'),u'imageType': self.request.get('image_type'),u'labels': self.request.get('labels'),u'localSsdCount': self.request.get('local_ssd_count'),u'tags': self.request.get('tags'),u'preemptible': self.request.get('preemptible'),u'accelerators': NodePoolAcceleratorsArray(self.request.get('accelerators', []), self.module).to_request(),u'diskType': self.request.get('disk_type'),u'minCpuPlatform': self.request.get('min_cpu_platform'),u'taints': NodePoolTaintsArray(self.request.get('taints', []), self.module).to_request() }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {
-                u'machineType': self.request.get(u'machineType'),
-                u'diskSizeGb': self.request.get(u'diskSizeGb'),
-                u'oauthScopes': self.request.get(u'oauthScopes'),
-                u'serviceAccount': self.request.get(u'serviceAccount'),
-                u'metadata': self.request.get(u'metadata'),
-                u'imageType': self.request.get(u'imageType'),
-                u'labels': self.request.get(u'labels'),
-                u'localSsdCount': self.request.get(u'localSsdCount'),
-                u'tags': self.request.get(u'tags'),
-                u'preemptible': self.request.get(u'preemptible'),
-                u'accelerators': NodePoolAcceleratorsArray(self.request.get(u'accelerators', []), self.module).from_response(),
-                u'diskType': self.request.get(u'diskType'),
-                u'minCpuPlatform': self.request.get(u'minCpuPlatform'),
-                u'taints': NodePoolTaintsArray(self.request.get(u'taints', []), self.module).from_response(),
-            }
-        )
+        return remove_nones_from_dict({ u'machineType': self.request.get(u'machineType'),u'diskSizeGb': self.request.get(u'diskSizeGb'),u'oauthScopes': self.request.get(u'oauthScopes'),u'serviceAccount': self.request.get(u'serviceAccount'),u'metadata': self.request.get(u'metadata'),u'imageType': self.request.get(u'imageType'),u'labels': self.request.get(u'labels'),u'localSsdCount': self.request.get(u'localSsdCount'),u'tags': self.request.get(u'tags'),u'preemptible': self.request.get(u'preemptible'),u'accelerators': NodePoolAcceleratorsArray(self.request.get(u'accelerators', []), self.module).from_response(),u'diskType': self.request.get(u'diskType'),u'minCpuPlatform': self.request.get(u'minCpuPlatform'),u'taints': NodePoolTaintsArray(self.request.get(u'taints', []), self.module).from_response() }
+)
 
 
 class NodePoolAcceleratorsArray(object):
@@ -923,10 +879,12 @@ class NodePoolAcceleratorsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({u'acceleratorCount': item.get('accelerator_count'), u'acceleratorType': item.get('accelerator_type')})
+        return remove_nones_from_dict({ u'acceleratorCount': item.get('accelerator_count'),u'acceleratorType': item.get('accelerator_type') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({u'acceleratorCount': item.get(u'acceleratorCount'), u'acceleratorType': item.get(u'acceleratorType')})
+        return remove_nones_from_dict({ u'acceleratorCount': item.get(u'acceleratorCount'),u'acceleratorType': item.get(u'acceleratorType') }
+)
 
 
 class NodePoolTaintsArray(object):
@@ -950,10 +908,12 @@ class NodePoolTaintsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({u'key': item.get('key'), u'value': item.get('value'), u'effect': item.get('effect')})
+        return remove_nones_from_dict({ u'key': item.get('key'),u'value': item.get('value'),u'effect': item.get('effect') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({u'key': item.get(u'key'), u'value': item.get(u'value'), u'effect': item.get(u'effect')})
+        return remove_nones_from_dict({ u'key': item.get(u'key'),u'value': item.get(u'value'),u'effect': item.get(u'effect') }
+)
 
 
 class NodePoolAutoscaling(object):
@@ -965,14 +925,12 @@ class NodePoolAutoscaling(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {u'enabled': self.request.get('enabled'), u'minNodeCount': self.request.get('min_node_count'), u'maxNodeCount': self.request.get('max_node_count')}
-        )
+        return remove_nones_from_dict({ u'enabled': self.request.get('enabled'),u'minNodeCount': self.request.get('min_node_count'),u'maxNodeCount': self.request.get('max_node_count') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {u'enabled': self.request.get(u'enabled'), u'minNodeCount': self.request.get(u'minNodeCount'), u'maxNodeCount': self.request.get(u'maxNodeCount')}
-        )
+        return remove_nones_from_dict({ u'enabled': self.request.get(u'enabled'),u'minNodeCount': self.request.get(u'minNodeCount'),u'maxNodeCount': self.request.get(u'maxNodeCount') }
+)
 
 
 class NodePoolManagement(object):
@@ -984,22 +942,12 @@ class NodePoolManagement(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {
-                u'autoUpgrade': self.request.get('auto_upgrade'),
-                u'autoRepair': self.request.get('auto_repair'),
-                u'upgradeOptions': NodePoolUpgradeoptions(self.request.get('upgrade_options', {}), self.module).to_request(),
-            }
-        )
+        return remove_nones_from_dict({ u'autoUpgrade': self.request.get('auto_upgrade'),u'autoRepair': self.request.get('auto_repair'),u'upgradeOptions': NodePoolUpgradeoptions(self.request.get('upgrade_options', {}), self.module).to_request() }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {
-                u'autoUpgrade': self.request.get(u'autoUpgrade'),
-                u'autoRepair': self.request.get(u'autoRepair'),
-                u'upgradeOptions': NodePoolUpgradeoptions(self.request.get(u'upgradeOptions', {}), self.module).from_response(),
-            }
-        )
+        return remove_nones_from_dict({ u'autoUpgrade': self.request.get(u'autoUpgrade'),u'autoRepair': self.request.get(u'autoRepair'),u'upgradeOptions': NodePoolUpgradeoptions(self.request.get(u'upgradeOptions', {}), self.module).from_response() }
+)
 
 
 class NodePoolUpgradeoptions(object):
@@ -1011,10 +959,12 @@ class NodePoolUpgradeoptions(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({})
+        return remove_nones_from_dict({  }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({})
+        return remove_nones_from_dict({  }
+)
 
 
 class NodePoolMaxpodsconstraint(object):
@@ -1026,10 +976,12 @@ class NodePoolMaxpodsconstraint(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'maxPodsPerNode': self.request.get('max_pods_per_node')})
+        return remove_nones_from_dict({ u'maxPodsPerNode': self.request.get('max_pods_per_node') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({u'maxPodsPerNode': self.request.get(u'maxPodsPerNode')})
+        return remove_nones_from_dict({ u'maxPodsPerNode': self.request.get(u'maxPodsPerNode') }
+)
 
 
 class NodePoolConditionsArray(object):
@@ -1053,10 +1005,12 @@ class NodePoolConditionsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({u'code': item.get('code')})
+        return remove_nones_from_dict({ u'code': item.get('code') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({u'code': item.get(u'code')})
+        return remove_nones_from_dict({ u'code': item.get(u'code') }
+)
 
 
 if __name__ == '__main__':

@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -284,10 +285,56 @@ options:
               completed successfully.
             required: false
             type: list
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 notes:
 - 'API Reference: U(https://cloud.google.com/cloud-build/docs/api/reference/rest/)'
 - 'Automating builds using build triggers: U(https://cloud.google.com/cloud-build/docs/running-builds/automate-builds)'
+- for authentication, you can set service_account_file using the c(gcp_service_account_file)
+  env variable.
+- for authentication, you can set service_account_contents using the c(GCP_SERVICE_ACCOUNT_CONTENTS)
+  env variable.
+- For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL)
+  env variable.
+- For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.
+- For authentication, you can set scopes using the C(GCP_SCOPES) env variable.
+- Environment variables values will only be used if the playbook values are not set.
+- The I(service_account_email) and I(service_account_file) options are mutually exclusive.
 - The id for this resource is created by the API after you create the resource the
   first time. If you want to manage this resource after creation, you'll have to copy
   the generated id into the playbook. If you do not, new triggers will be created
@@ -569,53 +616,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            id=dict(type='str'),
-            description=dict(type='str'),
-            disabled=dict(type='bool'),
-            substitutions=dict(type='dict'),
-            filename=dict(type='str'),
-            ignored_files=dict(type='list', elements='str'),
-            included_files=dict(type='list', elements='str'),
-            trigger_template=dict(
-                type='dict',
-                options=dict(
-                    project_id=dict(type='str'),
-                    repo_name=dict(default='default', type='str'),
-                    dir=dict(type='str'),
-                    branch_name=dict(type='str'),
-                    tag_name=dict(type='str'),
-                    commit_sha=dict(type='str'),
-                ),
-            ),
-            build=dict(
-                type='dict',
-                options=dict(
-                    tags=dict(type='list', elements='str'),
-                    images=dict(type='list', elements='str'),
-                    steps=dict(
-                        type='list',
-                        elements='dict',
-                        options=dict(
-                            name=dict(type='str'),
-                            args=dict(type='list', elements='str'),
-                            env=dict(type='list', elements='str'),
-                            id=dict(type='str'),
-                            entrypoint=dict(type='str'),
-                            dir=dict(type='str'),
-                            secret_env=dict(type='list', elements='str'),
-                            timeout=dict(type='str'),
-                            timing=dict(type='str'),
-                            volumes=dict(type='list', elements='dict', options=dict(name=dict(type='str'), path=dict(type='str'))),
-                            wait_for=dict(type='list', elements='str'),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        mutually_exclusive=[['build', 'filename']],
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), id=dict(type='str'), description=dict(type='str'), disabled=dict(type='bool'), substitutions=dict(type='dict'), filename=dict(type='str'), ignored_files=dict(type='list', elements='str'), included_files=dict(type='list', elements='str'), trigger_template=dict(type='dict', options=dict(project_id=dict(type='str'), repo_name=dict(default='default', type='str'), dir=dict(type='str'), branch_name=dict(type='str'), tag_name=dict(type='str'), commit_sha=dict(type='str'))), build=dict(type='dict', options=dict(tags=dict(type='list', elements='str'), images=dict(type='list', elements='str'), steps=dict(type='list', elements='dict', options=dict(name=dict(type='str'), args=dict(type='list', elements='str'), env=dict(type='list', elements='str'), id=dict(type='str'), entrypoint=dict(type='str'), dir=dict(type='str'), secret_env=dict(type='list', elements='str'), timeout=dict(type='str'), timing=dict(type='str'), volumes=dict(type='list', elements='dict', options=dict(name=dict(type='str'), path=dict(type='str'))), wait_for=dict(type='list', elements='str')))))), mutually_exclusive=[['build', 'filename']])
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
@@ -666,17 +667,7 @@ def delete(module, link):
 
 
 def resource_to_request(module):
-    request = {
-        u'id': module.params.get('id'),
-        u'description': module.params.get('description'),
-        u'disabled': module.params.get('disabled'),
-        u'substitutions': module.params.get('substitutions'),
-        u'filename': module.params.get('filename'),
-        u'ignoredFiles': module.params.get('ignored_files'),
-        u'includedFiles': module.params.get('included_files'),
-        u'triggerTemplate': TriggerTriggertemplate(module.params.get('trigger_template', {}), module).to_request(),
-        u'build': TriggerBuild(module.params.get('build', {}), module).to_request(),
-    }
+    request = { u'id': module.params.get('id'),u'description': module.params.get('description'),u'disabled': module.params.get('disabled'),u'substitutions': module.params.get('substitutions'),u'filename': module.params.get('filename'),u'ignoredFiles': module.params.get('ignored_files'),u'includedFiles': module.params.get('included_files'),u'triggerTemplate': TriggerTriggertemplate(module.params.get('trigger_template', {}), module).to_request(),u'build': TriggerBuild(module.params.get('build', {}), module).to_request() }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -740,18 +731,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'id': response.get(u'id'),
-        u'description': response.get(u'description'),
-        u'disabled': response.get(u'disabled'),
-        u'createTime': response.get(u'createTime'),
-        u'substitutions': response.get(u'substitutions'),
-        u'filename': response.get(u'filename'),
-        u'ignoredFiles': response.get(u'ignoredFiles'),
-        u'includedFiles': response.get(u'includedFiles'),
-        u'triggerTemplate': TriggerTriggertemplate(response.get(u'triggerTemplate', {}), module).from_response(),
-        u'build': TriggerBuild(response.get(u'build', {}), module).from_response(),
-    }
+    return { u'id': response.get(u'id'),u'description': response.get(u'description'),u'disabled': response.get(u'disabled'),u'createTime': response.get(u'createTime'),u'substitutions': response.get(u'substitutions'),u'filename': response.get(u'filename'),u'ignoredFiles': response.get(u'ignoredFiles'),u'includedFiles': response.get(u'includedFiles'),u'triggerTemplate': TriggerTriggertemplate(response.get(u'triggerTemplate', {}), module).from_response(),u'build': TriggerBuild(response.get(u'build', {}), module).from_response() }
 
 
 class TriggerTriggertemplate(object):
@@ -763,28 +743,12 @@ class TriggerTriggertemplate(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {
-                u'projectId': self.request.get('project_id'),
-                u'repoName': self.request.get('repo_name'),
-                u'dir': self.request.get('dir'),
-                u'branchName': self.request.get('branch_name'),
-                u'tagName': self.request.get('tag_name'),
-                u'commitSha': self.request.get('commit_sha'),
-            }
-        )
+        return remove_nones_from_dict({ u'projectId': self.request.get('project_id'),u'repoName': self.request.get('repo_name'),u'dir': self.request.get('dir'),u'branchName': self.request.get('branch_name'),u'tagName': self.request.get('tag_name'),u'commitSha': self.request.get('commit_sha') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {
-                u'projectId': self.request.get(u'projectId'),
-                u'repoName': self.request.get(u'repoName'),
-                u'dir': self.request.get(u'dir'),
-                u'branchName': self.request.get(u'branchName'),
-                u'tagName': self.request.get(u'tagName'),
-                u'commitSha': self.request.get(u'commitSha'),
-            }
-        )
+        return remove_nones_from_dict({ u'projectId': self.request.get(u'projectId'),u'repoName': self.request.get(u'repoName'),u'dir': self.request.get(u'dir'),u'branchName': self.request.get(u'branchName'),u'tagName': self.request.get(u'tagName'),u'commitSha': self.request.get(u'commitSha') }
+)
 
 
 class TriggerBuild(object):
@@ -796,22 +760,12 @@ class TriggerBuild(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {
-                u'tags': self.request.get('tags'),
-                u'images': self.request.get('images'),
-                u'steps': TriggerStepsArray(self.request.get('steps', []), self.module).to_request(),
-            }
-        )
+        return remove_nones_from_dict({ u'tags': self.request.get('tags'),u'images': self.request.get('images'),u'steps': TriggerStepsArray(self.request.get('steps', []), self.module).to_request() }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {
-                u'tags': self.request.get(u'tags'),
-                u'images': self.request.get(u'images'),
-                u'steps': TriggerStepsArray(self.request.get(u'steps', []), self.module).from_response(),
-            }
-        )
+        return remove_nones_from_dict({ u'tags': self.request.get(u'tags'),u'images': self.request.get(u'images'),u'steps': TriggerStepsArray(self.request.get(u'steps', []), self.module).from_response() }
+)
 
 
 class TriggerStepsArray(object):
@@ -835,38 +789,12 @@ class TriggerStepsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict(
-            {
-                u'name': item.get('name'),
-                u'args': item.get('args'),
-                u'env': item.get('env'),
-                u'id': item.get('id'),
-                u'entrypoint': item.get('entrypoint'),
-                u'dir': item.get('dir'),
-                u'secretEnv': item.get('secret_env'),
-                u'timeout': item.get('timeout'),
-                u'timing': item.get('timing'),
-                u'volumes': TriggerVolumesArray(item.get('volumes', []), self.module).to_request(),
-                u'waitFor': item.get('wait_for'),
-            }
-        )
+        return remove_nones_from_dict({ u'name': item.get('name'),u'args': item.get('args'),u'env': item.get('env'),u'id': item.get('id'),u'entrypoint': item.get('entrypoint'),u'dir': item.get('dir'),u'secretEnv': item.get('secret_env'),u'timeout': item.get('timeout'),u'timing': item.get('timing'),u'volumes': TriggerVolumesArray(item.get('volumes', []), self.module).to_request(),u'waitFor': item.get('wait_for') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict(
-            {
-                u'name': item.get(u'name'),
-                u'args': item.get(u'args'),
-                u'env': item.get(u'env'),
-                u'id': item.get(u'id'),
-                u'entrypoint': item.get(u'entrypoint'),
-                u'dir': item.get(u'dir'),
-                u'secretEnv': item.get(u'secretEnv'),
-                u'timeout': item.get(u'timeout'),
-                u'timing': item.get(u'timing'),
-                u'volumes': TriggerVolumesArray(item.get(u'volumes', []), self.module).from_response(),
-                u'waitFor': item.get(u'waitFor'),
-            }
-        )
+        return remove_nones_from_dict({ u'name': item.get(u'name'),u'args': item.get(u'args'),u'env': item.get(u'env'),u'id': item.get(u'id'),u'entrypoint': item.get(u'entrypoint'),u'dir': item.get(u'dir'),u'secretEnv': item.get(u'secretEnv'),u'timeout': item.get(u'timeout'),u'timing': item.get(u'timing'),u'volumes': TriggerVolumesArray(item.get(u'volumes', []), self.module).from_response(),u'waitFor': item.get(u'waitFor') }
+)
 
 
 class TriggerVolumesArray(object):
@@ -890,10 +818,12 @@ class TriggerVolumesArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({u'name': item.get('name'), u'path': item.get('path')})
+        return remove_nones_from_dict({ u'name': item.get('name'),u'path': item.get('path') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({u'name': item.get(u'name'), u'path': item.get(u'path')})
+        return remove_nones_from_dict({ u'name': item.get(u'name'),u'path': item.get(u'path') }
+)
 
 
 if __name__ == '__main__':

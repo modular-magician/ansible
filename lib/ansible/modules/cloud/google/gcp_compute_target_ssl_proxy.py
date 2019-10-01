@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -101,10 +102,56 @@ options:
     required: false
     type: dict
     version_added: '2.8'
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 notes:
 - 'API Reference: U(https://cloud.google.com/compute/docs/reference/v1/targetSslProxies)'
 - 'Setting Up SSL proxy for Google Cloud Load Balancing: U(https://cloud.google.com/compute/docs/load-balancing/tcp-ssl/)'
+- for authentication, you can set service_account_file using the c(gcp_service_account_file)
+  env variable.
+- for authentication, you can set service_account_contents using the c(GCP_SERVICE_ACCOUNT_CONTENTS)
+  env variable.
+- For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL)
+  env variable.
+- For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.
+- For authentication, you can set scopes using the C(GCP_SCOPES) env variable.
+- Environment variables values will only be used if the playbook values are not set.
+- The I(service_account_email) and I(service_account_file) options are mutually exclusive.
 '''
 
 EXAMPLES = '''
@@ -264,16 +311,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            description=dict(type='str'),
-            name=dict(required=True, type='str'),
-            proxy_header=dict(type='str'),
-            service=dict(required=True, type='dict'),
-            ssl_certificates=dict(required=True, type='list', elements='dict'),
-            ssl_policy=dict(type='dict'),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), description=dict(type='str'), name=dict(required=True, type='str'), proxy_header=dict(type='str'), service=dict(required=True, type='dict'), ssl_certificates=dict(required=True, type='list', elements='dict'), ssl_policy=dict(type='dict')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -312,7 +350,8 @@ def create(module, link, kind):
 
 
 def update(module, link, kind, fetch):
-    update_fields(module, resource_to_request(module), response_to_hash(module, fetch))
+    update_fields(module, resource_to_request(module),
+                  response_to_hash(module, fetch))
     return fetch_resource(module, self_link(module), kind)
 
 
@@ -330,34 +369,42 @@ def update_fields(module, request, response):
 def proxy_header_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/global/targetSslProxies/{name}/setProxyHeader"]).format(**module.params),
-        {u'proxyHeader': module.params.get('proxy_header')},
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "projects/{project}/global/targetSslProxies/{name}/setProxyHeader"
+        ]).format(**module.params),
+{ u'proxyHeader': module.params.get('proxy_header') }
     )
-
 
 def service_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/global/targetSslProxies/{name}/setBackendService"]).format(**module.params),
-        {u'service': replace_resource_dict(module.params.get(u'service', {}), 'selfLink')},
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "projects/{project}/global/targetSslProxies/{name}/setBackendService"
+        ]).format(**module.params),
+{ u'service': replace_resource_dict(module.params.get(u'service', {}), 'selfLink') }
     )
-
 
 def ssl_certificates_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/global/targetSslProxies/{name}/setSslCertificates"]).format(**module.params),
-        {u'sslCertificates': replace_resource_dict(module.params.get('ssl_certificates', []), 'selfLink')},
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "projects/{project}/global/targetSslProxies/{name}/setSslCertificates"
+        ]).format(**module.params),
+{ u'sslCertificates': replace_resource_dict(module.params.get('ssl_certificates', []), 'selfLink') }
     )
-
 
 def ssl_policy_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/global/targetSslProxies/{name}/setSslPolicy"]).format(**module.params),
-        {u'sslPolicy': replace_resource_dict(module.params.get(u'ssl_policy', {}), 'selfLink')},
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "projects/{project}/global/targetSslProxies/{name}/setSslPolicy"
+        ]).format(**module.params),
+{ u'sslPolicy': replace_resource_dict(module.params.get(u'ssl_policy', {}), 'selfLink') }
     )
-
 
 def delete(module, link, kind):
     auth = GcpSession(module, 'compute')
@@ -365,15 +412,7 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = {
-        u'kind': 'compute#targetSslProxy',
-        u'description': module.params.get('description'),
-        u'name': module.params.get('name'),
-        u'proxyHeader': module.params.get('proxy_header'),
-        u'service': replace_resource_dict(module.params.get(u'service', {}), 'selfLink'),
-        u'sslCertificates': replace_resource_dict(module.params.get('ssl_certificates', []), 'selfLink'),
-        u'sslPolicy': replace_resource_dict(module.params.get(u'ssl_policy', {}), 'selfLink'),
-    }
+    request = { u'kind': 'compute#targetSslProxy',u'description': module.params.get('description'),u'name': module.params.get('name'),u'proxyHeader': module.params.get('proxy_header'),u'service': replace_resource_dict(module.params.get(u'service', {}), 'selfLink'),u'sslCertificates': replace_resource_dict(module.params.get('ssl_certificates', []), 'selfLink'),u'sslPolicy': replace_resource_dict(module.params.get(u'ssl_policy', {}), 'selfLink') }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -437,16 +476,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'creationTimestamp': response.get(u'creationTimestamp'),
-        u'description': module.params.get('description'),
-        u'id': response.get(u'id'),
-        u'name': module.params.get('name'),
-        u'proxyHeader': response.get(u'proxyHeader'),
-        u'service': response.get(u'service'),
-        u'sslCertificates': response.get(u'sslCertificates'),
-        u'sslPolicy': response.get(u'sslPolicy'),
-    }
+    return { u'creationTimestamp': response.get(u'creationTimestamp'),u'description': module.params.get('description'),u'id': response.get(u'id'),u'name': module.params.get('name'),u'proxyHeader': response.get(u'proxyHeader'),u'service': response.get(u'service'),u'sslCertificates': response.get(u'sslCertificates'),u'sslPolicy': response.get(u'sslPolicy') }
 
 
 def async_op_url(module, extra_data=None):
@@ -465,7 +495,6 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#targetSslProxy')
-
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])

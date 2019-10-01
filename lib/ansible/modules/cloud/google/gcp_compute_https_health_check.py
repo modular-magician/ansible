@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -110,10 +111,56 @@ options:
       failures. The default value is 2.
     required: false
     type: int
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 notes:
 - 'API Reference: U(https://cloud.google.com/compute/docs/reference/v1/httpsHealthChecks)'
 - 'Adding Health Checks: U(https://cloud.google.com/compute/docs/load-balancing/health-checks#legacy_health_checks)'
+- for authentication, you can set service_account_file using the c(gcp_service_account_file)
+  env variable.
+- for authentication, you can set service_account_contents using the c(GCP_SERVICE_ACCOUNT_CONTENTS)
+  env variable.
+- For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL)
+  env variable.
+- For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.
+- For authentication, you can set scopes using the C(GCP_SCOPES) env variable.
+- Environment variables values will only be used if the playbook values are not set.
+- The I(service_account_email) and I(service_account_file) options are mutually exclusive.
 '''
 
 EXAMPLES = '''
@@ -219,19 +266,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            check_interval_sec=dict(type='int'),
-            description=dict(type='str'),
-            healthy_threshold=dict(type='int'),
-            host=dict(type='str'),
-            name=dict(required=True, type='str'),
-            port=dict(type='int'),
-            request_path=dict(type='str'),
-            timeout_sec=dict(type='int', aliases=['timeout_seconds']),
-            unhealthy_threshold=dict(type='int'),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), check_interval_sec=dict(type='int'), description=dict(type='str'), healthy_threshold=dict(type='int'), host=dict(type='str'), name=dict(required=True, type='str'), port=dict(type='int'), request_path=dict(type='str'), timeout_sec=dict(type='int', aliases=['timeout_seconds']), unhealthy_threshold=dict(type='int')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -280,18 +315,7 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = {
-        u'kind': 'compute#httpsHealthCheck',
-        u'checkIntervalSec': module.params.get('check_interval_sec'),
-        u'description': module.params.get('description'),
-        u'healthyThreshold': module.params.get('healthy_threshold'),
-        u'host': module.params.get('host'),
-        u'name': module.params.get('name'),
-        u'port': module.params.get('port'),
-        u'requestPath': module.params.get('request_path'),
-        u'timeoutSec': module.params.get('timeout_sec'),
-        u'unhealthyThreshold': module.params.get('unhealthy_threshold'),
-    }
+    request = { u'kind': 'compute#httpsHealthCheck',u'checkIntervalSec': module.params.get('check_interval_sec'),u'description': module.params.get('description'),u'healthyThreshold': module.params.get('healthy_threshold'),u'host': module.params.get('host'),u'name': module.params.get('name'),u'port': module.params.get('port'),u'requestPath': module.params.get('request_path'),u'timeoutSec': module.params.get('timeout_sec'),u'unhealthyThreshold': module.params.get('unhealthy_threshold') }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -355,19 +379,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'checkIntervalSec': response.get(u'checkIntervalSec'),
-        u'creationTimestamp': response.get(u'creationTimestamp'),
-        u'description': response.get(u'description'),
-        u'healthyThreshold': response.get(u'healthyThreshold'),
-        u'host': response.get(u'host'),
-        u'id': response.get(u'id'),
-        u'name': module.params.get('name'),
-        u'port': response.get(u'port'),
-        u'requestPath': response.get(u'requestPath'),
-        u'timeoutSec': response.get(u'timeoutSec'),
-        u'unhealthyThreshold': response.get(u'unhealthyThreshold'),
-    }
+    return { u'checkIntervalSec': response.get(u'checkIntervalSec'),u'creationTimestamp': response.get(u'creationTimestamp'),u'description': response.get(u'description'),u'healthyThreshold': response.get(u'healthyThreshold'),u'host': response.get(u'host'),u'id': response.get(u'id'),u'name': module.params.get('name'),u'port': response.get(u'port'),u'requestPath': response.get(u'requestPath'),u'timeoutSec': response.get(u'timeoutSec'),u'unhealthyThreshold': response.get(u'unhealthyThreshold') }
 
 
 def async_op_url(module, extra_data=None):
@@ -386,7 +398,6 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#httpsHealthCheck')
-
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])

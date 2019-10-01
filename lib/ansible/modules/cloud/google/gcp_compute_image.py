@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -79,24 +80,17 @@ options:
     type: str
   guest_os_features:
     description:
-    - A list of features to enable on the guest OS. Applicable for bootable images
-      only. Currently, only one feature can be enabled, VIRTIO_SCSI_MULTIQUEUE, which
-      allows each virtual CPU to have its own queue. For Windows images, you can only
-      enable VIRTIO_SCSI_MULTIQUEUE on images with driver version 1.2.0.1621 or higher.
-      Linux images with kernel versions 3.17 and higher will support VIRTIO_SCSI_MULTIQUEUE.
-    - For new Windows images, the server might also populate this field with the value
-      WINDOWS, to indicate that this is a Windows image.
-    - This value is purely informational and does not enable or disable any features.
+    - A list of features to enable on the guest operating system.
+    - Applicable only for bootable images.
     required: false
     type: list
     suboptions:
       type:
         description:
-        - The type of supported feature. Currently only VIRTIO_SCSI_MULTIQUEUE is
-          supported. For newer Windows images, the server might also populate this
-          property with the value WINDOWS to indicate that this is a Windows image.
-          This value is purely informational and does not enable or disable any features.
-        - 'Some valid choices include: "VIRTIO_SCSI_MULTIQUEUE"'
+        - The type of supported feature. Read [Enabling guest operating system features](U(https://cloud.google.com/compute/docs/images/create-delete-deprecate-private-images#guest-os-features))
+          to see a list of available options.
+        - 'Some valid choices include: "MULTI_IP_SUBNET", "SECURE_BOOT", "UEFI_COMPATIBLE",
+          "VIRTIO_SCSI_MULTIQUEUE", "WINDOWS"'
         required: false
         type: str
   image_encryption_key:
@@ -199,10 +193,56 @@ options:
     - 'Some valid choices include: "RAW"'
     required: false
     type: str
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 notes:
 - 'API Reference: U(https://cloud.google.com/compute/docs/reference/v1/images)'
 - 'Official Documentation: U(https://cloud.google.com/compute/docs/images)'
+- for authentication, you can set service_account_file using the c(gcp_service_account_file)
+  env variable.
+- for authentication, you can set service_account_contents using the c(GCP_SERVICE_ACCOUNT_CONTENTS)
+  env variable.
+- For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL)
+  env variable.
+- For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.
+- For authentication, you can set scopes using the C(GCP_SCOPES) env variable.
+- Environment variables values will only be used if the playbook values are not set.
+- The I(service_account_email) and I(service_account_file) options are mutually exclusive.
 '''
 
 EXAMPLES = '''
@@ -301,23 +341,15 @@ family:
   type: str
 guestOsFeatures:
   description:
-  - A list of features to enable on the guest OS. Applicable for bootable images only.
-    Currently, only one feature can be enabled, VIRTIO_SCSI_MULTIQUEUE, which allows
-    each virtual CPU to have its own queue. For Windows images, you can only enable
-    VIRTIO_SCSI_MULTIQUEUE on images with driver version 1.2.0.1621 or higher. Linux
-    images with kernel versions 3.17 and higher will support VIRTIO_SCSI_MULTIQUEUE.
-  - For new Windows images, the server might also populate this field with the value
-    WINDOWS, to indicate that this is a Windows image.
-  - This value is purely informational and does not enable or disable any features.
+  - A list of features to enable on the guest operating system.
+  - Applicable only for bootable images.
   returned: success
   type: complex
   contains:
     type:
       description:
-      - The type of supported feature. Currently only VIRTIO_SCSI_MULTIQUEUE is supported.
-        For newer Windows images, the server might also populate this property with
-        the value WINDOWS to indicate that this is a Windows image. This value is
-        purely informational and does not enable or disable any features.
+      - The type of supported feature. Read [Enabling guest operating system features](U(https://cloud.google.com/compute/docs/images/create-delete-deprecate-private-images#guest-os-features))
+        to see a list of available options.
       returned: success
       type: str
 id:
@@ -455,23 +487,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            description=dict(type='str'),
-            disk_size_gb=dict(type='int'),
-            family=dict(type='str'),
-            guest_os_features=dict(type='list', elements='dict', options=dict(type=dict(type='str'))),
-            image_encryption_key=dict(type='dict', options=dict(raw_key=dict(type='str'))),
-            labels=dict(type='dict'),
-            licenses=dict(type='list', elements='str'),
-            name=dict(required=True, type='str'),
-            raw_disk=dict(type='dict', options=dict(container_type=dict(type='str'), sha1_checksum=dict(type='str'), source=dict(required=True, type='str'))),
-            source_disk=dict(type='dict'),
-            source_disk_encryption_key=dict(type='dict', options=dict(raw_key=dict(type='str'))),
-            source_disk_id=dict(type='str'),
-            source_type=dict(type='str'),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), description=dict(type='str'), disk_size_gb=dict(type='int'), family=dict(type='str'), guest_os_features=dict(type='list', elements='dict', options=dict(type=dict(type='str'))), image_encryption_key=dict(type='dict', options=dict(raw_key=dict(type='str'))), labels=dict(type='dict'), licenses=dict(type='list', elements='str'), name=dict(required=True, type='str'), raw_disk=dict(type='dict', options=dict(container_type=dict(type='str'), sha1_checksum=dict(type='str'), source=dict(required=True, type='str'))), source_disk=dict(type='dict'), source_disk_encryption_key=dict(type='dict', options=dict(raw_key=dict(type='str'))), source_disk_id=dict(type='str'), source_type=dict(type='str')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -510,7 +526,8 @@ def create(module, link, kind):
 
 
 def update(module, link, kind, fetch):
-    update_fields(module, resource_to_request(module), response_to_hash(module, fetch))
+    update_fields(module, resource_to_request(module),
+                  response_to_hash(module, fetch))
     return fetch_resource(module, self_link(module), kind)
 
 
@@ -522,10 +539,12 @@ def update_fields(module, request, response):
 def labels_update(module, request, response):
     auth = GcpSession(module, 'compute')
     auth.post(
-        ''.join(["https://www.googleapis.com/compute/v1/", "projects/{project}/global/images/{name}/setLabels"]).format(**module.params),
-        {u'labels': module.params.get('labels'), u'labelFingerprint': response.get('labelFingerprint')},
+        ''.join([
+            "https://www.googleapis.com/compute/v1/",
+            "projects/{project}/global/images/{name}/setLabels"
+        ]).format(**module.params),
+{ u'labels': module.params.get('labels'),u'labelFingerprint': response.get('labelFingerprint') }
     )
-
 
 def delete(module, link, kind):
     auth = GcpSession(module, 'compute')
@@ -533,22 +552,7 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = {
-        u'kind': 'compute#image',
-        u'description': module.params.get('description'),
-        u'diskSizeGb': module.params.get('disk_size_gb'),
-        u'family': module.params.get('family'),
-        u'guestOsFeatures': ImageGuestosfeaturesArray(module.params.get('guest_os_features', []), module).to_request(),
-        u'imageEncryptionKey': ImageImageencryptionkey(module.params.get('image_encryption_key', {}), module).to_request(),
-        u'labels': module.params.get('labels'),
-        u'licenses': module.params.get('licenses'),
-        u'name': module.params.get('name'),
-        u'rawDisk': ImageRawdisk(module.params.get('raw_disk', {}), module).to_request(),
-        u'sourceDisk': replace_resource_dict(module.params.get(u'source_disk', {}), 'selfLink'),
-        u'sourceDiskEncryptionKey': ImageSourcediskencryptionkey(module.params.get('source_disk_encryption_key', {}), module).to_request(),
-        u'sourceDiskId': module.params.get('source_disk_id'),
-        u'sourceType': module.params.get('source_type'),
-    }
+    request = { u'kind': 'compute#image',u'description': module.params.get('description'),u'diskSizeGb': module.params.get('disk_size_gb'),u'family': module.params.get('family'),u'guestOsFeatures': ImageGuestosfeaturesArray(module.params.get('guest_os_features', []), module).to_request(),u'imageEncryptionKey': ImageImageencryptionkey(module.params.get('image_encryption_key', {}), module).to_request(),u'labels': module.params.get('labels'),u'licenses': module.params.get('licenses'),u'name': module.params.get('name'),u'rawDisk': ImageRawdisk(module.params.get('raw_disk', {}), module).to_request(),u'sourceDisk': replace_resource_dict(module.params.get(u'source_disk', {}), 'selfLink'),u'sourceDiskEncryptionKey': ImageSourcediskencryptionkey(module.params.get('source_disk_encryption_key', {}), module).to_request(),u'sourceDiskId': module.params.get('source_disk_id'),u'sourceType': module.params.get('source_type') }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -612,26 +616,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'archiveSizeBytes': response.get(u'archiveSizeBytes'),
-        u'creationTimestamp': response.get(u'creationTimestamp'),
-        u'deprecated': ImageDeprecated(response.get(u'deprecated', {}), module).from_response(),
-        u'description': response.get(u'description'),
-        u'diskSizeGb': response.get(u'diskSizeGb'),
-        u'family': response.get(u'family'),
-        u'guestOsFeatures': ImageGuestosfeaturesArray(response.get(u'guestOsFeatures', []), module).from_response(),
-        u'id': response.get(u'id'),
-        u'imageEncryptionKey': ImageImageencryptionkey(response.get(u'imageEncryptionKey', {}), module).from_response(),
-        u'labels': response.get(u'labels'),
-        u'labelFingerprint': response.get(u'labelFingerprint'),
-        u'licenses': response.get(u'licenses'),
-        u'name': response.get(u'name'),
-        u'rawDisk': ImageRawdisk(response.get(u'rawDisk', {}), module).from_response(),
-        u'sourceDisk': response.get(u'sourceDisk'),
-        u'sourceDiskEncryptionKey': ImageSourcediskencryptionkey(response.get(u'sourceDiskEncryptionKey', {}), module).from_response(),
-        u'sourceDiskId': response.get(u'sourceDiskId'),
-        u'sourceType': response.get(u'sourceType'),
-    }
+    return { u'archiveSizeBytes': response.get(u'archiveSizeBytes'),u'creationTimestamp': response.get(u'creationTimestamp'),u'deprecated': ImageDeprecated(response.get(u'deprecated', {}), module).from_response(),u'description': response.get(u'description'),u'diskSizeGb': response.get(u'diskSizeGb'),u'family': response.get(u'family'),u'guestOsFeatures': ImageGuestosfeaturesArray(response.get(u'guestOsFeatures', []), module).from_response(),u'id': response.get(u'id'),u'imageEncryptionKey': ImageImageencryptionkey(response.get(u'imageEncryptionKey', {}), module).from_response(),u'labels': response.get(u'labels'),u'labelFingerprint': response.get(u'labelFingerprint'),u'licenses': response.get(u'licenses'),u'name': response.get(u'name'),u'rawDisk': ImageRawdisk(response.get(u'rawDisk', {}), module).from_response(),u'sourceDisk': response.get(u'sourceDisk'),u'sourceDiskEncryptionKey': ImageSourcediskencryptionkey(response.get(u'sourceDiskEncryptionKey', {}), module).from_response(),u'sourceDiskId': response.get(u'sourceDiskId'),u'sourceType': response.get(u'sourceType') }
 
 
 def license_selflink(name, params):
@@ -660,7 +645,6 @@ def wait_for_operation(module, response):
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#image')
 
-
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
     op_uri = async_op_url(module, {'op_id': op_id})
@@ -687,26 +671,12 @@ class ImageDeprecated(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {
-                u'deleted': self.request.get('deleted'),
-                u'deprecated': self.request.get('deprecated'),
-                u'obsolete': self.request.get('obsolete'),
-                u'replacement': self.request.get('replacement'),
-                u'state': self.request.get('state'),
-            }
-        )
+        return remove_nones_from_dict({ u'deleted': self.request.get('deleted'),u'deprecated': self.request.get('deprecated'),u'obsolete': self.request.get('obsolete'),u'replacement': self.request.get('replacement'),u'state': self.request.get('state') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {
-                u'deleted': self.request.get(u'deleted'),
-                u'deprecated': self.request.get(u'deprecated'),
-                u'obsolete': self.request.get(u'obsolete'),
-                u'replacement': self.request.get(u'replacement'),
-                u'state': self.request.get(u'state'),
-            }
-        )
+        return remove_nones_from_dict({ u'deleted': self.request.get(u'deleted'),u'deprecated': self.request.get(u'deprecated'),u'obsolete': self.request.get(u'obsolete'),u'replacement': self.request.get(u'replacement'),u'state': self.request.get(u'state') }
+)
 
 
 class ImageGuestosfeaturesArray(object):
@@ -730,10 +700,12 @@ class ImageGuestosfeaturesArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({u'type': item.get('type')})
+        return remove_nones_from_dict({ u'type': item.get('type') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({u'type': item.get(u'type')})
+        return remove_nones_from_dict({ u'type': item.get(u'type') }
+)
 
 
 class ImageImageencryptionkey(object):
@@ -745,10 +717,12 @@ class ImageImageencryptionkey(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'rawKey': self.request.get('raw_key')})
+        return remove_nones_from_dict({ u'rawKey': self.request.get('raw_key') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({u'rawKey': self.request.get(u'rawKey')})
+        return remove_nones_from_dict({ u'rawKey': self.request.get(u'rawKey') }
+)
 
 
 class ImageRawdisk(object):
@@ -760,14 +734,12 @@ class ImageRawdisk(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {u'containerType': self.request.get('container_type'), u'sha1Checksum': self.request.get('sha1_checksum'), u'source': self.request.get('source')}
-        )
+        return remove_nones_from_dict({ u'containerType': self.request.get('container_type'),u'sha1Checksum': self.request.get('sha1_checksum'),u'source': self.request.get('source') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {u'containerType': self.request.get(u'containerType'), u'sha1Checksum': self.request.get(u'sha1Checksum'), u'source': self.request.get(u'source')}
-        )
+        return remove_nones_from_dict({ u'containerType': self.request.get(u'containerType'),u'sha1Checksum': self.request.get(u'sha1Checksum'),u'source': self.request.get(u'source') }
+)
 
 
 class ImageSourcediskencryptionkey(object):
@@ -779,10 +751,12 @@ class ImageSourcediskencryptionkey(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'rawKey': self.request.get('raw_key')})
+        return remove_nones_from_dict({ u'rawKey': self.request.get('raw_key') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({u'rawKey': self.request.get(u'rawKey')})
+        return remove_nones_from_dict({ u'rawKey': self.request.get(u'rawKey') }
+)
 
 
 if __name__ == '__main__':

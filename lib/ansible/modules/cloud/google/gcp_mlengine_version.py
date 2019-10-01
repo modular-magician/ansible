@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -158,7 +159,43 @@ options:
     type: bool
     aliases:
     - default
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 '''
 
 EXAMPLES = '''
@@ -333,25 +370,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            name=dict(required=True, type='str'),
-            description=dict(type='str'),
-            deployment_uri=dict(required=True, type='str'),
-            runtime_version=dict(type='str'),
-            machine_type=dict(type='str'),
-            labels=dict(type='dict'),
-            framework=dict(type='str'),
-            python_version=dict(type='str'),
-            service_account=dict(type='str'),
-            auto_scaling=dict(type='dict', options=dict(min_nodes=dict(type='int'))),
-            manual_scaling=dict(type='dict', options=dict(nodes=dict(type='int'))),
-            prediction_class=dict(type='str'),
-            model=dict(required=True, type='dict'),
-            is_default=dict(type='bool', aliases=['default']),
-        ),
-        mutually_exclusive=[['auto_scaling', 'manual_scaling']],
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), description=dict(type='str'), deployment_uri=dict(required=True, type='str'), runtime_version=dict(type='str'), machine_type=dict(type='str'), labels=dict(type='dict'), framework=dict(type='str'), python_version=dict(type='str'), service_account=dict(type='str'), auto_scaling=dict(type='dict', options=dict(min_nodes=dict(type='int'))), manual_scaling=dict(type='dict', options=dict(nodes=dict(type='int'))), prediction_class=dict(type='str'), model=dict(required=True, type='dict'), is_default=dict(type='bool', aliases=['default'])), mutually_exclusive=[['auto_scaling', 'manual_scaling']])
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/cloud-platform']
@@ -401,20 +420,7 @@ def delete(module, link):
 
 
 def resource_to_request(module):
-    request = {
-        u'name': module.params.get('name'),
-        u'description': module.params.get('description'),
-        u'deploymentUri': module.params.get('deployment_uri'),
-        u'runtimeVersion': module.params.get('runtime_version'),
-        u'machineType': module.params.get('machine_type'),
-        u'labels': module.params.get('labels'),
-        u'framework': module.params.get('framework'),
-        u'pythonVersion': module.params.get('python_version'),
-        u'serviceAccount': module.params.get('service_account'),
-        u'autoScaling': VersionAutoscaling(module.params.get('auto_scaling', {}), module).to_request(),
-        u'manualScaling': VersionManualscaling(module.params.get('manual_scaling', {}), module).to_request(),
-        u'predictionClass': module.params.get('prediction_class'),
-    }
+    request = { u'name': module.params.get('name'),u'description': module.params.get('description'),u'deploymentUri': module.params.get('deployment_uri'),u'runtimeVersion': module.params.get('runtime_version'),u'machineType': module.params.get('machine_type'),u'labels': module.params.get('labels'),u'framework': module.params.get('framework'),u'pythonVersion': module.params.get('python_version'),u'serviceAccount': module.params.get('service_account'),u'autoScaling': VersionAutoscaling(module.params.get('auto_scaling', {}), module).to_request(),u'manualScaling': VersionManualscaling(module.params.get('manual_scaling', {}), module).to_request(),u'predictionClass': module.params.get('prediction_class') }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -429,12 +435,19 @@ def fetch_resource(module, link, allow_not_found=True):
 
 
 def self_link(module):
-    res = {'project': module.params['project'], 'model': replace_resource_dict(module.params['model'], 'name'), 'name': module.params['name']}
+    res = {
+        'project': module.params['project'],
+        'model': replace_resource_dict(module.params['model'], 'name'),
+        'name': module.params['name']
+    }
     return "https://ml.googleapis.com/v1/projects/{project}/models/{model}/versions/{name}".format(**res)
 
 
 def collection(module):
-    res = {'project': module.params['project'], 'model': replace_resource_dict(module.params['model'], 'name')}
+    res = {
+        'project': module.params['project'],
+        'model': replace_resource_dict(module.params['model'], 'name')
+    }
     return "https://ml.googleapis.com/v1/projects/{project}/models/{model}/versions".format(**res)
 
 
@@ -483,25 +496,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'name': response.get(u'name'),
-        u'description': response.get(u'description'),
-        u'deploymentUri': response.get(u'deploymentUri'),
-        u'createTime': response.get(u'createTime'),
-        u'lastUseTime': response.get(u'lastUseTime'),
-        u'runtimeVersion': response.get(u'runtimeVersion'),
-        u'machineType': response.get(u'machineType'),
-        u'state': response.get(u'state'),
-        u'errorMessage': response.get(u'errorMessage'),
-        u'packageUris': response.get(u'packageUris'),
-        u'labels': response.get(u'labels'),
-        u'framework': response.get(u'framework'),
-        u'pythonVersion': response.get(u'pythonVersion'),
-        u'serviceAccount': response.get(u'serviceAccount'),
-        u'autoScaling': VersionAutoscaling(response.get(u'autoScaling', {}), module).from_response(),
-        u'manualScaling': VersionManualscaling(response.get(u'manualScaling', {}), module).from_response(),
-        u'predictionClass': response.get(u'predictionClass'),
-    }
+    return { u'name': response.get(u'name'),u'description': response.get(u'description'),u'deploymentUri': response.get(u'deploymentUri'),u'createTime': response.get(u'createTime'),u'lastUseTime': response.get(u'lastUseTime'),u'runtimeVersion': response.get(u'runtimeVersion'),u'machineType': response.get(u'machineType'),u'state': response.get(u'state'),u'errorMessage': response.get(u'errorMessage'),u'packageUris': response.get(u'packageUris'),u'labels': response.get(u'labels'),u'framework': response.get(u'framework'),u'pythonVersion': response.get(u'pythonVersion'),u'serviceAccount': response.get(u'serviceAccount'),u'autoScaling': VersionAutoscaling(response.get(u'autoScaling', {}), module).from_response(),u'manualScaling': VersionManualscaling(response.get(u'manualScaling', {}), module).from_response(),u'predictionClass': response.get(u'predictionClass') }
 
 
 def async_op_url(module, extra_data=None):
@@ -566,10 +561,12 @@ class VersionAutoscaling(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'minNodes': self.request.get('min_nodes')})
+        return remove_nones_from_dict({ u'minNodes': self.request.get('min_nodes') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({u'minNodes': self.request.get(u'minNodes')})
+        return remove_nones_from_dict({ u'minNodes': self.request.get(u'minNodes') }
+)
 
 
 class VersionManualscaling(object):
@@ -581,10 +578,12 @@ class VersionManualscaling(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'nodes': self.request.get('nodes')})
+        return remove_nones_from_dict({ u'nodes': self.request.get('nodes') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({u'nodes': self.request.get(u'nodes')})
+        return remove_nones_from_dict({ u'nodes': self.request.get(u'nodes') }
+)
 
 
 if __name__ == '__main__':

@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -122,7 +123,43 @@ options:
     - The zone the managed instance group resides.
     required: true
     type: str
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 '''
 
 EXAMPLES = '''
@@ -346,18 +383,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            base_instance_name=dict(required=True, type='str'),
-            description=dict(type='str'),
-            instance_template=dict(required=True, type='dict'),
-            name=dict(required=True, type='str'),
-            named_ports=dict(type='list', elements='dict', options=dict(name=dict(type='str'), port=dict(type='int'))),
-            target_pools=dict(type='list', elements='dict'),
-            target_size=dict(type='int'),
-            zone=dict(required=True, type='str'),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), base_instance_name=dict(required=True, type='str'), description=dict(type='str'), instance_template=dict(required=True, type='dict'), name=dict(required=True, type='str'), named_ports=dict(type='list', elements='dict', options=dict(name=dict(type='str'), port=dict(type='int'))), target_pools=dict(type='list', elements='dict'), target_size=dict(type='int'), zone=dict(required=True, type='str')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -406,16 +432,7 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = {
-        u'kind': 'compute#instanceGroupManager',
-        u'baseInstanceName': module.params.get('base_instance_name'),
-        u'description': module.params.get('description'),
-        u'instanceTemplate': replace_resource_dict(module.params.get(u'instance_template', {}), 'selfLink'),
-        u'name': module.params.get('name'),
-        u'namedPorts': InstanceGroupManagerNamedportsArray(module.params.get('named_ports', []), module).to_request(),
-        u'targetPools': replace_resource_dict(module.params.get('target_pools', []), 'selfLink'),
-        u'targetSize': module.params.get('target_size'),
-    }
+    request = { u'kind': 'compute#instanceGroupManager',u'baseInstanceName': module.params.get('base_instance_name'),u'description': module.params.get('description'),u'instanceTemplate': replace_resource_dict(module.params.get(u'instance_template', {}), 'selfLink'),u'name': module.params.get('name'),u'namedPorts': InstanceGroupManagerNamedportsArray(module.params.get('named_ports', []), module).to_request(),u'targetPools': replace_resource_dict(module.params.get('target_pools', []), 'selfLink'),u'targetSize': module.params.get('target_size') }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -479,20 +496,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'baseInstanceName': response.get(u'baseInstanceName'),
-        u'creationTimestamp': response.get(u'creationTimestamp'),
-        u'currentActions': InstanceGroupManagerCurrentactions(response.get(u'currentActions', {}), module).from_response(),
-        u'description': module.params.get('description'),
-        u'id': response.get(u'id'),
-        u'instanceGroup': response.get(u'instanceGroup'),
-        u'instanceTemplate': response.get(u'instanceTemplate'),
-        u'name': response.get(u'name'),
-        u'namedPorts': InstanceGroupManagerNamedportsArray(response.get(u'namedPorts', []), module).from_response(),
-        u'region': response.get(u'region'),
-        u'targetPools': response.get(u'targetPools'),
-        u'targetSize': response.get(u'targetSize'),
-    }
+    return { u'baseInstanceName': response.get(u'baseInstanceName'),u'creationTimestamp': response.get(u'creationTimestamp'),u'currentActions': InstanceGroupManagerCurrentactions(response.get(u'currentActions', {}), module).from_response(),u'description': module.params.get('description'),u'id': response.get(u'id'),u'instanceGroup': response.get(u'instanceGroup'),u'instanceTemplate': response.get(u'instanceTemplate'),u'name': response.get(u'name'),u'namedPorts': InstanceGroupManagerNamedportsArray(response.get(u'namedPorts', []), module).from_response(),u'region': response.get(u'region'),u'targetPools': response.get(u'targetPools'),u'targetSize': response.get(u'targetSize') }
 
 
 def region_selflink(name, params):
@@ -521,7 +525,6 @@ def wait_for_operation(module, response):
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#instanceGroupManager')
 
-
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
     op_uri = async_op_url(module, {'op_id': op_id})
@@ -548,10 +551,12 @@ class InstanceGroupManagerCurrentactions(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({})
+        return remove_nones_from_dict({  }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({})
+        return remove_nones_from_dict({  }
+)
 
 
 class InstanceGroupManagerNamedportsArray(object):
@@ -575,10 +580,12 @@ class InstanceGroupManagerNamedportsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict({u'name': item.get('name'), u'port': item.get('port')})
+        return remove_nones_from_dict({ u'name': item.get('name'),u'port': item.get('port') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict({u'name': item.get(u'name'), u'port': item.get(u'port')})
+        return remove_nones_from_dict({ u'name': item.get(u'name'),u'port': item.get(u'port') }
+)
 
 
 if __name__ == '__main__':

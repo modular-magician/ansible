@@ -18,14 +18,15 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, division, print_function
-
 __metaclass__ = type
 
 ################################################################################
 # Documentation
 ################################################################################
 
-ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported_by': 'community'}
+ANSIBLE_METADATA = {'metadata_version': '1.1',
+                    'status': ["preview"],
+                    'supported_by': 'community'}
 
 DOCUMENTATION = '''
 ---
@@ -198,10 +199,56 @@ options:
     - URL of the zone where the instance group resides.
     required: true
     type: str
-extends_documentation_fragment: gcp
+  project:
+    description:
+    - The Google Cloud Platform project to use.
+    type: str
+  auth_kind:
+    description:
+    - The type of credential used.
+    type: str
+    required: true
+    choices:
+    - application
+    - machineaccount
+    - serviceaccount
+  service_account_contents:
+    description:
+    - The contents of a Service Account JSON file, either in a dictionary or as a
+      JSON string that represents it.
+    type: jsonarg
+  service_account_file:
+    description:
+    - The path of a Service Account JSON file if serviceaccount is selected as type.
+    type: path
+  service_account_email:
+    description:
+    - An optional service account email address if machineaccount is selected and
+      the user does not wish to use the default email.
+    type: str
+  scopes:
+    description:
+    - Array of scopes to be used
+    type: list
+  env_type:
+    description:
+    - Specifies which Ansible environment you're running this module within.
+    - This should not be set unless you know what you're doing.
+    - This only alters the User Agent string for any API requests.
+    type: str
 notes:
 - 'API Reference: U(https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers)'
 - 'Autoscaling Groups of Instances: U(https://cloud.google.com/compute/docs/autoscaler/)'
+- for authentication, you can set service_account_file using the c(gcp_service_account_file)
+  env variable.
+- for authentication, you can set service_account_contents using the c(GCP_SERVICE_ACCOUNT_CONTENTS)
+  env variable.
+- For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL)
+  env variable.
+- For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.
+- For authentication, you can set scopes using the C(GCP_SCOPES) env variable.
+- Environment variables values will only be used if the playbook values are not set.
+- The I(service_account_email) and I(service_account_file) options are mutually exclusive.
 '''
 
 EXAMPLES = '''
@@ -427,35 +474,7 @@ def main():
     """Main function"""
 
     module = GcpModule(
-        argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'], type='str'),
-            name=dict(required=True, type='str'),
-            description=dict(type='str'),
-            autoscaling_policy=dict(
-                required=True,
-                type='dict',
-                options=dict(
-                    min_num_replicas=dict(type='int', aliases=['minReplicas']),
-                    max_num_replicas=dict(required=True, type='int', aliases=['maxReplicas']),
-                    cool_down_period_sec=dict(default=60, type='int', aliases=['cooldownPeriod']),
-                    cpu_utilization=dict(type='dict', options=dict(utilization_target=dict(type='str', aliases=['target']))),
-                    custom_metric_utilizations=dict(
-                        type='list',
-                        elements='dict',
-                        aliases=['metric'],
-                        options=dict(
-                            metric=dict(required=True, type='str', aliases=['name']),
-                            utilization_target=dict(type='str', aliases=['target']),
-                            utilization_target_type=dict(type='str', aliases=['type']),
-                        ),
-                    ),
-                    load_balancing_utilization=dict(type='dict', options=dict(utilization_target=dict(type='str', aliases=['target']))),
-                ),
-            ),
-            target=dict(required=True, type='dict'),
-            zone=dict(required=True, type='str'),
-        )
-    )
+        argument_spec=dict(state=dict(default='present', choices=['present', 'absent'], type='str'), name=dict(required=True, type='str'), description=dict(type='str'), autoscaling_policy=dict(required=True, type='dict', options=dict(min_num_replicas=dict(type='int', aliases=['minReplicas']), max_num_replicas=dict(required=True, type='int', aliases=['maxReplicas']), cool_down_period_sec=dict(default=60, type='int', aliases=['cooldownPeriod']), cpu_utilization=dict(type='dict', options=dict(utilization_target=dict(type='str', aliases=['target']))), custom_metric_utilizations=dict(type='list', elements='dict', aliases=['metric'], options=dict(metric=dict(required=True, type='str', aliases=['name']), utilization_target=dict(type='str', aliases=['target']), utilization_target_type=dict(type='str', aliases=['type']))), load_balancing_utilization=dict(type='dict', options=dict(utilization_target=dict(type='str', aliases=['target']))))), target=dict(required=True, type='dict'), zone=dict(required=True, type='str')))
 
     if not module.params['scopes']:
         module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
@@ -504,14 +523,7 @@ def delete(module, link, kind):
 
 
 def resource_to_request(module):
-    request = {
-        u'kind': 'compute#autoscaler',
-        u'zone': module.params.get('zone'),
-        u'name': module.params.get('name'),
-        u'description': module.params.get('description'),
-        u'autoscalingPolicy': AutoscalerAutoscalingpolicy(module.params.get('autoscaling_policy', {}), module).to_request(),
-        u'target': replace_resource_dict(module.params.get(u'target', {}), 'selfLink'),
-    }
+    request = { u'kind': 'compute#autoscaler',u'zone': module.params.get('zone'),u'name': module.params.get('name'),u'description': module.params.get('description'),u'autoscalingPolicy': AutoscalerAutoscalingpolicy(module.params.get('autoscaling_policy', {}), module).to_request(),u'target': replace_resource_dict(module.params.get(u'target', {}), 'selfLink') }
     return_vals = {}
     for k, v in request.items():
         if v or v is False:
@@ -575,14 +587,7 @@ def is_different(module, response):
 # Remove unnecessary properties from the response.
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
-    return {
-        u'id': response.get(u'id'),
-        u'creationTimestamp': response.get(u'creationTimestamp'),
-        u'name': module.params.get('name'),
-        u'description': response.get(u'description'),
-        u'autoscalingPolicy': AutoscalerAutoscalingpolicy(response.get(u'autoscalingPolicy', {}), module).from_response(),
-        u'target': response.get(u'target'),
-    }
+    return { u'id': response.get(u'id'),u'creationTimestamp': response.get(u'creationTimestamp'),u'name': module.params.get('name'),u'description': response.get(u'description'),u'autoscalingPolicy': AutoscalerAutoscalingpolicy(response.get(u'autoscalingPolicy', {}), module).from_response(),u'target': response.get(u'target') }
 
 
 def async_op_url(module, extra_data=None):
@@ -601,7 +606,6 @@ def wait_for_operation(module, response):
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
     return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#autoscaler')
-
 
 def wait_for_completion(status, op_result, module):
     op_id = navigate_hash(op_result, ['name'])
@@ -629,32 +633,12 @@ class AutoscalerAutoscalingpolicy(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict(
-            {
-                u'minNumReplicas': self.request.get('min_num_replicas'),
-                u'maxNumReplicas': self.request.get('max_num_replicas'),
-                u'coolDownPeriodSec': self.request.get('cool_down_period_sec'),
-                u'cpuUtilization': AutoscalerCpuutilization(self.request.get('cpu_utilization', {}), self.module).to_request(),
-                u'customMetricUtilizations': AutoscalerCustommetricutilizationsArray(
-                    self.request.get('custom_metric_utilizations', []), self.module
-                ).to_request(),
-                u'loadBalancingUtilization': AutoscalerLoadbalancingutilization(self.request.get('load_balancing_utilization', {}), self.module).to_request(),
-            }
-        )
+        return remove_nones_from_dict({ u'minNumReplicas': self.request.get('min_num_replicas'),u'maxNumReplicas': self.request.get('max_num_replicas'),u'coolDownPeriodSec': self.request.get('cool_down_period_sec'),u'cpuUtilization': AutoscalerCpuutilization(self.request.get('cpu_utilization', {}), self.module).to_request(),u'customMetricUtilizations': AutoscalerCustommetricutilizationsArray(self.request.get('custom_metric_utilizations', []), self.module).to_request(),u'loadBalancingUtilization': AutoscalerLoadbalancingutilization(self.request.get('load_balancing_utilization', {}), self.module).to_request() }
+)
 
     def from_response(self):
-        return remove_nones_from_dict(
-            {
-                u'minNumReplicas': self.request.get(u'minNumReplicas'),
-                u'maxNumReplicas': self.request.get(u'maxNumReplicas'),
-                u'coolDownPeriodSec': self.request.get(u'coolDownPeriodSec'),
-                u'cpuUtilization': AutoscalerCpuutilization(self.request.get(u'cpuUtilization', {}), self.module).from_response(),
-                u'customMetricUtilizations': AutoscalerCustommetricutilizationsArray(
-                    self.request.get(u'customMetricUtilizations', []), self.module
-                ).from_response(),
-                u'loadBalancingUtilization': AutoscalerLoadbalancingutilization(self.request.get(u'loadBalancingUtilization', {}), self.module).from_response(),
-            }
-        )
+        return remove_nones_from_dict({ u'minNumReplicas': self.request.get(u'minNumReplicas'),u'maxNumReplicas': self.request.get(u'maxNumReplicas'),u'coolDownPeriodSec': self.request.get(u'coolDownPeriodSec'),u'cpuUtilization': AutoscalerCpuutilization(self.request.get(u'cpuUtilization', {}), self.module).from_response(),u'customMetricUtilizations': AutoscalerCustommetricutilizationsArray(self.request.get(u'customMetricUtilizations', []), self.module).from_response(),u'loadBalancingUtilization': AutoscalerLoadbalancingutilization(self.request.get(u'loadBalancingUtilization', {}), self.module).from_response() }
+)
 
 
 class AutoscalerCpuutilization(object):
@@ -666,10 +650,12 @@ class AutoscalerCpuutilization(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'utilizationTarget': self.request.get('utilization_target')})
+        return remove_nones_from_dict({ u'utilizationTarget': self.request.get('utilization_target') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({u'utilizationTarget': self.request.get(u'utilizationTarget')})
+        return remove_nones_from_dict({ u'utilizationTarget': self.request.get(u'utilizationTarget') }
+)
 
 
 class AutoscalerCustommetricutilizationsArray(object):
@@ -693,14 +679,12 @@ class AutoscalerCustommetricutilizationsArray(object):
         return items
 
     def _request_for_item(self, item):
-        return remove_nones_from_dict(
-            {u'metric': item.get('metric'), u'utilizationTarget': item.get('utilization_target'), u'utilizationTargetType': item.get('utilization_target_type')}
-        )
+        return remove_nones_from_dict({ u'metric': item.get('metric'),u'utilizationTarget': item.get('utilization_target'),u'utilizationTargetType': item.get('utilization_target_type') }
+)
 
     def _response_from_item(self, item):
-        return remove_nones_from_dict(
-            {u'metric': item.get(u'metric'), u'utilizationTarget': item.get(u'utilizationTarget'), u'utilizationTargetType': item.get(u'utilizationTargetType')}
-        )
+        return remove_nones_from_dict({ u'metric': item.get(u'metric'),u'utilizationTarget': item.get(u'utilizationTarget'),u'utilizationTargetType': item.get(u'utilizationTargetType') }
+)
 
 
 class AutoscalerLoadbalancingutilization(object):
@@ -712,10 +696,12 @@ class AutoscalerLoadbalancingutilization(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'utilizationTarget': self.request.get('utilization_target')})
+        return remove_nones_from_dict({ u'utilizationTarget': self.request.get('utilization_target') }
+)
 
     def from_response(self):
-        return remove_nones_from_dict({u'utilizationTarget': self.request.get(u'utilizationTarget')})
+        return remove_nones_from_dict({ u'utilizationTarget': self.request.get(u'utilizationTarget') }
+)
 
 
 if __name__ == '__main__':
