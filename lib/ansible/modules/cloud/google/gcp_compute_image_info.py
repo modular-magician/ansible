@@ -188,8 +188,7 @@ resources:
       type: str
     guestOsFeatures:
       description:
-      - A list of features to enable on the guest operating system.
-      - Applicable only for bootable images.
+      - The type of supported feature.
       returned: success
       type: complex
       contains:

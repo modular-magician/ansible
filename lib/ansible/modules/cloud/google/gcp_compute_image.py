@@ -79,8 +79,7 @@ options:
     type: str
   guest_os_features:
     description:
-    - A list of features to enable on the guest operating system.
-    - Applicable only for bootable images.
+    - The type of supported feature.
     required: false
     type: list
     suboptions:
@@ -340,8 +339,7 @@ family:
   type: str
 guestOsFeatures:
   description:
-  - A list of features to enable on the guest operating system.
-  - Applicable only for bootable images.
+  - The type of supported feature.
   returned: success
   type: complex
   contains:
