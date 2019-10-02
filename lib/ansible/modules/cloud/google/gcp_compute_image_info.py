@@ -188,14 +188,14 @@ resources:
       type: str
     guestOsFeatures:
       description:
-      - The type of supported feature.
+      - A list of features to enable on the guest operating system.
+      - Applicable only for bootable images.
       returned: success
       type: complex
       contains:
         type:
           description:
-          - The type of supported feature. Read [Enabling guest operating system features](U(https://cloud.google.com/compute/docs/images/create-delete-deprecate-private-images#guest-os-features))
-            to see a list of available options.
+          - The type of supported feature.
           returned: success
           type: str
     id:

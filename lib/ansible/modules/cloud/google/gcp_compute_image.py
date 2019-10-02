@@ -79,14 +79,14 @@ options:
     type: str
   guest_os_features:
     description:
-    - The type of supported feature.
+    - A list of features to enable on the guest operating system.
+    - Applicable only for bootable images.
     required: false
     type: list
     suboptions:
       type:
         description:
-        - The type of supported feature. Read [Enabling guest operating system features](U(https://cloud.google.com/compute/docs/images/create-delete-deprecate-private-images#guest-os-features))
-          to see a list of available options.
+        - The type of supported feature.
         - 'Some valid choices include: "MULTI_IP_SUBNET", "SECURE_BOOT", "UEFI_COMPATIBLE",
           "VIRTIO_SCSI_MULTIQUEUE", "WINDOWS"'
         required: false
@@ -339,14 +339,14 @@ family:
   type: str
 guestOsFeatures:
   description:
-  - The type of supported feature.
+  - A list of features to enable on the guest operating system.
+  - Applicable only for bootable images.
   returned: success
   type: complex
   contains:
     type:
       description:
-      - The type of supported feature. Read [Enabling guest operating system features](U(https://cloud.google.com/compute/docs/images/create-delete-deprecate-private-images#guest-os-features))
-        to see a list of available options.
+      - The type of supported feature.
       returned: success
       type: str
 id:
