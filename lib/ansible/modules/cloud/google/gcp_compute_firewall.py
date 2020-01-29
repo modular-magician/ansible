@@ -533,6 +533,7 @@ def main():
             target_tags=dict(type='list', elements='str'),
         ),
         mutually_exclusive=[
+            ['allowed', 'denied'],
             ['destination_ranges', 'source_ranges', 'source_tags'],
             ['destination_ranges', 'source_ranges'],
             ['source_service_accounts', 'source_tags', 'target_tags'],
@@ -800,10 +801,10 @@ class FirewallLogconfig(object):
             self.request = {}
 
     def to_request(self):
-        return remove_nones_from_dict({u'enableLogging': self.request.get('enable_logging')})
+        return remove_nones_from_dict({u'enable': self.request.get('enable_logging')})
 
     def from_response(self):
-        return remove_nones_from_dict({u'enableLogging': self.request.get(u'enableLogging')})
+        return remove_nones_from_dict({u'enable': self.request.get(u'enable')})
 
 
 if __name__ == '__main__':
