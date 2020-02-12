@@ -29,22 +29,17 @@ ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported
 
 DOCUMENTATION = '''
 ---
-module: gcp_sql_database_info
+module: gcp_bigtable_instance_info
 description:
-- Gather info for GCP Database
-short_description: Gather info for GCP Database
-version_added: '2.8'
+- Gather info for GCP Instance
+short_description: Gather info for GCP Instance
+version_added: '2.10'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
 - requests >= 2.18.4
 - google-auth >= 1.3.0
 options:
-  instance:
-    description:
-    - The name of the Cloud SQL instance. This does not include the project ID.
-    required: true
-    type: str
   project:
     description:
     - The Google Cloud Platform project to use.
@@ -96,9 +91,8 @@ notes:
 '''
 
 EXAMPLES = '''
-- name: get info on a database
-  gcp_sql_database_info:
-    instance: "{{ instance.name }}"
+- name: get info on an instance
+  gcp_bigtable_instance_info:
     project: test_project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
@@ -110,33 +104,69 @@ resources:
   returned: always
   type: complex
   contains:
-    charset:
+    state:
       description:
-      - The charset value. See MySQL's [Supported Character Sets and Collations](U(https://dev.mysql.com/doc/refman/5.7/en/charset-charsets.html))
-        and Postgres' [Character Set Support](U(https://www.postgresql.org/docs/9.6/static/multibyte.html))
-        for more details and supported values. Postgres databases only support a value
-        of `UTF8` at creation time.
-      returned: success
-      type: str
-    collation:
-      description:
-      - The collation value. See MySQL's [Supported Character Sets and Collations](U(https://dev.mysql.com/doc/refman/5.7/en/charset-charsets.html))
-        and Postgres' [Collation Support](U(https://www.postgresql.org/docs/9.6/static/collation.html))
-        for more details and supported values. Postgres databases only support a value
-        of `en_US.UTF8` at creation time.
+      - The current state of the instance.
       returned: success
       type: str
     name:
       description:
-      - The name of the database in the Cloud SQL instance.
-      - This does not include the project ID or instance name.
+      - The unique name of the instance.
       returned: success
       type: str
-    instance:
+    displayName:
       description:
-      - The name of the Cloud SQL instance. This does not include the project ID.
+      - The descriptive name for this instance as it appears in UIs.
+      - Can be changed at any time, but should be kept globally unique to avoid confusion.
       returned: success
       type: str
+    type:
+      description:
+      - The type of the instance. Defaults to `PRODUCTION`.
+      returned: success
+      type: str
+    labels:
+      description:
+      - Labels are a flexible and lightweight mechanism for organizing cloud resources
+        into groups that reflect a customer's organizational needs and deployment
+        strategies. They can be used to filter resources and aggregate metrics.
+      returned: success
+      type: dict
+    clusters:
+      description:
+      - An array of clusters. Maximum 4.
+      returned: success
+      type: complex
+      contains:
+        name:
+          description:
+          - The unique name of the cluster.
+          returned: success
+          type: str
+        serveNodes:
+          description:
+          - The number of nodes allocated to this cluster. More nodes enable higher
+            throughput and more consistent performance.
+          returned: success
+          type: int
+        defaultStorageType:
+          description:
+          - The type of storage used by this cluster to serve its parent instance's
+            tables, unless explicitly overridden.
+          returned: success
+          type: str
+        location:
+          description:
+          - The location where this cluster's nodes and storage reside. For best performance,
+            clients should be located as close as possible to this cluster. Currently
+            only zones are supported, so values should be of the form `projects/<project>/locations/<zone>`.
+          returned: success
+          type: str
+        state:
+          description:
+          - The current state of the cluster.
+          returned: success
+          type: str
 '''
 
 ################################################################################
@@ -151,22 +181,22 @@ import json
 
 
 def main():
-    module = GcpModule(argument_spec=dict(instance=dict(required=True, type='str')))
+    module = GcpModule(argument_spec=dict())
 
     if not module.params['scopes']:
-        module.params['scopes'] = ['https://www.googleapis.com/auth/sqlservice.admin']
+        module.params['scopes'] = ['https://www.googleapis.com/auth/bigtable']
 
     return_value = {'resources': fetch_list(module, collection(module))}
     module.exit_json(**return_value)
 
 
 def collection(module):
-    return "https://sqladmin.googleapis.com/sql/v1beta4/projects/{project}/instances/{instance}/databases".format(**module.params)
+    return "https://bigtableadmin.googleapis.com/v2/projects/{project}/instances".format(**module.params)
 
 
 def fetch_list(module, link):
-    auth = GcpSession(module, 'sql')
-    return auth.list(link, return_if_object, array_name='items')
+    auth = GcpSession(module, 'bigtable')
+    return auth.list(link, return_if_object, array_name='instances')
 
 
 def return_if_object(module, response):
