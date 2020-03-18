@@ -29,13 +29,14 @@ ANSIBLE_METADATA = {'metadata_version': '1.1', 'status': ["preview"], 'supported
 
 DOCUMENTATION = '''
 ---
-module: gcp_compute_ssl_certificate
+module: gcp_sql_ssl_cert
 description:
-- An SslCertificate resource, used for HTTPS load balancing. This resource provides
-  a mechanism to upload an SSL key and certificate to the load balancer to serve secure
-  connections from the user.
-short_description: Creates a GCP SslCertificate
-version_added: '2.6'
+- Represents an SSL certificate created for a Cloud SQL instance. To use the SSL certificate
+  you must have the SSL Client Certificate and the associated SSL Client Key. The
+  Client Key can be downloaded only when the SSL certificate is created with the insert
+  method.
+short_description: Creates a GCP SslCert
+version_added: '2.10'
 author: Google Inc. (@googlecloudplatform)
 requirements:
 - python >= 2.6
@@ -50,31 +51,44 @@ options:
     - absent
     default: present
     type: str
-  certificate:
+  cert:
     description:
-    - The certificate in PEM format.
-    - The certificate chain must be no greater than 5 certs long.
-    - The chain must include at least one intermediate cert.
+    - PEM representation of the X.509 certificate.
+    required: false
+    type: str
+  cert_serial_number:
+    description:
+    - Serial number, as extracted from the certificate.
+    required: false
+    type: str
+  common_name:
+    description:
+    - User supplied name. Constrained to [a-zA-Z.-_ ]+.
+    required: false
+    type: str
+  create_time:
+    description:
+    - The time when the certificate was created in RFC 3339 format, for example 2012-11-15T16:19:00.094Z.
+    required: false
+    type: str
+  expiration_time:
+    description:
+    - The time when the certificate expires in RFC 3339 format, for example 2012-11-15T16:19:00.094Z.
+    required: false
+    type: str
+  instance:
+    description:
+    - The name of the Cloud SQL instance. This does not include the project ID.
+    - 'This field represents a link to a Instance resource in GCP. It can be specified
+      in two ways. First, you can place a dictionary with key ''name'' and value of
+      your resource''s name Alternatively, you can add `register: name-of-resource`
+      to a gcp_sql_instance task and then set this instance field to "{{ name-of-resource
+      }}"'
     required: true
-    type: str
-  description:
+    type: dict
+  sha1_fingerprint:
     description:
-    - An optional description of this resource.
-    required: false
-    type: str
-  name:
-    description:
-    - Name of the resource. Provided by the client when the resource is created. The
-      name must be 1-63 characters long, and comply with RFC1035. Specifically, the
-      name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
-      which means the first character must be a lowercase letter, and all following
-      characters must be a dash, lowercase letter, or digit, except the last character,
-      which cannot be a dash.
-    required: false
-    type: str
-  private_key:
-    description:
-    - The write-only private key in PEM format.
+    - The SHA-1 of the certificate.
     required: true
     type: str
   project:
@@ -114,51 +128,29 @@ options:
     - This should not be set unless you know what you're doing.
     - This only alters the User Agent string for any API requests.
     type: str
-notes:
-- 'API Reference: U(https://cloud.google.com/compute/docs/reference/rest/v1/sslCertificates)'
-- 'Official Documentation: U(https://cloud.google.com/load-balancing/docs/ssl-certificates)'
-- for authentication, you can set service_account_file using the C(gcp_service_account_file)
-  env variable.
-- for authentication, you can set service_account_contents using the C(GCP_SERVICE_ACCOUNT_CONTENTS)
-  env variable.
-- For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL)
-  env variable.
-- For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.
-- For authentication, you can set scopes using the C(GCP_SCOPES) env variable.
-- Environment variables values will only be used if the playbook values are not set.
-- The I(service_account_email) and I(service_account_file) options are mutually exclusive.
 '''
 
 EXAMPLES = '''
-- name: create a SSL certificate
-  gcp_compute_ssl_certificate:
-    name: test_object
+- name: create a instance
+  gcp_sql_instance:
+    name: "{{resource_name}}-2"
+    settings:
+      ip_configuration:
+        authorized_networks:
+        - name: google dns server
+          value: 8.8.8.8/32
+      tier: db-n1-standard-1
     region: us-central1
-    description: A certificate for testing. Do not use this certificate in production
-    certificate: |-
-      -----BEGIN CERTIFICATE-----
-      MIICqjCCAk+gAwIBAgIJAIuJ+0352Kq4MAoGCCqGSM49BAMCMIGwMQswCQYDVQQG
-      EwJVUzETMBEGA1UECAwKV2FzaGluZ3RvbjERMA8GA1UEBwwIS2lya2xhbmQxFTAT
-      BgNVBAoMDEdvb2dsZSwgSW5jLjEeMBwGA1UECwwVR29vZ2xlIENsb3VkIFBsYXRm
-      b3JtMR8wHQYDVQQDDBZ3d3cubXktc2VjdXJlLXNpdGUuY29tMSEwHwYJKoZIhvcN
-      AQkBFhJuZWxzb25hQGdvb2dsZS5jb20wHhcNMTcwNjI4MDQ1NjI2WhcNMjcwNjI2
-      MDQ1NjI2WjCBsDELMAkGA1UEBhMCVVMxEzARBgNVBAgMCldhc2hpbmd0b24xETAP
-      BgNVBAcMCEtpcmtsYW5kMRUwEwYDVQQKDAxHb29nbGUsIEluYy4xHjAcBgNVBAsM
-      FUdvb2dsZSBDbG91ZCBQbGF0Zm9ybTEfMB0GA1UEAwwWd3d3Lm15LXNlY3VyZS1z
-      aXRlLmNvbTEhMB8GCSqGSIb3DQEJARYSbmVsc29uYUBnb29nbGUuY29tMFkwEwYH
-      KoZIzj0CAQYIKoZIzj0DAQcDQgAEHGzpcRJ4XzfBJCCPMQeXQpTXwlblimODQCuQ
-      4mzkzTv0dXyB750fOGN02HtkpBOZzzvUARTR10JQoSe2/5PIwaNQME4wHQYDVR0O
-      BBYEFKIQC3A2SDpxcdfn0YLKineDNq/BMB8GA1UdIwQYMBaAFKIQC3A2SDpxcdfn
-      0YLKineDNq/BMAwGA1UdEwQFMAMBAf8wCgYIKoZIzj0EAwIDSQAwRgIhALs4vy+O
-      M3jcqgA4fSW/oKw6UJxp+M6a+nGMX+UJR3YgAiEAvvl39QRVAiv84hdoCuyON0lJ
-      zqGNhIPGq2ULqXKK8BY=
-      -----END CERTIFICATE-----
-    private_key: |-
-      -----BEGIN EC PRIVATE KEY-----
-      MHcCAQEEIObtRo8tkUqoMjeHhsOh2ouPpXCgBcP+EDxZCB/tws15oAoGCCqGSM49
-      AwEHoUQDQgAEHGzpcRJ4XzfBJCCPMQeXQpTXwlblimODQCuQ4mzkzTv0dXyB750f
-      OGN02HtkpBOZzzvUARTR10JQoSe2/5PIwQ==
-      -----END EC PRIVATE KEY-----
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_file: "{{ gcp_cred_file }}"
+    state: present
+  register: instance
+
+- name: create a SSL cert
+  gcp_sql_ssl_cert:
+    common_name: "{{resource_name}}"
+    instance: "{{instance['name'}}"
     project: test_project
     auth_kind: serviceaccount
     service_account_file: "/tmp/auth.pem"
@@ -166,41 +158,39 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-certificate:
+cert:
   description:
-  - The certificate in PEM format.
-  - The certificate chain must be no greater than 5 certs long.
-  - The chain must include at least one intermediate cert.
+  - PEM representation of the X.509 certificate.
   returned: success
   type: str
-creationTimestamp:
+certSerialNumber:
   description:
-  - Creation timestamp in RFC3339 text format.
+  - Serial number, as extracted from the certificate.
   returned: success
   type: str
-description:
+commonName:
   description:
-  - An optional description of this resource.
+  - User supplied name. Constrained to [a-zA-Z.-_ ]+.
   returned: success
   type: str
-id:
+createTime:
   description:
-  - The unique identifier for the resource.
-  returned: success
-  type: int
-name:
-  description:
-  - Name of the resource. Provided by the client when the resource is created. The
-    name must be 1-63 characters long, and comply with RFC1035. Specifically, the
-    name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?`
-    which means the first character must be a lowercase letter, and all following
-    characters must be a dash, lowercase letter, or digit, except the last character,
-    which cannot be a dash.
+  - The time when the certificate was created in RFC 3339 format, for example 2012-11-15T16:19:00.094Z.
   returned: success
   type: str
-privateKey:
+expirationTime:
   description:
-  - The write-only private key in PEM format.
+  - The time when the certificate expires in RFC 3339 format, for example 2012-11-15T16:19:00.094Z.
+  returned: success
+  type: str
+instance:
+  description:
+  - The name of the Cloud SQL instance. This does not include the project ID.
+  returned: success
+  type: dict
+sha1Fingerprint:
+  description:
+  - The SHA-1 of the certificate.
   returned: success
   type: str
 '''
@@ -224,18 +214,21 @@ def main():
     module = GcpModule(
         argument_spec=dict(
             state=dict(default='present', choices=['present', 'absent'], type='str'),
-            certificate=dict(required=True, type='str'),
-            description=dict(type='str'),
-            name=dict(type='str'),
-            private_key=dict(required=True, type='str'),
+            cert=dict(type='str'),
+            cert_serial_number=dict(type='str'),
+            common_name=dict(type='str'),
+            create_time=dict(type='str'),
+            expiration_time=dict(type='str'),
+            instance=dict(required=True, type='dict'),
+            sha1_fingerprint=dict(required=True, type='str'),
         )
     )
 
     if not module.params['scopes']:
-        module.params['scopes'] = ['https://www.googleapis.com/auth/compute']
+        module.params['scopes'] = ['https://www.googleapis.com/auth/sqlservice.admin']
 
     state = module.params['state']
-    kind = 'compute#sslCertificate'
+    kind = 'sql#sslCert'
 
     fetch = fetch_resource(module, self_link(module), kind)
     changed = False
@@ -263,27 +256,28 @@ def main():
 
 
 def create(module, link, kind):
-    auth = GcpSession(module, 'compute')
+    auth = GcpSession(module, 'sql')
     return wait_for_operation(module, auth.post(link, resource_to_request(module)))
 
 
 def update(module, link, kind):
-    delete(module, self_link(module), kind)
-    create(module, collection(module), kind)
+    auth = GcpSession(module, 'sql')
+    return wait_for_operation(module, auth.put(link, resource_to_request(module)))
 
 
 def delete(module, link, kind):
-    auth = GcpSession(module, 'compute')
+    auth = GcpSession(module, 'sql')
     return wait_for_operation(module, auth.delete(link))
 
 
 def resource_to_request(module):
     request = {
-        u'kind': 'compute#sslCertificate',
-        u'certificate': module.params.get('certificate'),
-        u'description': module.params.get('description'),
-        u'name': module.params.get('name'),
-        u'privateKey': module.params.get('private_key'),
+        u'kind': 'sql#sslCert',
+        u'cert': module.params.get('cert'),
+        u'certSerialNumber': module.params.get('cert_serial_number'),
+        u'commonName': module.params.get('common_name'),
+        u'createTime': module.params.get('create_time'),
+        u'expirationTime': module.params.get('expiration_time'),
     }
     return_vals = {}
     for k, v in request.items():
@@ -294,16 +288,18 @@ def resource_to_request(module):
 
 
 def fetch_resource(module, link, kind, allow_not_found=True):
-    auth = GcpSession(module, 'compute')
+    auth = GcpSession(module, 'sql')
     return return_if_object(module, auth.get(link), kind, allow_not_found)
 
 
 def self_link(module):
-    return "https://www.googleapis.com/compute/v1/projects/{project}/global/sslCertificates/{name}".format(**module.params)
+    res = {'project': module.params['project'], 'instance': replace_resource_dict(module.params['instance'], 'name')}
+    return "https://sqladmin.googleapis.com/sql/v1beta4/projects/{project}/instances/{instance}/sslCerts/{sha1_fingerprint}".format(**res)
 
 
 def collection(module):
-    return "https://www.googleapis.com/compute/v1/projects/{project}/global/sslCertificates".format(**module.params)
+    res = {'project': module.params['project'], 'instance': replace_resource_dict(module.params['instance'], 'name')}
+    return "https://sqladmin.googleapis.com/sql/v1beta4/projects/{project}/instances/{instance}/sslCerts".format(**res)
 
 
 def return_if_object(module, response, kind, allow_not_found=False):
@@ -349,31 +345,30 @@ def is_different(module, response):
 # This is for doing comparisons with Ansible's current parameters.
 def response_to_hash(module, response):
     return {
-        u'certificate': response.get(u'certificate'),
-        u'creationTimestamp': response.get(u'creationTimestamp'),
-        u'description': response.get(u'description'),
-        u'id': response.get(u'id'),
-        u'name': response.get(u'name'),
-        u'privateKey': module.params.get('private_key'),
+        u'cert': response.get(u'cert'),
+        u'certSerialNumber': response.get(u'certSerialNumber'),
+        u'commonName': response.get(u'commonName'),
+        u'createTime': response.get(u'createTime'),
+        u'expirationTime': response.get(u'expirationTime'),
     }
 
 
 def async_op_url(module, extra_data=None):
     if extra_data is None:
         extra_data = {}
-    url = "https://www.googleapis.com/compute/v1/projects/{project}/global/operations/{op_id}"
+    url = "https://sqladmin.googleapis.com/sql/v1beta4/projects/{project}/operations/{op_id}"
     combined = extra_data.copy()
     combined.update(module.params)
     return url.format(**combined)
 
 
 def wait_for_operation(module, response):
-    op_result = return_if_object(module, response, 'compute#operation')
+    op_result = return_if_object(module, response, 'sql#operation')
     if op_result is None:
         return {}
     status = navigate_hash(op_result, ['status'])
     wait_done = wait_for_completion(status, op_result, module)
-    return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'compute#sslCertificate')
+    return fetch_resource(module, navigate_hash(wait_done, ['targetLink']), 'sql#sslCert')
 
 
 def wait_for_completion(status, op_result, module):
@@ -382,7 +377,7 @@ def wait_for_completion(status, op_result, module):
     while status != 'DONE':
         raise_if_errors(op_result, ['error', 'errors'], module)
         time.sleep(1.0)
-        op_result = fetch_resource(module, op_uri, 'compute#operation', False)
+        op_result = fetch_resource(module, op_uri, 'sql#operation', False)
         status = navigate_hash(op_result, ['status'])
     return op_result
 
